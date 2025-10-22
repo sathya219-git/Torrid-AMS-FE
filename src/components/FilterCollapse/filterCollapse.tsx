@@ -13,11 +13,14 @@ export default function FilterCollapse() {
   };
 
   return (
-    <Card
-      onClick={() => onClick()}
-      className={'filter-card ${opened ? "filter-opened" :""}'}
-    >
-      <Card.Section withBorder inheritPadding py="xs" className="border">
+    <Card className={'filter-card ${opened ? "filter-opened" :""}'}>
+      <Card.Section
+        withBorder
+        inheritPadding
+        py="xs"
+        className="border"
+        onClick={() => onClick()}
+      >
         <Text fw={400} size="xl" className="export-icon">
           Filters
           <ImportExportIcon fontSize="medium" />

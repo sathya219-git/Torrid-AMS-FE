@@ -8,16 +8,16 @@ export default function FilteredResult() {
   const filterOpened = useAtomValue(filterState);
 
   return (
-    <Card padding="lg"
+    <Card
+      padding="lg"
       shadow="sm"
       radius="md"
       className={`filtered-result ${filterOpened ? "opened" : "closed"}`}
-      withBorder>
+      withBorder
+    >
       <Card.Section withBorder inheritPadding py="xl">
         <div className="selected-filter">
-          <Text fw={500} size="xl">
-            <Cards />
-          </Text>
+          <Cards />
         </div>
       </Card.Section>
     </Card>
