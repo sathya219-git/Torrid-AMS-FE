@@ -1,0 +1,14 @@
+.team-member-card {
+  margin-left: auto;
+  height: 100%;
+  background: white;
+  transition: width 0.5s ease-in-out;
+}
+
+.team-member-card.opened {
+  width: calc(100% - 430px);
+}
+
+.team-member-card.closed {
+  width: 100%;
+}

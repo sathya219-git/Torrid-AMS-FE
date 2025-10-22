@@ -1,0 +1,23 @@
+.duration-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  row-gap: 15px;
+  padding-top: 15px;
+}
+
+.duration-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: end;
+  column-gap: 12px;
+}
+
+.date-text {
+  padding-bottom: 7px;
+}
+
+.date-icon {
+  flex-grow: 1;
+}

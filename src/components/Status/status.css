@@ -1,0 +1,40 @@
+.status-content {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  column-gap: 12px;
+  row-gap: 12px;
+}
+
+.status-checkbox {
+  border: 1px, rgb(0, 0, 0, 0.2) solid;
+  border-radius: 8px;
+  padding: 7px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: 25px;
+  flex-wrap: nowrap;
+  background-color: white;
+}
+
+.accordion-border:last-of-type {
+  border-bottom: none;
+}
+
+.badge-padding {
+  padding: 0 5px;
+  color: #60aaeb;
+  background-color: #e8effd;
+}
+
+.status-checkbox.selected {
+  color: #449fee;
+  background-color: #e8effd;
+}
+
+.badge-padding.selected {
+  color: #60aaeb;
+  background-color: white;
+}

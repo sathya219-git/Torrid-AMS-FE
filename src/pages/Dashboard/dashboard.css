@@ -1,0 +1,23 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  max-width: 100%;
+  margin: 0;
+  padding: 0px;
+}
+
+.page-header {
+  background-color: rgb(220, 230, 230);
+  flex-basis: 100px;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+.filter-content {
+  flex-basis: 400px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  background-color: rgb(220, 230, 230);
+  position: relative;
+}

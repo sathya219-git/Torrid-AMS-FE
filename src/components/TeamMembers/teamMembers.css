@@ -1,0 +1,30 @@
+.search {
+  padding-bottom: 12px;
+}
+
+.team-member-checkbox {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.team-member-content {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  row-gap: 12px;
+}
+
+.team-member-content-expanded {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.team-member-content-collapsed {
+  padding-top: 12px;
+}
+
+.view {
+  color: #228be6;
+}

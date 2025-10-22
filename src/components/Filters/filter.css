@@ -1,0 +1,17 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  color: black;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  column-gap: 15px;
+}
+
+.button-group button {
+  flex-grow: 1;
+  height: 45px;
+}

@@ -1,0 +1,38 @@
+.select-all {
+  margin-bottom: 15px;
+}
+
+.assignment-content {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  column-gap: 10px;
+  row-gap: 12px;
+}
+
+.group-checkbox {
+  border: 1px, rgb(0, 0, 0, 0.2) solid;
+  border-radius: 8px;
+  padding: 7px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.assignment-content-expanded {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.assignment-content-collapsed {
+  padding-top: 12px;
+}
+
+.view {
+  color: #228be6;
+}
+
+.accordion-border:last-of-type {
+  border-bottom: none;
+}

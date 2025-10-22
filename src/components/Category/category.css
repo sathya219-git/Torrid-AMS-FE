@@ -1,0 +1,19 @@
+.category-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  row-gap: 15px;
+}
+
+.category-content {
+  display: flex;
+  flex-direction: column;
+  row-gap: 12px;
+}
+
+.category-checkbox {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}

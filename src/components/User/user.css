@@ -1,0 +1,19 @@
+.user-dropdown {
+  display: flex;
+  flex-direction: row;
+  column-gap: 8px;
+}
+
+.dropdown-div {
+  display: flex;
+  flex-direction: row;
+  column-gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+.dropdown-text {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+}

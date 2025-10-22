@@ -1,0 +1,55 @@
+.notification {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #007bff;
+  padding: 10px;
+}
+
+.notification-header {
+  display: flex;
+  flex-direction: row;
+  column-gap: 330px;
+  padding-bottom: 15px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 15px;
+}
+.buttons {
+  color: #60aaeb;
+  display: flex;
+  flex-direction: column;
+  row-gap: 12px;
+}
+
+.count-badge {
+  display: flex;
+  flex-direction: column;
+  color: #60aaeb;
+  background-color: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 30%;
+  margin-left: 10px;
+}
+
+.popover-msgs {
+  display: flex;
+  flex-direction: row;
+  column-gap: 20px;
+}
+
+.badge-mail-tick {
+  background-color: #d6dfe7;
+  color: #60aaeb;
+  width: 85px;
+  height: 50px;
+  border-radius: 50%;
+  align-items: center;
+}
+
+.popover-dropdown {
+  border-radius: 12px;
+}

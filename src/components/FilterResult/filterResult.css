@@ -1,0 +1,6 @@
+.card-padding {
+  display: flex;
+  flex-direction: column;
+  row-gap: 14px;
+  padding-right: 15px;
+}

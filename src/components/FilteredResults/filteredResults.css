@@ -1,0 +1,9 @@
+.selected-filter {
+  padding: auto;
+}
+.filter-result-card {
+  height: 100%;
+  padding-left: 430px;
+  background-color: rgb(4, 104, 104);
+  width: 100%;
+}

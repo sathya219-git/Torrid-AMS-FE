@@ -1,0 +1,17 @@
+.filter-card {
+  position: absolute;
+  z-index: 99;
+  top: 16px;
+  left: 20px;
+  min-width: 400px;
+  max-width: 400px;
+}
+.export-icon {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.border {
+  border-bottom: none;
+}
