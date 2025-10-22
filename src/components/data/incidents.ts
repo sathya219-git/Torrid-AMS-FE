@@ -1,0 +1,73 @@
+// --- Data Structure Definition ---
+
+export interface Incident {
+        id: string;
+        description: string;
+        category: string;
+        priority: 'P1' | 'P2' | 'P3' | string;
+        resolution: string;
+        state: 'Open' | 'In progress' | 'Closed' | 'On-Hold' | 'Reopen' | 'Resolved' | string;
+        resolvedDate: string;
+        resolvedTime: string;
+        assignedTo:string;
+        assignmentGroup:string
+}
+
+// --- Global Incident Data ---
+
+export const incidentsData: Incident[] = [
+
+// P1 Incidents (3 total: 1 Closed, 1 Open, 1 In progress)
+{ id: 'INC2233999', description: 'Network Outage...', category: 'Ecom Systems', priority: 'P1', resolution: '...', state: 'Closed', resolvedDate: '9/2/2025', resolvedTime: '11:22:33 AM', assignedTo: 'Alice Smith', assignmentGroup: 'Network Team' },
+{ id: 'INC2233988', description: 'Database Server Overload.', category: 'Ecom Systems', priority: 'P1', resolution: '...', state: 'Open', resolvedDate: '9/2/2025', resolvedTime: '10:11:22 AM', assignedTo: 'Bob Johnson', assignmentGroup: 'Database Team' },
+{ id: 'INC2233984', description: 'Data Corruption...', category: 'Ecom Systems', priority: 'P1', resolution: '...', state: 'In progress', resolvedDate: '9/2/2025', resolvedTime: '05:33:44 AM', assignedTo: 'Charlie Davis', assignmentGroup: 'Ecom Support' },
+{ id: 'INC2233984', description: 'Data Corruption...', category: 'Ecom Systems', priority: 'P1', resolution: '...', state: 'In progress', resolvedDate: '9/2/2025', resolvedTime: '05:33:44 AM', assignedTo: 'Charlie Davis', assignmentGroup: 'Ecom Support' },
+{ id: 'INC2233984', description: 'Data Corruption...', category: 'Ecom Systems', priority: 'P1', resolution: '...', state: 'On-Hold', resolvedDate: '9/2/2025', resolvedTime: '05:33:44 AM', assignedTo: 'Dana Miller', assignmentGroup: 'Ecom Support' },
+{ id: 'INC2233984', description: 'Data Corruption...', category: 'Ecom Systems', priority: 'P1', resolution: '...', state: 'On-Hold', resolvedDate: '9/2/2025', resolvedTime: '05:33:44 AM', assignedTo: 'Dana Miller', assignmentGroup: 'Ecom Support' },
+{ id: 'INC2233984', description: 'Data Corruption...', category: 'Ecom Systems', priority: 'P1', resolution: '...', state: 'On-Hold', resolvedDate: '9/2/2025', resolvedTime: '05:33:44 AM', assignedTo: 'Dana Miller', assignmentGroup: 'Ecom Support' },
+{ id: 'INC2233984', description: 'Data Corruption...', category: 'Ecom Systems', priority: 'P1', resolution: '...', state: 'On-Hold', resolvedDate: '9/2/2025', resolvedTime: '05:33:44 AM', assignedTo: 'Dana Miller', assignmentGroup: 'Ecom Support' },
+{ id: 'INC2233984', description: 'Data Corruption...', category: 'Ecom Systems', priority: 'P1', resolution: '...', state: 'Reopen', resolvedDate: '9/2/2025', resolvedTime: '05:33:44 AM', assignedTo: 'Ethan White', assignmentGroup: 'Incident Response' },
+{ id: 'INC2233984', description: 'Data Corruption...', category: 'Ecom Systems', priority: 'P1', resolution: '...', state: 'Resolved', resolvedDate: '9/2/2025', resolvedTime: '05:33:44 AM', assignedTo: 'Ethan White', assignmentGroup: 'Incident Response' },
+{ id: 'INC2233984', description: 'Data Corruption...', category: 'Ecom Systems', priority: 'P1', resolution: '...', state: 'Resolved', resolvedDate: '9/2/2025', resolvedTime: '05:33:44 AM', assignedTo: 'Ethan White', assignmentGroup: 'Incident Response' },
+
+// P2 & P3 Incidents
+{ id: 'INC2233987', description: 'Payment Gateway Failure.', category: 'Finance', priority: 'P2', resolution: '...', state: 'In progress', resolvedDate: '9/2/2025', resolvedTime: '09:00:11 AM', assignedTo: 'Frank Green', assignmentGroup: 'Finance Tech' },
+{ id: 'INC2233986', description: 'DDoS Attack...', category: 'Security', priority: 'P2', resolution: '...', state: 'On-Hold', resolvedDate: '9/2/2025', resolvedTime: '07:55:00 AM', assignedTo: 'Grace Lee', assignmentGroup: 'Security Operations' },
+{ id: 'INC2233986', description: 'DDoS Attack...', category: 'Security', priority: 'P2', resolution: '...', state: 'Reopen', resolvedDate: '9/2/2025', resolvedTime: '07:55:00 AM', assignedTo: 'Grace Lee', assignmentGroup: 'Security Operations' },
+{ id: 'INC2233986', description: 'DDoS Attack...', category: 'Security', priority: 'P2', resolution: '...', state: 'Reopen', resolvedDate: '9/2/2025', resolvedTime: '07:55:00 AM', assignedTo: 'Grace Lee', assignmentGroup: 'Security Operations' },
+
+{ id: 'INC2233985', description: 'Critical System Upgrade Failure.', category: 'Infrastructure', priority: 'P3', resolution: '...', state: 'Reopen', resolvedDate: '9/2/2025', resolvedTime: '06:44:36 AM', assignedTo: 'Hannah King', assignmentGroup: 'Infra Team' },
+{ id: 'INC2233993', description: 'Unexpected Server Shutdown.', category: 'Finance', priority: 'P3', resolution: '...', state: 'On-Hold', resolvedDate: '9/2/2025', resolvedTime: '04:22:33 AM', assignedTo: 'Frank Green', assignmentGroup: 'Finance Tech' },
+{ id: 'INC2233985', description: 'Critical System Upgrade Failure.', category: 'Infrastructure', priority: 'P3', resolution: '...', state: 'Reopen', resolvedDate: '9/2/2025', resolvedTime: '06:44:36 AM', assignedTo: 'Hannah King', assignmentGroup: 'Infra Team' },
+{ id: 'INC2233985', description: 'Critical System Upgrade Failure.', category: 'Infrastructure', priority: 'P3', resolution: '...', state: 'Resolved', resolvedDate: '9/2/2025', resolvedTime: '06:44:36 AM', assignedTo: 'Hannah King', assignmentGroup: 'Infra Team' },
+{ id: 'INC2233985', description: 'Critical System Upgrade Failure.', category: 'Infrastructure', priority: 'P3', resolution: '...', state: 'On-Hold', resolvedDate: '9/2/2025', resolvedTime: '06:44:36 AM', assignedTo: 'Hannah King', assignmentGroup: 'Infra Team' },
+{ id: 'INC2233985', description: 'Critical System Upgrade Failure.', category: 'Infrastructure', priority: 'P3', resolution: '...', state: 'On-Hold', resolvedDate: '9/2/2025', resolvedTime: '06:44:36 AM', assignedTo: 'Hannah King', assignmentGroup: 'Infra Team' },
+{ id: 'INC2233985', description: 'Critical System Upgrade Failure.', category: 'Infrastructure', priority: 'P3', resolution: '...', state: 'Closed', resolvedDate: '9/2/2025', resolvedTime: '06:44:36 AM', assignedTo: 'Hannah King', assignmentGroup: 'Infra Team' },
+{ id: 'INC2233985', description: 'Critical System Upgrade Failure.', category: 'Infrastructure', priority: 'P3', resolution: '...', state: 'Closed', resolvedDate: '9/2/2025', resolvedTime: '06:44:36 AM', assignedTo: 'Hannah King', assignmentGroup: 'Infra Team' },
+{ id: 'INC2233985', description: 'Critical System Upgrade Failure.', category: 'Infrastructure', priority: 'P3', resolution: '...', state: 'Closed', resolvedDate: '9/2/2025', resolvedTime: '06:44:36 AM', assignedTo: 'Hannah King', assignmentGroup: 'Infra Team' },
+{ id: 'INC2233985', description: 'Critical System Upgrade Failure.', category: 'Infrastructure', priority: 'P3', resolution: '...', state: 'Closed', resolvedDate: '9/2/2025', resolvedTime: '06:44:36 AM', assignedTo: 'Hannah King', assignmentGroup: 'Infra Team' },
+
+{ id: 'INC2233985', description: 'Critical System Upgrade Failure.', category: 'Infrastructure', priority: 'P3', resolution: '...', state: 'In progress', resolvedDate: '9/2/2025', resolvedTime: '06:44:36 AM', assignedTo: 'Hannah King', assignmentGroup: 'Infra Team' },
+{ id: 'INC2233985', description: 'Critical System Upgrade Failure.', category: 'Infrastructure', priority: 'P3', resolution: '...', state: 'Open', resolvedDate: '9/2/2025', resolvedTime: '06:44:36 AM', assignedTo: 'Hannah King', assignmentGroup: 'Infra Team' },
+{ id: 'INC2233985', description: 'Critical System Upgrade Failure.', category: 'Infrastructure', priority: 'P3', resolution: '...', state: 'Open', resolvedDate: '9/2/2025', resolvedTime: '06:44:36 AM', assignedTo: 'Hannah King', assignmentGroup: 'Infra Team' },
+
+
+
+{ id: 'INC2233985', description: 'Critical System Upgrade Failure.', category: 'Infrastructure', priority: 'P2', resolution: '...', state: 'Closed', resolvedDate: '9/2/2025', resolvedTime: '06:44:36 AM', assignedTo: 'Ivan Torres', assignmentGroup: 'Infra Team' },
+{ id: 'INC2233985', description: 'Critical System Upgrade Failure.', category: 'Infrastructure', priority: 'P2', resolution: '...', state: 'In progress', resolvedDate: '9/2/2025', resolvedTime: '06:44:36 AM', assignedTo: 'Ivan Torres', assignmentGroup: 'Infra Team' },
+{ id: 'INC2233985', description: 'Critical System Upgrade Failure.', category: 'Infrastructure', priority: 'P2', resolution: '...', state: 'Open', resolvedDate: '9/2/2025', resolvedTime: '06:44:36 AM', assignedTo: 'Ivan Torres', assignmentGroup: 'Infra Team' },
+{ id: 'INC2233985', description: 'Critical System Upgrade Failure.', category: 'Infrastructure', priority: 'P2', resolution: '...', state: 'Resolved', resolvedDate: '9/2/2025', resolvedTime: '06:44:36 AM', assignedTo: 'Ivan Torres', assignmentGroup: 'Infra Team' },
+
+// P4 Incidents
+{ id: 'INC2233985', description: 'Critical System Upgrade Failure.', category: 'Infrastructure', priority: 'P4', resolution: '...', state: 'In progress', resolvedDate: '9/2/2025', resolvedTime: '06:44:36 AM', assignedTo: 'Julia Adams', assignmentGroup: 'Infra Team' },
+{ id: 'INC2233985', description: 'Critical System Upgrade Failure.', category: 'Infrastructure', priority: 'P4', resolution: '...', state: 'Reopen', resolvedDate: '9/2/2025', resolvedTime: '06:44:36 AM', assignedTo: 'Julia Adams', assignmentGroup: 'Infra Team' },
+{ id: 'INC2233985', description: 'Critical System Upgrade Failure.', category: 'Infrastructure', priority: 'P4', resolution: '...', state: 'On-Hold', resolvedDate: '9/2/2025', resolvedTime: '06:44:36 AM', assignedTo: 'Julia Adams', assignmentGroup: 'Infra Team' },
+{ id: 'INC2233985', description: 'Critical System Upgrade Failure.', category: 'Infrastructure', priority: 'P4', resolution: '...', state: 'Closed', resolvedDate: '9/2/2025', resolvedTime: '06:44:36 AM', assignedTo: 'Julia Adams', assignmentGroup: 'Infra Team' },
+{ id: 'INC2233985', description: 'Critical System Upgrade Failure.', category: 'Infrastructure', priority: 'P4', resolution: '...', state: 'Reopen', resolvedDate: '9/2/2025', resolvedTime: '06:44:36 AM', assignedTo: 'Julia Adams', assignmentGroup: 'Infra Team' },
+{ id: 'INC2233985', description: 'Critical System Upgrade Failure.', category: 'Infrastructure', priority: 'P4', resolution: '...', state: 'Open', resolvedDate: '9/2/2025', resolvedTime: '06:44:36 AM', assignedTo: 'Julia Adams', assignmentGroup: 'Infra Team' },
+{ id: 'INC2233985', description: 'Critical System Upgrade Failure.', category: 'Infrastructure', priority: 'P4', resolution: '...', state: 'Resolved', resolvedDate: '9/2/2025', resolvedTime: '06:44:36 AM', assignedTo: 'Julia Adams', assignmentGroup: 'Infra Team' },
+
+
+
+
+];

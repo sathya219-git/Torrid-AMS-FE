@@ -1,0 +1,553 @@
+/* src/styles/IncidentDashboard.css */
+
+/* Fonts - Import this in your main index.html or in the CSS file if using a build tool */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+body {
+    font-family: 'Inter';
+    /* Added sans-serif as a fallback */
+    background-color: #f8faff;
+    margin: 0;
+    color: #333;
+}
+
+.dashboard-container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    margin: 20px;
+    background-color: #fff;
+    transition: all 0.3s ease;
+}
+
+.dashboard-container.opened {
+    flex-direction: column;
+}
+
+/* Condition FALSE layout (Split view) */
+.dashboard-container.closed {
+    /* background-color: red; */
+    flex-direction: row;
+
+}
+
+.first-div.full {
+    width: 100%;
+}
+
+.first-div.compact {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.incident-priority-section.full {
+    width: 100%;
+}
+
+.incident-priority-section.expanded {
+    width: 70%;
+}
+
+/* --- Filtered Results Section --- */
+.filtered-results {
+    margin-bottom: 30px;
+}
+
+.filtered-results h2 {
+    font-size: 1.5em;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.filter-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+    align-items: center;
+
+}
+
+.tag {
+    background-color: #eef3ff;
+    border: 1px solid #4880ff;
+    border-radius: 10px;
+    padding: 8px 15px;
+    font-size: 0.9em;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.tag span {
+    margin-right: 8px;
+    color: #555;
+}
+
+.tag .close-btn {
+    background: none;
+    color: #a0a0a0;
+    border: 3px solid #e4e7ee;
+    font-size: 1em;
+    cursor: pointer;
+    padding: 2px 3px;
+    line-height: .9;
+    border-radius: 6px;
+}
+
+.clear-all {
+    color: #007bff;
+    font-size: 0.9em;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+/* --- Summary Cards Section --- */
+.summary-cards {
+    display: flex;
+    flex-wrap: wrap;
+    /* allow wrapping like grid rows */
+    gap: 20px;
+    /* spacing between cards, supported in modern browsers */
+    margin-bottom: 30px;
+}
+
+.summary-cards>* {
+    flex: 1 1 200px;
+    /* grow, shrink, basis */
+    min-width: 200px;
+    /* minimum card width */
+    max-width: 1fr;
+    /* no direct equivalent, but flex:1 helps stretch */
+    box-sizing: border-box;
+    /* include padding/borders in width */
+}
+
+.card {
+    color: black;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.card.incident {
+    background-color: #dae0f7;
+}
+
+.card.open {
+    background-color: #ffe2e2;
+}
+
+.card.progress {
+    background-color: #f9f0cc;
+}
+
+.card.closed {
+    background-color: #d7f7fd;
+}
+
+
+.card-icon {
+
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+    padding: 3px 5px 3px 5px;
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2em;
+    color: #fff;
+}
+
+
+.card-icon.incident {
+    background-color: white;
+}
+
+.card-icon.open {
+    background-color: white;
+}
+
+.card-icon.progress {
+    background-color: white;
+}
+
+.card-icon.closed {
+    background-color: white;
+}
+
+.card-content {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+}
+
+.card-content h3 {
+    font-size: 0.9em;
+    color: black;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.card-content p {
+    font-size: 1.5em;
+    font-weight: 600;
+    margin: 0;
+    color: #333;
+    display: flex;
+    align-items: center;
+}
+
+.card-status-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin-left: 80px;
+}
+
+
+/* --- Incident Priority Section --- */
+.incident-priority-section {
+    /* margin-bottom: 30px; */
+    display: flex;
+    flex-direction: column;
+}
+
+.incident-priority-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.incident-priority-header h2 {
+    font-size: 1.2em;
+    color: #333;
+    font-weight: 600;
+    margin: 0;
+}
+
+.metrics-dropdown {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border: 1px solid #e0e6f6;
+    border-radius: 8px;
+    padding: 5px 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.metrics-dropdown span {
+    font-size: 0.9em;
+    margin-right: 8px;
+    color: #161515;
+}
+
+.metrics-dropdown select {
+    border: none;
+    background-color: transparent;
+    font-size: 0.9em;
+    padding: 5px;
+    outline: none;
+    color: #202020;
+}
+
+.priority-summary {
+    display: flex;
+    flex-wrap: wrap;
+    /* allow wrapping */
+    /* gap: 20px; */
+    /* spacing between items */
+    margin-bottom: 30px;
+}
+
+.priority-summary>* {
+    flex: 1 1 150px;
+    /* grow, shrink, basis */
+    min-width: 150px;
+    /* minimum width per item */
+    box-sizing: border-box;
+    /* include padding/border in width */
+}
+
+.priority-item {
+    background-color: #f5f6fa;
+    border-radius: 12px;
+    padding: 15px 20px;
+    margin-left: 23px;
+    /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); */
+}
+
+.priority-item h3 {
+    font-size: 0.9em;
+    color: #777;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.priority-item p {
+    font-size: 1.3em;
+    font-weight: 600;
+    margin: 0;
+    color: #333;
+}
+
+.priority-item p small {
+    font-size: 0.7em;
+    font-weight: 400;
+    color: #777;
+    margin-left: 5px;
+}
+
+.priority-item.avg-resolved {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.priority-item.avg-resolved .card-status-dot {
+    margin-left: 0;
+}
+
+/* --- Charts Grid --- */
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    grid-template-rows: 1fr 1fr;
+    flex-grow: 1;
+    gap: 20px;
+}
+
+.chart-card {
+    background-color: #f5f6fa;
+    border-radius: 12px;
+    padding: 20px 30px 80px 30px; /* top right bottom left */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    min-height: 250px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-card h3 {
+    font-size: 1.1em;
+    color: #333;
+    margin-bottom: 15px;
+    font-weight: 600;
+    flex-basis: 100px;
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+/* --- Bar Chart Styling (P1) --- */
+.bar-chart-container {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    height: 150px;
+    padding-top: 20px;
+}
+
+.bar-chart-item {
+    text-align: center;
+    margin: 0 5px;
+}
+
+.bar {
+    width: 30px;
+    border-radius: 5px 5px 0 0;
+    margin-bottom: 5px;
+    transition: height 0.3s ease;
+    /* Background color and height are set via inline style in JSX */
+}
+
+.bar-label {
+    font-size: 0.8em;
+    color: #777;
+    margin-top: 5px;
+}
+
+.bar-value {
+    font-size: 0.9em;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+/* --- Doughnut/Pie Chart Styling (P2, P4) --- */
+.chart-doughnut-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 180px;
+    position: relative;
+}
+
+.doughnut-placeholder {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    position: relative;
+    /* Background conic-gradient is set via inline style in JSX */
+}
+
+.doughnut-inner-circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.3em;
+    font-weight: 600;
+    color: #333;
+    line-height: 1;
+}
+
+.doughnut-inner-circle small {
+    font-size: 0.7em;
+    font-weight: 400;
+    color: #777;
+    margin-top: 2px;
+}
+
+.chart-legend {
+    margin-left: 100px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 0.9em;
+    color: #555;
+    justify-content: space-between;
+    width: 120px;
+    /* Constrain legend width */
+}
+
+.legend-color-box {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+/* --- Line Chart Styling (P3) --- */
+.chart-line-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* height: 280px; */
+    justify-self: stretch;
+}
+
+.line-chart-placeholder {
+    width: 250px;
+    /* Give a fixed width to the chart area */
+    height: 100%;
+    position: relative;
+    margin-right: 30px;
+}
+
+.line-path {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    /* clip-path and background are set via inline style in JSX */
+}
+
+.line-dots {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.line-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    position: absolute;
+    border: 2px solid #fff;
+    /* For better visibility over the line path */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    transform: translate(-50%, -50%);
+    /* Position and color are set via inline style in JSX */
+}
+
+.line-dot-value {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 5px 8px;
+    font-size: 0.8em;
+    white-space: nowrap;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    /* Transform and display are set via inline style in JSX for highlighting */
+}
+
+/* src/styles/cards.css (renamed from IncidentDashboard.css for consistency) */
+
+/* ... (All your existing CSS code here) ... */
+
+/* --- Doughnut/Pie Chart Styling (P2, P4) --- */
+/* ... (existing styles) ... */
+
+.doughnut-inner-circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #fcf8e3;
+    /* Keep background color consistent or set to #fff */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.3em;
+    font-weight: 600;
+    color: #333;
+    line-height: 1.2;
+    /* Adjusted from 1 to 1.2 for better text spacing */
+    /* Add a transition for a smoother effect when the border color changes */
+    transition: border-color 0.2s ease;
+}
+
+/* ... (existing styles) ... */
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 0.9em;
+    color: #555;
+    justify-content: space-between;
+    width: 138px;
+    /* Constrain legend width */
+
+    /* ADD THIS LINE for visual interactivity: */
+    cursor: pointer;
+}
+
+/* ... (rest of your existing CSS code) ... */

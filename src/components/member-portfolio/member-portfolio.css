@@ -1,0 +1,390 @@
+/* ------------------------------------------------------------------
+   BASE STYLES (Your Original Code)
+------------------------------------------------------------------ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+body {
+    font-family: 'Inter';/* Added sans-serif as a fallback */
+    background-color: #f8faff;
+    margin: 0;
+    color: #333;
+}
+
+/* General Container */
+.team-portfolio-container {
+  font-family: Inter;
+  padding: 20px;
+  font-weight: 600;
+  background-color: #fff;
+  /* Changed max-width to a percentage to allow better flexibility */
+  /* max-width: 1000px; */
+  width: 95%; /* Added to make it scale within the page */
+  margin: 0 auto;
+  border-radius: 8px;
+  margin-top: 30px;
+}
+
+/* Header/Controls Styling */
+.portfolio-header {
+  
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  /* Added gap for better spacing */
+  gap: 10px;
+}
+
+.portfolio-header h1 {
+  font-size: 24px;
+  font-weight: 600;
+  color: black;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+}
+
+.controls label {
+  margin-left: 15px;
+  font-size: 16px;
+  font-weight: 400;
+  color: black;
+  /* Make label unshrinkable */
+  white-space: nowrap; 
+}
+
+.controls select {
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  margin-left: 5px;
+  appearance: none;
+  background-color: white;
+  cursor: pointer;
+}
+
+/* Member Card Styling */
+.member-card {
+  display: grid;
+  /* Base grid for wide screens */
+  grid-template-columns: 1fr 3fr auto; 
+  align-items: center;
+  background-color: #f5f6fa;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Member Info (Name and ID) */
+.member-info {
+  display: flex;
+  align-items: center;
+}
+
+.member-id-circle {
+  width: 57px;
+  height: 49px;
+  border-radius: 24%;
+  background-color: #DAE0F7;
+  color: #00246D;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* font-weight: bold; */
+  font-size: 16px;
+  padding: 10px;
+  margin-right: 15px;
+  /* Shrinkable on small screens */
+  flex-shrink: 0;
+}
+
+.member-name {
+  font-size: 16px;
+  font-weight: 500;
+  color: black;
+}
+
+/* Metrics Grid */
+.metrics-grid {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+  /* Allow flex items to wrap if needed */
+  flex-wrap: wrap; 
+}
+
+.metric-item {
+  text-align: left;
+  min-width: 100px;
+}
+
+.metric-label {
+  display: block;
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 2px;
+}
+
+.metric-value {
+  font-size: 16px;
+  font-weight: 500;
+  color: black;
+}
+
+/* Average Resolved Time */
+
+.avg-label {
+ display: flex;
+  align-items: center;
+  justify-content:center;
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 2px;
+}/* ----------------------------------------------------------- */
+/* --- WIDE-SCREEN/BASE STYLES FOR AVG TIME & ICON --- */
+/* ----------------------------------------------------------- */
+
+.avg-resolved-time {
+    text-align: right;
+    min-width: 150px;
+    margin-right: 10px;
+}
+
+.avg-value {
+  font-weight: 400;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    /* Aligns content to the right edge on wide screens */
+    justify-content: center; 
+    /* Ensures the space taken by the value/icon group can shrink/grow as needed */
+    min-width: 120px; 
+}
+
+.trend-icon {
+    /* Fixed margin ensures consistent spacing from the number */
+    margin-left: 5px; 
+    
+    /* These values ensure the icon is a stable size, regardless of its content (text or image) */
+    font-size: 18px;
+    line-height: 1;
+    
+    /* NEW: Ensures the icon doesn't try to shrink smaller than its content on tight layouts */
+    flex-shrink: 0; 
+}
+
+/* ----------------------------------------------------------- */
+/* --- TABLET/MOBILE RESPONSIVENESS ADJUSTMENTS --- */
+/* ----------------------------------------------------------- */
+
+@media (max-width: 768px) {
+    .avg-resolved-time { 
+        /* The container centers the text/icon group on tablet view */
+        text-align: center; 
+        min-width: unset;
+    }
+    
+    .avg-value { 
+        /* The flex items themselves are centered within their container */
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    /* No major changes needed here, as the tablet media query handles the centering 
+       which allows the resolved time and icon to compress towards the center. */
+}
+/* Trend Colors */
+.trend-up {
+  color: black;
+}
+.trend-down {
+  color: black;
+}
+
+/* Footer/Pagination */
+.portfolio-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #555;
+}
+
+.pagination button {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 5px 10px;
+  /* margin-left: 5px; */
+  /* border-radius: 4px; */
+  cursor: pointer;
+  font-weight: bold;
+  color: #555;
+}
+.pagination button:hover {
+  background-color: #eee;
+}
+
+/* ------------------------------------------------------------------
+   RESPONSIVE STYLES (Media Queries)
+------------------------------------------------------------------ */
+
+/* Tablet and Smaller Devices (Max Width: 768px) */
+@media (max-width: 768px) {
+  
+  /* Header: Stack title and controls vertically */
+  .portfolio-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .controls {
+    /* Allow controls to wrap on the same line if needed */
+    flex-wrap: wrap; 
+    /* Remove unnecessary label margin */
+    margin-left: -15px; 
+  }
+
+  .controls label {
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+  
+  /* Member Card: Adjust grid for less horizontal space */
+  .member-card {
+    /* Stack Avg Resolved Time under Name/ID, place metrics below */
+    grid-template-columns: 2fr 1fr; /* Name/ID & Avg Time on top row */
+    grid-template-rows: auto auto; /* Two rows */
+    grid-template-areas:
+      "info time"
+      "metrics metrics";
+    padding: 15px;
+  }
+
+  .member-info {
+    /* Assign to grid area */
+    grid-area: info; 
+  }
+
+  .avg-resolved-time {
+    /* Assign to grid area */
+    grid-area: time; 
+    /* Center text alignment for more balanced look */
+    text-align: center; 
+    /* Reset min-width */
+    min-width: unset; 
+  }
+  
+  .avg-value {
+    /* Center content in flex box */
+    justify-content: center; 
+  }
+
+  .metrics-grid {
+    /* Assign to grid area */
+    grid-area: metrics; 
+    justify-content: space-between;
+    padding: 10px 0 0; /* Add top padding and remove side padding */
+    border-top: 1px solid #eee; /* Separator line */
+    margin-top: 10px;
+  }
+  
+  .metric-item {
+    /* Halve the width to fit 4 items better */
+    min-width: 70px; 
+    text-align: center;
+    margin: 5px 0;
+  }
+}
+
+/* Mobile Devices (Max Width: 480px) */
+@media (max-width: 480px) {
+
+  .team-portfolio-container {
+    padding: 10px;
+  }
+
+  .portfolio-header h1 {
+    font-size: 20px;
+  }
+
+  /* Controls: Force selection boxes onto their own lines */
+  .controls {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .controls label {
+    margin-left: 0;
+    margin-top: 10px;
+  }
+  
+  /* Member Card: Stack all elements vertically */
+  .member-card {
+    grid-template-columns: 1fr; /* Single column */
+    grid-template-rows: auto auto auto;
+    grid-template-areas:
+      "info"
+      "time"
+      "metrics";
+    padding: 15px;
+  }
+  
+  .member-info {
+    /* Ensure name is centered relative to ID circle */
+    justify-content: center; 
+  }
+
+  .member-name {
+    font-size: 18px;
+  }
+  
+  .avg-resolved-time {
+    text-align: center;
+    padding: 10px 0;
+    margin-top: 10px;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+  }
+
+  .metrics-grid {
+    /* Change to a 2x2 grid for metrics */
+    display: grid; 
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 10px 0 0;
+    border-top: none; /* Removed the redundant line */
+    margin-top: 0;
+  }
+
+  .metric-item {
+    /* Reset min-width for grid layout */
+    min-width: unset; 
+  }
+  
+  /* Footer: Stack pagination info and controls */
+  .portfolio-footer {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+select {
+  /* This ensures the arrow is visible for all select boxes */
+  -webkit-appearance: menulist; 
+  appearance: menulist; 
+  /* Also check for and remove any border or outline changes */
+}
+.restore-arrow {
+  -webkit-appearance: menulist !important; /* Use !important if a framework is overriding it */
+  appearance: menulist !important;
+    outline: none !important; 
+    font-family: 'Inter';
+    font-weight: 600;
+    font-size: 16px;
+
+}

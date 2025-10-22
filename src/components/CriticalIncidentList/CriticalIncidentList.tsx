@@ -2,6 +2,7 @@ import { Card, Text } from "@mantine/core";
 import "./CriticalIncidentList.css";
 import { useAtomValue } from "jotai";
 import { filterState } from "../../store/filterStore";
+import MemberPortfolio from "../member-portfolio/member-portfolio";
 
 export default function CriticalIncidentList() {
   const filterOpened = useAtomValue(filterState);
@@ -15,7 +16,7 @@ export default function CriticalIncidentList() {
     >
       <Card.Section withBorder inheritPadding py="xl">
         <Text fw={500} size="xl">
-          Critical Incident List
+          <MemberPortfolio/>
         </Text>
       </Card.Section>
     </Card>

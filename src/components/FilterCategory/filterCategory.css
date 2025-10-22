@@ -1,0 +1,10 @@
+.category-result {
+    margin-left: auto;
+    height: auto;
+    padding: 1px;
+    padding-top: 0px;
+    background: #dce6e6;
+    /* background-color: rebeccapurple; */
+    transition: width 0.5s ease-in-out;
+    width: calc(100% - 430px);
+}

@@ -1,0 +1,65 @@
+.piechart-root-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 180px;
+  position: relative;
+  /* background-color: red; */
+}
+
+.second-row-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 100%;
+  width: 100%;
+
+}
+
+.pie-chart-header {
+  /* width: 100%; */
+  background-color: blueviolet;
+}
+
+
+.pie-state-container {
+  display: flex;
+  flex-direction: column;
+  /* max-height is crucial for preventing overflow if the legend is long */
+  /* max-height: 170px; Matching the chart wrapper height */
+  overflow-y: auto;
+  /* Allow scrolling if legend is too long */
+  min-width: 100px;
+  padding-top: 5px;
+  flex-grow: 1;
+}
+.legend-item {
+    font-size: 0.85em;
+    margin-bottom: 5px;
+}
+.legend-color-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px; 
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+.legend-state-name {
+  white-space: nowrap; 
+    
+    /* Hides any text that overflows the container's width */
+    overflow: hidden; 
+    
+    /* Displays an ellipsis (...) to indicate truncated text */
+    text-overflow: ellipsis; 
+    flex-grow: 1;
+    text-align: left;
+}
+
+.legend-count {
+    font-weight: 700;
+    color: #333;
+    min-width: auto;
+    text-align: right;
+}

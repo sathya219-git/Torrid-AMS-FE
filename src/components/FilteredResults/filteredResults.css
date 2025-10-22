@@ -1,9 +1,32 @@
 .selected-filter {
-  padding: auto;
+  /* padding: auto; */
 }
 .filter-result-card {
   height: 100%;
   padding-left: 430px;
-  background-color: rgb(4, 104, 104);
+  background-color: rgb(220, 230, 230);
+  width: 100%;
+}
+/* .mantine-Card-section
+{
+background-color: red;
+} */
+.m_599a2148
+{
+  /* padding: 20; */
+  /* background-color: red; */
+}
+.filtered-result {
+  margin-left: auto;
+  height: 100%;
+  background: white;
+  transition: width 0.5s ease-in-out;
+}
+
+.filtered-result.opened {
+  width: calc(100% - 430px);
+}
+
+.filtered-result.closed {
   width: 100%;
 }
