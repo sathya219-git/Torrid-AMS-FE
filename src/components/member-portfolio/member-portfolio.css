@@ -1,13 +1,13 @@
 /* ------------------------------------------------------------------
    BASE STYLES (Your Original Code)
 ------------------------------------------------------------------ */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
 body {
-    font-family: 'Inter';/* Added sans-serif as a fallback */
-    background-color: #f8faff;
-    margin: 0;
-    color: #333;
+  font-family: "Inter"; /* Added sans-serif as a fallback */
+  background-color: #f8faff;
+  margin: 0;
+  color: #333;
 }
 
 /* General Container */
@@ -26,7 +26,6 @@ body {
 
 /* Header/Controls Styling */
 .portfolio-header {
-  
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -52,7 +51,7 @@ body {
   font-weight: 400;
   color: black;
   /* Make label unshrinkable */
-  white-space: nowrap; 
+  white-space: nowrap;
 }
 
 .controls select {
@@ -69,7 +68,7 @@ body {
 .member-card {
   display: grid;
   /* Base grid for wide screens */
-  grid-template-columns: 1fr 3fr auto; 
+  grid-template-columns: 1fr 3fr auto;
   align-items: center;
   background-color: #f5f6fa;
   padding: 15px 20px;
@@ -88,8 +87,8 @@ body {
   width: 57px;
   height: 49px;
   border-radius: 24%;
-  background-color: #DAE0F7;
-  color: #00246D;
+  background-color: #dae0f7;
+  color: #00246d;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -113,7 +112,7 @@ body {
   justify-content: space-between;
   padding: 0 20px;
   /* Allow flex items to wrap if needed */
-  flex-wrap: wrap; 
+  flex-wrap: wrap;
 }
 
 .metric-item {
@@ -137,43 +136,43 @@ body {
 /* Average Resolved Time */
 
 .avg-label {
- display: flex;
+  display: flex;
   align-items: center;
-  justify-content:center;
+  justify-content: center;
   font-size: 12px;
   color: #888;
   margin-bottom: 2px;
-}/* ----------------------------------------------------------- */
+} /* ----------------------------------------------------------- */
 /* --- WIDE-SCREEN/BASE STYLES FOR AVG TIME & ICON --- */
 /* ----------------------------------------------------------- */
 
 .avg-resolved-time {
-    text-align: right;
-    min-width: 150px;
-    margin-right: 10px;
+  text-align: right;
+  min-width: 150px;
+  margin-right: 10px;
 }
 
 .avg-value {
   font-weight: 400;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    /* Aligns content to the right edge on wide screens */
-    justify-content: center; 
-    /* Ensures the space taken by the value/icon group can shrink/grow as needed */
-    min-width: 120px; 
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  /* Aligns content to the right edge on wide screens */
+  justify-content: center;
+  /* Ensures the space taken by the value/icon group can shrink/grow as needed */
+  min-width: 120px;
 }
 
 .trend-icon {
-    /* Fixed margin ensures consistent spacing from the number */
-    margin-left: 5px; 
-    
-    /* These values ensure the icon is a stable size, regardless of its content (text or image) */
-    font-size: 18px;
-    line-height: 1;
-    
-    /* NEW: Ensures the icon doesn't try to shrink smaller than its content on tight layouts */
-    flex-shrink: 0; 
+  /* Fixed margin ensures consistent spacing from the number */
+  margin-left: 5px;
+
+  /* These values ensure the icon is a stable size, regardless of its content (text or image) */
+  font-size: 18px;
+  line-height: 1;
+
+  /* NEW: Ensures the icon doesn't try to shrink smaller than its content on tight layouts */
+  flex-shrink: 0;
 }
 
 /* ----------------------------------------------------------- */
@@ -181,20 +180,20 @@ body {
 /* ----------------------------------------------------------- */
 
 @media (max-width: 768px) {
-    .avg-resolved-time { 
-        /* The container centers the text/icon group on tablet view */
-        text-align: center; 
-        min-width: unset;
-    }
-    
-    .avg-value { 
-        /* The flex items themselves are centered within their container */
-        justify-content: center;
-    }
+  .avg-resolved-time {
+    /* The container centers the text/icon group on tablet view */
+    text-align: center;
+    min-width: unset;
+  }
+
+  .avg-value {
+    /* The flex items themselves are centered within their container */
+    justify-content: center;
+  }
 }
 
 @media (max-width: 480px) {
-    /* No major changes needed here, as the tablet media query handles the centering 
+  /* No major changes needed here, as the tablet media query handles the centering 
        which allows the resolved time and icon to compress towards the center. */
 }
 /* Trend Colors */
@@ -235,26 +234,25 @@ body {
 
 /* Tablet and Smaller Devices (Max Width: 768px) */
 @media (max-width: 768px) {
-  
   /* Header: Stack title and controls vertically */
   .portfolio-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 15px;
   }
-  
+
   .controls {
     /* Allow controls to wrap on the same line if needed */
-    flex-wrap: wrap; 
+    flex-wrap: wrap;
     /* Remove unnecessary label margin */
-    margin-left: -15px; 
+    margin-left: -15px;
   }
 
   .controls label {
     margin-top: 5px;
     margin-bottom: 5px;
   }
-  
+
   /* Member Card: Adjust grid for less horizontal space */
   .member-card {
     /* Stack Avg Resolved Time under Name/ID, place metrics below */
@@ -268,35 +266,35 @@ body {
 
   .member-info {
     /* Assign to grid area */
-    grid-area: info; 
+    grid-area: info;
   }
 
   .avg-resolved-time {
     /* Assign to grid area */
-    grid-area: time; 
+    grid-area: time;
     /* Center text alignment for more balanced look */
-    text-align: center; 
+    text-align: center;
     /* Reset min-width */
-    min-width: unset; 
+    min-width: unset;
   }
-  
+
   .avg-value {
     /* Center content in flex box */
-    justify-content: center; 
+    justify-content: center;
   }
 
   .metrics-grid {
     /* Assign to grid area */
-    grid-area: metrics; 
+    grid-area: metrics;
     justify-content: space-between;
     padding: 10px 0 0; /* Add top padding and remove side padding */
     border-top: 1px solid #eee; /* Separator line */
     margin-top: 10px;
   }
-  
+
   .metric-item {
     /* Halve the width to fit 4 items better */
-    min-width: 70px; 
+    min-width: 70px;
     text-align: center;
     margin: 5px 0;
   }
@@ -304,7 +302,6 @@ body {
 
 /* Mobile Devices (Max Width: 480px) */
 @media (max-width: 480px) {
-
   .team-portfolio-container {
     padding: 10px;
   }
@@ -323,7 +320,7 @@ body {
     margin-left: 0;
     margin-top: 10px;
   }
-  
+
   /* Member Card: Stack all elements vertically */
   .member-card {
     grid-template-columns: 1fr; /* Single column */
@@ -334,16 +331,16 @@ body {
       "metrics";
     padding: 15px;
   }
-  
+
   .member-info {
     /* Ensure name is centered relative to ID circle */
-    justify-content: center; 
+    justify-content: center;
   }
 
   .member-name {
     font-size: 18px;
   }
-  
+
   .avg-resolved-time {
     text-align: center;
     padding: 10px 0;
@@ -354,7 +351,7 @@ body {
 
   .metrics-grid {
     /* Change to a 2x2 grid for metrics */
-    display: grid; 
+    display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
     padding: 10px 0 0;
@@ -364,9 +361,9 @@ body {
 
   .metric-item {
     /* Reset min-width for grid layout */
-    min-width: unset; 
+    min-width: unset;
   }
-  
+
   /* Footer: Stack pagination info and controls */
   .portfolio-footer {
     flex-direction: column;
@@ -375,16 +372,15 @@ body {
 }
 select {
   /* This ensures the arrow is visible for all select boxes */
-  -webkit-appearance: menulist; 
-  appearance: menulist; 
+  -webkit-appearance: menulist;
+  appearance: menulist;
   /* Also check for and remove any border or outline changes */
 }
 .restore-arrow {
   -webkit-appearance: menulist !important; /* Use !important if a framework is overriding it */
   appearance: menulist !important;
-    outline: none !important; 
-    font-family: 'Inter';
-    font-weight: 600;
-    font-size: 16px;
-
+  outline: none !important;
+  font-family: "Inter";
+  font-weight: 600;
+  font-size: 16px;
 }

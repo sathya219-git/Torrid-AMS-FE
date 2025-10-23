@@ -6,7 +6,7 @@ export default function Header() {
   return (
     <div className="page-container">
       <div className="page-title">
-        <Text fw={500} size="xl">
+        <Text fw={700} size="40px">
           Dashboard
         </Text>
       </div>

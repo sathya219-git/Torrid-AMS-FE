@@ -2,7 +2,6 @@ import React, { useState, useMemo } from 'react';
 import { Accordion, Input } from '@mantine/core';
 import './CriticalIncidentsList.css'; // Assuming this file exists for styling
 import { BsSortDown, BsSortUp } from "react-icons/bs";
-import { MdKeyboardArrowLeft, MdKeyboardArrowRight, MdKeyboardDoubleArrowLeft, MdKeyboardDoubleArrowRight } from 'react-icons/md';
 import backward from '../../assets/backward.png';
 import forward from '../../assets/forward.png';
 // --- TYPE DEFINITIONS --- 

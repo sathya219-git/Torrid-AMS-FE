@@ -21,7 +21,7 @@ export default function FilterCollapse() {
         className="border"
         onClick={() => onClick()}
       >
-        <Text fw={400} size="xl" className="export-icon">
+        <Text fw={550} size="xl" className="export-icon">
           Filters
           <ImportExportIcon fontSize="medium" />
         </Text>

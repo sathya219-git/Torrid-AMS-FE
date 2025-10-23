@@ -105,6 +105,7 @@ body {
 
 /* --- Summary Cards Section --- */
 .summary-cards {
+  height: 100%;
   display: flex;
   flex-wrap: wrap;
   /* allow wrapping like grid rows */

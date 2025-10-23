@@ -1,6 +1,6 @@
-.selected-filter {
-  /* padding: auto; */
-}
+/* .selected-filter {
+  padding: auto;
+} */
 .filter-result-card {
   height: 100%;
   padding-left: 430px;
@@ -11,11 +11,11 @@
 {
 background-color: red;
 } */
-.m_599a2148
+/* .m_599a2148
 {
-  /* padding: 20; */
-  /* background-color: red; */
-}
+  padding: 20;
+  background-color: red;
+} */
 .filtered-result {
   margin-left: auto;
   height: 100%;
