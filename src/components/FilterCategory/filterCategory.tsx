@@ -13,7 +13,6 @@ export default function FilterCategory() {
                         <div className="filtered-results">
                             <h2>Filtered Results</h2>
                             <div className="filter-tags">
-                                <div className="tag"><span>Web support</span> <button className="close-btn">&times;</button></div>
                                 <div className="tag"><span>Ecom Systems</span> <button className="close-btn">&times;</button></div>
                                 <div className="tag"><span>P1-Critical</span> <button className="close-btn">&times;</button></div>
                                 <div className="tag"><span>P2-High</span> <button className="close-btn">&times;</button></div>
