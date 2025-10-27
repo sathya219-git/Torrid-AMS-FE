@@ -20,4 +20,5 @@
   flex-shrink: 0;
   background-color: rgb(220, 230, 230);
   position: relative;
+  padding-bottom: 24px;
 }

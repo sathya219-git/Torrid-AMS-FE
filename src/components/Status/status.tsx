@@ -1,8 +1,21 @@
 import { Accordion, Badge, Checkbox, Text } from "@mantine/core";
 import "./status.css";
 import { useEffect, useState } from "react";
+import { useAtom } from "jotai";
+import { selectedFilter } from "../../store/filterStore";
 
 export default function Status() {
+  const [filters, setFilters] = useAtom(selectedFilter);
+
+  const statusChanges = (value: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      status: prev.status.includes(value)
+        ? prev.status.filter((v) => v !== value)
+        : [...prev.status, value],
+    }));
+  };
+
   const statuses = [
     { name: "Open", count: 370 },
     { name: "In progress", count: 132 },
@@ -25,28 +38,28 @@ export default function Status() {
     setCheckedMap(newMap);
   }, []);
 
-  const toggleChecked = (name: string) => {
-    // setCheckedMap((prevMap) => ({
-    //   ...prevMap,
-    //   [name]: !prevMap.get(name),
-    // }));
-    setCheckedMap((prevMap) => {
-      const newMap = new Map(prevMap);
-      newMap.set(name, !prevMap.get(name));
-      return newMap;
-    });
-    // setCheckedMap((prevMap) => {
-    //   const newMap = new Map();
-    //   Array.from(prevMap.entries()).forEach((entry) => {
-    //     if (entry[0] === name) {
-    //       newMap.set(name, !entry[1]);
-    //     } else {
-    //       newMap.set(entry[0], entry[1]);
-    //     }
-    //   });
-    //   return newMap;
-    // });
-  };
+  // const toggleChecked = (name: string) => {
+  //   // setCheckedMap((prevMap) => ({
+  //   //   ...prevMap,
+  //   //   [name]: !prevMap.get(name),
+  //   // }));
+  //   setCheckedMap((prevMap) => {
+  //     const newMap = new Map(prevMap);
+  //     newMap.set(name, !prevMap.get(name));
+  //     return newMap;
+  //   });
+  //   // setCheckedMap((prevMap) => {
+  //   //   const newMap = new Map();
+  //   //   Array.from(prevMap.entries()).forEach((entry) => {
+  //   //     if (entry[0] === name) {
+  //   //       newMap.set(name, !entry[1]);
+  //   //     } else {
+  //   //       newMap.set(entry[0], entry[1]);
+  //   //     }
+  //   //   });
+  //   //   return newMap;
+  //   // });
+  // };
 
   useEffect(() => {
     console.log(checkedMap);
@@ -69,8 +82,10 @@ export default function Status() {
                 >
                   <Checkbox
                     label={status.name}
-                    checked={checkedMap.get(status.name) === true}
-                    onChange={() => toggleChecked(status.name)}
+                    // checked={checkedMap.get(status.name) === true}
+                    // onChange={() => toggleChecked(status.name)}
+                    onClick={() => statusChanges(status.name)}
+                    checked={filters.status.includes(status.name)}
                   />
                   <Badge
                     size="lg"

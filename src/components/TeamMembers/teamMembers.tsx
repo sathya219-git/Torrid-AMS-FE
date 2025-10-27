@@ -1,9 +1,15 @@
 import { Accordion, Checkbox, Collapse, Input, Text } from "@mantine/core";
 import SearchIcon from "@mui/icons-material/Search";
 import "./teamMembers.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAtom } from "jotai";
+import { selectedFilter } from "../../store/filterStore";
 
 export default function TeamMembers() {
+  const [filters, setFilters] = useAtom(selectedFilter);
+  const [opened, setOpened] = useState(false);
+  const [searchMember, setSearchMember] = useState("");
+
   const TeamMembers = [
     { name: "Akash Kumar", count: 29 },
     { name: "Anjali Sharma", count: 31 },
@@ -49,9 +55,34 @@ export default function TeamMembers() {
     { name: "Naveen Thomas", count: 33 },
   ];
 
-  const staticTeamMembers = TeamMembers.slice(0, 8);
-  const expandTeamMembers = TeamMembers.slice(8);
-  const [opened, setOpened] = useState(false);
+  const [staticTeamMembers, setStaticTeamMembers] = useState(
+    TeamMembers.slice(0, 8)
+  );
+  const [expandTeamMembers, setExpandTeamMembers] = useState(
+    TeamMembers.slice(8)
+  );
+
+  //search
+  useEffect(() => {
+    const filteredMembers = TeamMembers.filter((member) =>
+      member.name.toLowerCase().includes(searchMember.toLowerCase())
+    );
+    setStaticTeamMembers(filteredMembers.slice(0, 8));
+    setExpandTeamMembers(filteredMembers.slice(8));
+  }, [searchMember]);
+
+  const teamMembersChanges = (value: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      teamMember: prev.teamMember.includes(value)
+        ? prev.teamMember.filter((v) => v !== value)
+        : [...prev.teamMember, value],
+    }));
+  };
+
+  useEffect(() => {
+    console.log(filters.teamMember);
+  }, [filters]);
 
   return (
     <Accordion defaultValue="teamMembers">
@@ -64,12 +95,19 @@ export default function TeamMembers() {
             <Input
               placeholder="Search here..."
               leftSection={<SearchIcon fontSize="medium" />}
+              value={searchMember}
+              onChange={(e) => setSearchMember(e.target.value)}
             />
           </div>
+
           <div className="team-member-content">
             {staticTeamMembers.map((teamMember) => (
               <div className="team-member-checkbox" key={teamMember.name}>
-                <Checkbox label={teamMember.name} />
+                <Checkbox
+                  label={teamMember.name}
+                  onClick={() => teamMembersChanges(teamMember.name)}
+                  checked={filters.teamMember.includes(teamMember.name)}
+                />
                 <Text c="dimmed">{teamMember.count}</Text>
               </div>
             ))}
@@ -85,18 +123,33 @@ export default function TeamMembers() {
               <div className="team-member-content">
                 {expandTeamMembers.map((teamMember) => (
                   <div className="team-member-checkbox" key={teamMember.name}>
-                    <Checkbox label={teamMember.name} />
+                    <Checkbox
+                      label={teamMember.name}
+                      onClick={() => teamMembersChanges(teamMember.name)}
+                      checked={filters.teamMember.includes(teamMember.name)}
+                    />
                     <Text c="dimmed">{teamMember.count}</Text>
                   </div>
                 ))}
               </div>
             </Collapse>
           </div>
-          <Text fw={500} className="view" onClick={() => setOpened(!opened)}>
-            {opened
-              ? "View Less"
-              : "View More (" + expandTeamMembers.length + "+)"}
-          </Text>
+          {expandTeamMembers.length > 0 ? (
+            <Text fw={500} className="view" onClick={() => setOpened(!opened)}>
+              {opened
+                ? "View Less"
+                : "View More (" + expandTeamMembers.length + "+)"}
+            </Text>
+          ) : (
+            <></>
+          )}
+          {searchMember && staticTeamMembers.length === 0 ? (
+            <Text c="dimmed" size="sm">
+              No match found for "{searchMember}"
+            </Text>
+          ) : (
+            <></>
+          )}
         </Accordion.Panel>
       </Accordion.Item>
     </Accordion>

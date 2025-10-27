@@ -1,4 +1,4 @@
-import { Card, Text } from "@mantine/core";
+import { Card } from "@mantine/core";
 import "./filteredResults.css";
 import Cards from "../cards/cards";
 import { useAtomValue } from "jotai";
