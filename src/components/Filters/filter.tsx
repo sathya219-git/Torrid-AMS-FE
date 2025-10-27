@@ -6,8 +6,38 @@ import AssignmentGroup from "../AssignmentGroup/assignmentGroup";
 import Status from "../Status/status";
 import TeamMembers from "../TeamMembers/teamMembers";
 import Duration from "../Duration/duration";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import {
+  appliedFilter,
+  filterEnabled,
+  resetEnabled,
+  selectedFilter,
+} from "../../store/filterStore";
 
 export default function Filter() {
+  const [selectedGroups, setSelectedGroups] = useAtom(selectedFilter);
+  const setAppliedGroups = useSetAtom(appliedFilter);
+  const isResetEnabled = useAtomValue(resetEnabled);
+  const isFilterEnabled = useAtomValue(filterEnabled);
+
+  const applyFilters = () => {
+    setAppliedGroups({ ...selectedGroups });
+  };
+
+  const resetFilters = () => {
+    const clearedState = {
+      assignmentGroup: [] as string[],
+      duration: { from: null, to: null },
+      category: [] as string[],
+      incidentPriority: [] as string[],
+      status: [] as string[],
+      teamMember: [] as string[],
+    };
+
+    setSelectedGroups(clearedState);
+    setAppliedGroups(clearedState);
+  };
+
   return (
     <Card padding="lg" radius="md">
       <Card.Section>
@@ -35,8 +65,16 @@ export default function Filter() {
       </Card.Section>
 
       <div className="button-group">
-        <Button variant="outline">Reset Filter</Button>
-        <Button>Apply Filter</Button>
+        <Button
+          variant="outline"
+          onClick={resetFilters}
+          disabled={!isResetEnabled}
+        >
+          Reset Filter
+        </Button>
+        <Button onClick={applyFilters} disabled={!isFilterEnabled}>
+          Apply Filter
+        </Button>
       </div>
     </Card>
   );

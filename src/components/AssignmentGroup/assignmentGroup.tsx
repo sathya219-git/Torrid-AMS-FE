@@ -1,8 +1,14 @@
 import { Accordion, Checkbox, Collapse, Text } from "@mantine/core";
 import "./assignmentGroup.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAtom } from "jotai";
+import { selectedFilter } from "../../store/filterStore";
 
 export default function AssignmentGroup() {
+  const [filters, setFilters] = useAtom(selectedFilter);
+  const [opened, setOpened] = useState(false);
+  const [selectAll, setSelectAll] = useState(false);
+
   const assignmentGroups = [
     { name: "Web Support" },
     { name: "Management Team" },
@@ -21,7 +27,47 @@ export default function AssignmentGroup() {
 
   const expandGroups = assignmentGroups.slice(4);
 
-  const [opened, setOpened] = useState(false);
+  const AssignmentGroupChanges = (value: string) => {
+    setFilters((prev) => {
+      const updatedGroups = prev.assignmentGroup.includes(value)
+        ? prev.assignmentGroup.filter((v) => v !== value)
+        : [...prev.assignmentGroup, value];
+
+      // Update selectAll
+      setSelectAll(updatedGroups.length === assignmentGroups.length);
+
+      return { ...prev, assignmentGroup: updatedGroups };
+    });
+  };
+
+  useEffect(() => {
+    if (filters.assignmentGroup.length === 0) {
+      setSelectAll(false);
+    }
+    console.log(filters);
+  }, [filters]);
+
+  // SelectAll
+  const selectAllGroups = () => {
+    const allGroupNames = assignmentGroups.map((g) => g.name);
+    setFilters((prev) => ({ ...prev, assignmentGroup: allGroupNames }));
+    setSelectAll(true);
+  };
+
+  // Deselect
+  const deselectAllGroups = () => {
+    setFilters((prev) => ({ ...prev, assignmentGroup: [] }));
+    setSelectAll(false);
+  };
+
+  // Handle Select All toggle
+  const handleSelectAll = () => {
+    if (selectAll) {
+      deselectAllGroups();
+    } else {
+      selectAllGroups();
+    }
+  };
 
   return (
     <Accordion defaultValue="group" classNames={{ item: "accordion-border" }}>
@@ -31,12 +77,22 @@ export default function AssignmentGroup() {
         </Accordion.Control>
         <Accordion.Panel>
           <div className="select-all">
-            <Checkbox label="Select All Groups" />
+            <Checkbox
+              label="Select All Groups"
+              checked={selectAll}
+              onChange={handleSelectAll}
+            />
           </div>
           <div className="assignment-content">
             {staticGroups.map((assignmentGroup) => (
               <div className="group-checkbox" key={assignmentGroup.name}>
-                <Checkbox label={assignmentGroup.name} />
+                <Checkbox
+                  label={assignmentGroup.name}
+                  onChange={() => AssignmentGroupChanges(assignmentGroup.name)}
+                  checked={filters.assignmentGroup.includes(
+                    assignmentGroup.name
+                  )}
+                />
               </div>
             ))}
           </div>
@@ -51,7 +107,15 @@ export default function AssignmentGroup() {
               <div className="assignment-content">
                 {expandGroups.map((assignmentGroup) => (
                   <div className="group-checkbox" key={assignmentGroup.name}>
-                    <Checkbox label={assignmentGroup.name} />
+                    <Checkbox
+                      label={assignmentGroup.name}
+                      onChange={() =>
+                        AssignmentGroupChanges(assignmentGroup.name)
+                      }
+                      checked={filters.assignmentGroup.includes(
+                        assignmentGroup.name
+                      )}
+                    />
                   </div>
                 ))}
               </div>

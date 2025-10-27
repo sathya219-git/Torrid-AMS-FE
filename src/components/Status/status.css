@@ -14,7 +14,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  column-gap: 25px;
+  column-gap: 20px;
   flex-wrap: nowrap;
   background-color: white;
 }
