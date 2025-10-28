@@ -1,6 +1,6 @@
 // RadarChart.tsx
-import React from 'react';
-import { Radar } from 'react-chartjs-2';
+import React from "react";
+import { Radar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   RadialLinearScale,
@@ -9,7 +9,7 @@ import {
   Filler,
   Tooltip,
   Legend,
-} from 'chart.js';
+} from "chart.js";
 
 // Register Radar chart components
 ChartJS.register(
@@ -22,32 +22,31 @@ ChartJS.register(
 );
 
 const data = {
-  labels: ['Strength', 'Speed', 'Endurance', 'Agility', 'Flexibility', 'Skill'],
+  labels: ["Strength", "Speed", "Endurance", "Agility", "Flexibility", "Skill"],
   datasets: [
     {
       data: [28, 48, 40, 19, 96, 27],
-      backgroundColor: 'rgba(54, 162, 235, 0.2)',
-      borderColor: 'rgba(54, 162, 235, 1)',
+      backgroundColor: "rgba(54, 162, 235, 0.2)",
+      borderColor: "rgba(54, 162, 235, 1)",
 
       // Set individual point colors for each label
       pointBackgroundColor: [
-        '#FF7A9C', // Strength
-        '#FCD469', // Speed
-        '#6ED5E1', // Endurance
-        '#A99CF0', // Agility
-        '#FFB8D2', // Flexibility
-        '#69D2B7', // Skill
+        "#FF7A9C", // Strength
+        "#FCD469", // Speed
+        "#6ED5E1", // Endurance
+        "#A99CF0", // Agility
+        "#FFB8D2", // Flexibility
+        "#69D2B7", // Skill
       ],
     },
   ],
 };
 
-
 const options = {
   responsive: true,
   plugins: {
     legend: {
-      position: 'top' as const,
+      position: "top" as const,
     },
     tooltip: {
       enabled: true,
@@ -65,10 +64,11 @@ const options = {
 };
 
 const RadarChart: React.FC = () => {
-  return (<div style={{ width: '300px', height: '300px' }}>
+  return (
+    <div style={{ width: "300px", height: "300px" }}>
       <Radar data={data} options={options} />
-    </div>)
-  
+    </div>
+  );
 };
 
 export default RadarChart;

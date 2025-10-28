@@ -17,7 +17,6 @@ export default function Status() {
     axios
       .get("http://localhost:5092/api/Incident/statuscountbypriority")
       .then((res) => {
-        console.log("API response:", res.data);
         const data = Array.isArray(res.data) ? res.data : [];
         setStatuses(data);
       })
@@ -36,15 +35,6 @@ export default function Status() {
     }));
   };
 
-  // const statuses = [
-  //   { status: "Open", incidentCount: 370 },
-  //   { status: "In progress", incidentCount: 132 },
-  //   { status: "Closed", incidentCount: 180 },
-  //   { status: "Reopen", incidentCount: 89 },
-  //   { status: "On Hold", incidentCount: 32 },
-  //   { status: "Resolved", incidentCount: 67 },
-  // ];
-
   const [checkedMap, setCheckedMap] = useState<Map<string, boolean>>(new Map());
 
   useEffect(() => {
@@ -57,33 +47,6 @@ export default function Status() {
     });
     setCheckedMap(newMap);
   }, []);
-
-  // const toggleChecked = (name: string) => {
-  //   // setCheckedMap((prevMap) => ({
-  //   //   ...prevMap,
-  //   //   [name]: !prevMap.get(name),
-  //   // }));
-  //   setCheckedMap((prevMap) => {
-  //     const newMap = new Map(prevMap);
-  //     newMap.set(name, !prevMap.get(name));
-  //     return newMap;
-  //   });
-  //   // setCheckedMap((prevMap) => {
-  //   //   const newMap = new Map();
-  //   //   Array.from(prevMap.entries()).forEach((entry) => {
-  //   //     if (entry[0] === name) {
-  //   //       newMap.set(name, !entry[1]);
-  //   //     } else {
-  //   //       newMap.set(entry[0], entry[1]);
-  //   //     }
-  //   //   });
-  //   //   return newMap;
-  //   // });
-  // };
-
-  useEffect(() => {
-    console.log(checkedMap);
-  }, [checkedMap]);
 
   return (
     <Accordion defaultValue="status" classNames={{ item: "accordion-border" }}>
@@ -102,9 +65,7 @@ export default function Status() {
                 >
                   <Checkbox
                     label={status.status}
-                    // checked={checkedMap.get(status.name) === true}
-                    // onChange={() => toggleChecked(status.name)}
-                    onClick={() => statusChanges(status.status)}
+                    onChange={() => statusChanges(status.status)}
                     checked={filters.status.includes(status.status)}
                   />
                   <Badge

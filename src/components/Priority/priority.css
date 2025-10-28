@@ -1,20 +1,20 @@
 .priority-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    row-gap: 15px;
-    padding-top: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  row-gap: 15px;
+  padding-top: 15px;
 }
 
 .priority-content {
-    display: flex;
-    flex-direction: column;
-    row-gap: 12px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 12px;
 }
 
 .priority-checkbox {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }

@@ -1,24 +1,27 @@
-import { DonutChart, PieChart, PieChartProps } from '@mantine/charts';
-import { Group, Text, Box, Stack, Paper } from '@mantine/core';
+import { DonutChart, PieChartProps } from "@mantine/charts";
+import { Group, Text, Box, Stack, Paper } from "@mantine/core";
 import "./PieChartWithExplosion.css";
 // NOTE: We no longer need to import TooltipProps from 'recharts' after the fix
-import { Incident, incidentsData } from '../data/incidents';
+import { Incident, incidentsData } from "../data/incidents";
 
 // --- 1. Define the specific type for the PieChart data array ---
-type MantinePieChartData = PieChartProps['data'];
+type MantinePieChartData = PieChartProps["data"];
 
 // --- 2. Define State Colors for the chart segments ---
 const STATE_COLORS: Record<string, string> = {
- 'Open': '#FC7E80',
-    'In progress': '#ECCF5C',
-    'On-Hold': '#A291FD',
-    'Closed': '#4FDBF5',
-    'Resolved': '#53D7B6',
-    'Reopen': '#FC88F0',
+  Open: "#FC7E80",
+  "In progress": "#ECCF5C",
+  "On-Hold": "#A291FD",
+  Closed: "#4FDBF5",
+  Resolved: "#53D7B6",
+  Reopen: "#FC88F0",
 };
 
 // --- 3. Data Transformation Function (Unchanged) ---
-function getPieChartData(incidents: Incident[], targetPriority: string): MantinePieChartData {
+function getPieChartData(
+  incidents: Incident[],
+  targetPriority: string
+): MantinePieChartData {
   const filteredIncidents = incidents.filter(
     (incident) => incident.priority === targetPriority
   );
@@ -29,11 +32,13 @@ function getPieChartData(incidents: Incident[], targetPriority: string): Mantine
     return acc;
   }, {} as Record<string, number>);
 
-  const pieChartData: MantinePieChartData = Object.entries(stateCounts).map(([state, count]) => ({
-    name: state,
-    value: count,
-    color: STATE_COLORS[state] || STATE_COLORS['default'],
-  }));
+  const pieChartData: MantinePieChartData = Object.entries(stateCounts).map(
+    ([state, count]) => ({
+      name: state,
+      value: count,
+      color: STATE_COLORS[state] || STATE_COLORS["default"],
+    })
+  );
 
   return pieChartData;
 }
@@ -70,42 +75,60 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
     const color: string = dataPoint.color;
 
     return (
-
-      <Paper radius="md" p="sm" withBorder style={{
-        backgroundColor: 'black',
-        border: 'none',
-        height: '30px',
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        borderRadius: '10px'
-      }}>
+      <Paper
+        radius="md"
+        p="sm"
+        withBorder
+        style={{
+          backgroundColor: "black",
+          border: "none",
+          height: "30px",
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          borderRadius: "10px",
+        }}
+      >
         <Group wrap="nowrap">
-
           {/* Colored circle */}
           <Box
             w={8}
             h={8}
             style={{
               backgroundColor: color,
-              borderRadius: '50%',
+              borderRadius: "50%",
             }}
           />
 
-          <Stack gap={0} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', }}>
+          <Stack
+            gap={0}
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             {/* State Name */}
-            <Text fw={300} fz="sm" c="#ffffff6e" >
+            <Text fw={300} fz="sm" c="#ffffff6e">
               {name}
             </Text>
             {/* Incident Count */}
-            <Text c="#fff" lh={1.2} style={{ marginLeft: '15px', fontSize: '14px', color: '#fff', fontWeight: 'bold' }}>
+            <Text
+              c="#fff"
+              lh={1.2}
+              style={{
+                marginLeft: "15px",
+                fontSize: "14px",
+                color: "#fff",
+                fontWeight: "bold",
+              }}
+            >
               {value}
             </Text>
           </Stack>
         </Group>
       </Paper>
-
-
     );
   }
 
@@ -117,7 +140,7 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
 // ------------------------------------------------------------------
 
 export default function DonutCharts() {
-  const TARGET_PRIORITY = 'P4';
+  const TARGET_PRIORITY = "P4";
 
   const chartData = getPieChartData(incidentsData, TARGET_PRIORITY);
   const totalCount = chartData.reduce((sum, item) => sum + item.value, 0);
@@ -135,10 +158,9 @@ export default function DonutCharts() {
   }
 
   return (
-    <div className='piechart-root-container'>
-      <div className='second-row-container'>
-        <div className='pie-contaier'>
-
+    <div className="piechart-root-container">
+      <div className="second-row-container">
+        <div className="pie-contaier">
           <Box w={300}>
             <Group gap={50} justify="center">
               <DonutChart
@@ -149,33 +171,26 @@ export default function DonutCharts() {
                 tooltipDataSource="segment"
                 tooltipProps={{
                   content: CustomTooltip,
-                  allowEscapeViewBox: { x: true, y: true }
+                  allowEscapeViewBox: { x: true, y: true },
                 }}
               />
             </Group>
           </Box>
-
         </div>
 
-        <div className='pie-state-container'>
-          {chartData.map(item => (
-
-
-            <div className='legend-item'>
-              <span className="legend-color-dot" style={{ backgroundColor: item.color }}></span>
+        <div className="pie-state-container">
+          {chartData.map((item) => (
+            <div className="legend-item" key={item.name}>
+              <span
+                className="legend-color-dot"
+                style={{ backgroundColor: item.color }}
+              ></span>
               <span className="legend-state-name">{item.name}</span>
               <span className="legend-count">{item.value}</span>
             </div>
-
           ))}
-
         </div>
       </div>
-
-
-
     </div>
-
-
   );
 }

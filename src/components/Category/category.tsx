@@ -20,7 +20,6 @@ export default function Category() {
     axios
       .get("http://localhost:5092/api/Incident/categorycountbygroup")
       .then((res) => {
-        console.log("API response:", res.data);
         const data = Array.isArray(res.data) ? res.data : [];
         setCategories(data);
       })
@@ -29,14 +28,6 @@ export default function Category() {
         setCategories([]);
       });
   }, []);
-
-  // const categories = [
-  //   { categoryName: "Ecom systems", incidentCount: 670 },
-  //   { categoryName: "Operartional", incidentCount: 320 },
-  //   { categoryName: "Genaral Questions", incidentCount: 220 },
-  //   { categoryName: "Retail Systems", incidentCount: 120 },
-  //   { categoryName: "Supply Chain", incidentCount: 10 },
-  // ];
 
   const categoryChanges = (value: string) => {
     setFilters((prev) => {
@@ -74,7 +65,7 @@ export default function Category() {
   };
 
   useEffect(() => {
-    if (filters.assignmentGroup.length === 0) {
+    if (filters.category.length === 0) {
       setSelectAll(false);
     }
   }, [filters]);
@@ -90,12 +81,8 @@ export default function Category() {
           <div className="category-checkbox" key={category.categoryName}>
             <Checkbox
               label={category.categoryName}
-              onChange={() =>
-                categoryChanges(category.categoryName || "Uncategorized")
-              }
-              checked={filters.category.includes(
-                category.categoryName || "Uncategorized"
-              )}
+              onChange={() => categoryChanges(category.categoryName)}
+              checked={filters.category.includes(category.categoryName)}
             />
             <Text c="dimmed">{category.incidentCount}</Text>
           </div>

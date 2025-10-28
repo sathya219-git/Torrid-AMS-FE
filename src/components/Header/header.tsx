@@ -29,7 +29,10 @@ export default function Header() {
       <Modal
         opened={opened}
         onClose={() => setOpened(false)}
-        title={<h2>Confirmation to download</h2>}
+        title={"Confirmation to download"}
+        classNames={{
+          header: "modal-header",
+        }}
       >
         <div className="modal">
           <Text fw={300}>

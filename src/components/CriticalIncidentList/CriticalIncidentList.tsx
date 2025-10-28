@@ -1,4 +1,4 @@
-import { Card, Text } from "@mantine/core";
+import { Card } from "@mantine/core";
 import "./CriticalIncidentList.css";
 import { useAtomValue } from "jotai";
 import { filterState } from "../../store/filterStore";
@@ -15,9 +15,7 @@ export default function CriticalIncidentList() {
       withBorder
     >
       <Card.Section withBorder inheritPadding py="xl">
-        <Text fw={500} size="xl">
-          <MemberPortfolio/>
-        </Text>
+        <MemberPortfolio />
       </Card.Section>
     </Card>
   );

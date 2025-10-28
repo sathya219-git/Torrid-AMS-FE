@@ -1,4 +1,4 @@
-import { Card, Text } from "@mantine/core";
+import { Card } from "@mantine/core";
 import "./TeamMembersPortfolio.css";
 import { filterState } from "../../store/filterStore";
 import { useAtomValue } from "jotai";
@@ -16,9 +16,7 @@ export default function TeamMembersPortfolio() {
       withBorder
     >
       <Card.Section withBorder inheritPadding py="xl">
-        <Text fw={500} size="xl">
-          <CriticalIncidentsList />
-        </Text>
+        <CriticalIncidentsList />
       </Card.Section>
     </Card>
   );

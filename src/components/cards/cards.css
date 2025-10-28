@@ -330,7 +330,6 @@ body {
   padding: 20px 30px 80px 30px; /* top right bottom left */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
   min-height: 250px;
-  
   display: flex;
   flex-direction: column;
 }

@@ -1,7 +1,5 @@
 import { Member } from "./member";
 import "./member-portfolio.css";
-import { FaArrowCircleDown } from "react-icons/fa";
-import { FaCircleArrowUp } from "react-icons/fa6";
 import backward from "../../assets/backward.png";
 import forward from "../../assets/forward.png";
 
@@ -48,7 +46,7 @@ const teamData: Member[] = [
     timeTrend: "down",
   },
   {
-    id: 40,
+    id: 41,
     name: "Jamie Smith",
     p1Critical: 25,
     p2High: 15,
@@ -146,7 +144,7 @@ export default function MemberPortfolio() {
           {/* Using simple buttons for pagination */}
           <button
             style={{
-              borderRadius: "6px 0 0 6px",  
+              borderRadius: "6px 0 0 6px",
               border: " 1px solid #33303111",
             }}
             className="page-control"
