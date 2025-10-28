@@ -17,7 +17,6 @@ export default function Status() {
     axios
       .get("http://localhost:5092/api/Incident/statuscountbypriority")
       .then((res) => {
-        console.log("API response:", res.data);
         const data = Array.isArray(res.data) ? res.data : [];
         setStatuses(data);
       })
@@ -48,10 +47,6 @@ export default function Status() {
     });
     setCheckedMap(newMap);
   }, []);
-
-  useEffect(() => {
-    console.log(checkedMap);
-  }, [checkedMap]);
 
   return (
     <Accordion defaultValue="status" classNames={{ item: "accordion-border" }}>

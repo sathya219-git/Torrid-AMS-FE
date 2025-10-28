@@ -8,16 +8,10 @@ import {
   resetEnabled,
   selectedFilter,
 } from "../../store/filterStore";
-import { useEffect } from "react";
 
 export default function FilterCategory() {
   const [appliedGroups, setAppliedGroups] = useAtom(appliedFilter);
   const setSelectedGroups = useSetAtom(selectedFilter);
-
-  useEffect(() => {
-    console.log("Applied Filters:", appliedGroups);
-    console.log(" selected Filters", selectedFilter);
-  }, [appliedGroups]);
 
   const clearAll = () => {
     const clearedState: FilterState = {
@@ -33,13 +27,9 @@ export default function FilterCategory() {
     };
     setAppliedGroups(clearedState);
     setSelectedGroups(clearedState);
-
-    console.log(" Cleared all filters ");
   };
 
   const handleRemoveFilter = (key: FilterKeys, value: string) => {
-    console.log(`Removing ${value} from ${key}`);
-
     setAppliedGroups((prev) => {
       const updated = { ...prev };
       if (key === "duration") {
@@ -51,7 +41,6 @@ export default function FilterCategory() {
       } else if (Array.isArray(prev[key])) {
         updated[key] = (prev[key] as string[]).filter((v) => v !== value);
       }
-      console.log("Updated appliedGroups:", updated);
       return updated;
     });
 
@@ -66,7 +55,6 @@ export default function FilterCategory() {
       } else if (Array.isArray(prev[key])) {
         updated[key] = (prev[key] as string[]).filter((v) => v !== value);
       }
-      console.log("Updated selectedGroups:", updated);
       return updated;
     });
   };

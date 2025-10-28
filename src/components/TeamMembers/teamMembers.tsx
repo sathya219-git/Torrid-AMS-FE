@@ -21,7 +21,6 @@ export default function TeamMembers() {
     axios
       .get("http://localhost:5092/api/Incident/nameandcountbypriority")
       .then((res) => {
-        console.log("API response:", res.data?.memberDetails);
         setTeamMembers(res.data?.memberDetails);
       })
       .catch((err) => {
@@ -52,10 +51,6 @@ export default function TeamMembers() {
         : [...prev.teamMember, value],
     }));
   };
-
-  useEffect(() => {
-    console.log(filters.teamMember);
-  }, [filters]);
 
   return (
     <Accordion defaultValue="teamMembers">

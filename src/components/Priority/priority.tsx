@@ -18,8 +18,6 @@ export default function Priority() {
     axios
       .get("http://localhost:5092/api/Incident/countbypriority")
       .then((res) => {
-        console.log("API response:", res.data);
-
         const priorityData = res.data.priority || {};
         const parsedData: Priority[] = Object.entries(priorityData).map(
           ([priorityName, details]) => {

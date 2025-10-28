@@ -20,7 +20,6 @@ export default function Category() {
     axios
       .get("http://localhost:5092/api/Incident/categorycountbygroup")
       .then((res) => {
-        console.log("API response:", res.data);
         const data = Array.isArray(res.data) ? res.data : [];
         setCategories(data);
       })
