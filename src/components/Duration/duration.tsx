@@ -12,10 +12,7 @@ export default function Duration() {
   const fromDateChanges = (value: string | null) => {
     setFilters((prev) => ({
       ...prev,
-      duration: {
-        ...prev.duration,
-        from: value ? new Date(value) : null,
-      },
+      FromDate: value ? new Date(value) : null,
     }));
   };
 
@@ -23,10 +20,7 @@ export default function Duration() {
   const toDateChange = (value: string | null) => {
     setFilters((prev) => ({
       ...prev,
-      duration: {
-        ...prev.duration,
-        to: value ? new Date(value) : null,
-      },
+      ToDate: value ? new Date(value) : null,
     }));
   };
 
@@ -43,7 +37,7 @@ export default function Duration() {
           rightSection={<TodayIcon fontSize="medium" />}
           label="Period from date"
           placeholder="dd/mm/yyyy"
-          value={formatDate(filters.duration.from)}
+          value={formatDate(filters.FromDate)}
           onChange={fromDateChanges}
           classNames={{ input: "date-input", root: "date-icon" }}
         ></DatePickerInput>
@@ -55,7 +49,7 @@ export default function Duration() {
           rightSection={<TodayIcon fontSize="medium" />}
           label="to date"
           placeholder="dd/mm/yyyy"
-          value={formatDate(filters.duration.to)}
+          value={formatDate(filters.ToDate)}
           onChange={toDateChange}
           classNames={{ input: "date-input", root: "date-icon" }}
         ></DatePickerInput>

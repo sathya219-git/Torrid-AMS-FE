@@ -43,9 +43,9 @@ export default function Priority() {
   const PriorityChanges = (value: string) => {
     setFilters((prev) => ({
       ...prev,
-      priority: prev.priority.includes(value)
-        ? prev.priority.filter((v) => v !== value)
-        : [...prev.priority, value],
+      Priority: prev.Priority.includes(value)
+        ? prev.Priority.filter((v) => v !== value)
+        : [...prev.Priority, value],
     }));
   };
 
@@ -58,7 +58,7 @@ export default function Priority() {
             <Checkbox
               label={incidentPriority.priority}
               onChange={() => PriorityChanges(incidentPriority.priority)}
-              checked={filters.priority.includes(incidentPriority.priority)}
+              checked={filters.Priority.includes(incidentPriority.priority)}
             />
             <Text c="dimmed">{incidentPriority.totalCount}</Text>
           </div>

@@ -37,19 +37,19 @@ export default function AssignmentGroup() {
 
   const AssignmentGroupChanges = (value: string) => {
     setFilters((prev) => {
-      const updatedGroups = prev.assignmentGroup.includes(value)
-        ? prev.assignmentGroup.filter((v) => v !== value)
-        : [...prev.assignmentGroup, value];
+      const updatedGroups = prev.AssignmentGroup.includes(value)
+        ? prev.AssignmentGroup.filter((v) => v !== value)
+        : [...prev.AssignmentGroup, value];
 
       // Update selectAll
       setSelectAll(updatedGroups.length === assignmentGroups.length);
 
-      return { ...prev, assignmentGroup: updatedGroups };
+      return { ...prev, AssignmentGroup: updatedGroups };
     });
   };
 
   useEffect(() => {
-    if (filters.assignmentGroup.length === 0) {
+    if (filters.AssignmentGroup.length === 0) {
       setSelectAll(false);
     }
   }, [filters]);
@@ -57,13 +57,13 @@ export default function AssignmentGroup() {
   // SelectAll
   const selectAllGroups = () => {
     const allGroupNames = assignmentGroups.map((g) => g.assignmentGroupName);
-    setFilters((prev) => ({ ...prev, assignmentGroup: allGroupNames }));
+    setFilters((prev) => ({ ...prev, AssignmentGroup: allGroupNames }));
     setSelectAll(true);
   };
 
   // Deselect
   const deselectAllGroups = () => {
-    setFilters((prev) => ({ ...prev, assignmentGroup: [] }));
+    setFilters((prev) => ({ ...prev, AssignmentGroup: [] }));
     setSelectAll(false);
   };
 
@@ -101,7 +101,7 @@ export default function AssignmentGroup() {
                   onChange={() =>
                     AssignmentGroupChanges(assignmentGroup.assignmentGroupName)
                   }
-                  checked={filters.assignmentGroup.includes(
+                  checked={filters.AssignmentGroup.includes(
                     assignmentGroup.assignmentGroupName
                   )}
                 />
@@ -129,7 +129,7 @@ export default function AssignmentGroup() {
                           assignmentGroup.assignmentGroupName
                         )
                       }
-                      checked={filters.assignmentGroup.includes(
+                      checked={filters.AssignmentGroup.includes(
                         assignmentGroup.assignmentGroupName
                       )}
                     />

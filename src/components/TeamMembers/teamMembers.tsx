@@ -46,9 +46,9 @@ export default function TeamMembers() {
   const teamMembersChanges = (value: string) => {
     setFilters((prev) => ({
       ...prev,
-      teamMember: prev.teamMember.includes(value)
-        ? prev.teamMember.filter((v) => v !== value)
-        : [...prev.teamMember, value],
+      AssignedToName: prev.AssignedToName.includes(value)
+        ? prev.AssignedToName.filter((v) => v !== value)
+        : [...prev.AssignedToName, value],
     }));
   };
 
@@ -74,7 +74,7 @@ export default function TeamMembers() {
                 <Checkbox
                   label={teamMember.name}
                   onChange={() => teamMembersChanges(teamMember.name)}
-                  checked={filters.teamMember.includes(teamMember.name)}
+                  checked={filters.AssignedToName.includes(teamMember.name)}
                 />
                 <Text c="dimmed">{teamMember.totalCount}</Text>
               </div>
@@ -94,7 +94,7 @@ export default function TeamMembers() {
                     <Checkbox
                       label={teamMember.name}
                       onClick={() => teamMembersChanges(teamMember.name)}
-                      checked={filters.teamMember.includes(teamMember.name)}
+                      checked={filters.AssignedToName.includes(teamMember.name)}
                     />
                     <Text c="dimmed">{teamMember.totalCount}</Text>
                   </div>
