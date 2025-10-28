@@ -43,7 +43,7 @@ export default function Priority() {
   const PriorityChanges = (value: string) => {
     setFilters((prev) => ({
       ...prev,
-      incidentPriority: prev.priority.includes(value)
+      priority: prev.priority.includes(value)
         ? prev.priority.filter((v) => v !== value)
         : [...prev.priority, value],
     }));
