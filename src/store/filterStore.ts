@@ -9,7 +9,7 @@ export interface FilterState {
     to: Date | null;
   };
   category: string[];
-  incidentPriority: string[];
+  priority: string[];
   status: string[];
   teamMember: string[];
 }
@@ -18,7 +18,7 @@ export type FilterKeys =
   | "assignmentGroup"
   | "duration"
   | "category"
-  | "incidentPriority"
+  | "priority"
   | "status"
   | "teamMember";
 
@@ -29,7 +29,7 @@ export const selectedFilter = atom<FilterState>({
     to: null,
   },
   category: [],
-  incidentPriority: [],
+  priority: [],
   status: [],
   teamMember: [],
 });
@@ -41,7 +41,7 @@ export const appliedFilter = atom<FilterState>({
     to: null,
   },
   category: [],
-  incidentPriority: [],
+  priority: [],
   status: [],
   teamMember: [],
 });
@@ -51,7 +51,7 @@ export const resetEnabled = atom((get) => {
   return (
     filter.assignmentGroup.length > 0 ||
     filter.category.length > 0 ||
-    filter.incidentPriority.length > 0 ||
+    filter.priority.length > 0 ||
     filter.status.length > 0 ||
     filter.teamMember.length > 0 ||
     filter.duration.from !== null ||
@@ -64,7 +64,7 @@ export const filterEnabled = atom((get) => {
   return (
     filter.assignmentGroup.length > 0 ||
     filter.category.length > 0 ||
-    filter.incidentPriority.length > 0 ||
+    filter.priority.length > 0 ||
     filter.status.length > 0 ||
     filter.teamMember.length > 0 ||
     filter.duration.from !== null ||
