@@ -3,25 +3,47 @@ import "./assignmentGroup.css";
 import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { selectedFilter } from "../../store/filterStore";
+import axios from "axios";
 
 export default function AssignmentGroup() {
+  type AssignmentGroup = {
+    assignmentGroupName: string;
+  };
+
   const [filters, setFilters] = useAtom(selectedFilter);
   const [opened, setOpened] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
+  const [assignmentGroups, setAssignmentGroups] = useState<AssignmentGroup[]>(
+    []
+  );
 
-  const assignmentGroups = [
-    { name: "Web Support" },
-    { name: "Management Team" },
-    { name: "Store Support" },
-    { name: "Ops Team" },
-    { name: "Test 1" },
-    { name: "Test 2" },
-    { name: "Test 3" },
-    { name: "Test 4" },
-    { name: "Test 5" },
-    { name: "Test 6" },
-    { name: "Test 7" },
-  ];
+  //data from API
+  useEffect(() => {
+    axios
+      .get("http://localhost:5092/api/Incident/assignmentgroups")
+      .then((res) => {
+        console.log("API response:", res.data);
+        const data = Array.isArray(res.data) ? res.data : [];
+        setAssignmentGroups(data);
+      })
+      .catch((err) => {
+        console.error("Error fetching category counts:", err);
+        setAssignmentGroups([]);
+      });
+  }, []);
+  // const assignmentGroups = [
+  //   { assignmentGroupName: "Web Support" },
+  //   { assignmentGroupName: "Management Team" },
+  //   { assignmentGroupName: "Store Support" },
+  //   { assignmentGroupName: "Ops Team" },
+  //   { assignmentGroupName: "Test 1" },
+  //   { assignmentGroupName: "Test 2" },
+  //   { assignmentGroupName: "Test 3" },
+  //   { assignmentGroupName: "Test 4" },
+  //   { assignmentGroupName: "Test 5" },
+  //   { assignmentGroupName: "Test 6" },
+  //   { assignmentGroupName: "Test 7" },
+  // ];
 
   const staticGroups = assignmentGroups.slice(0, 4);
 
@@ -49,7 +71,7 @@ export default function AssignmentGroup() {
 
   // SelectAll
   const selectAllGroups = () => {
-    const allGroupNames = assignmentGroups.map((g) => g.name);
+    const allGroupNames = assignmentGroups.map((g) => g.assignmentGroupName);
     setFilters((prev) => ({ ...prev, assignmentGroup: allGroupNames }));
     setSelectAll(true);
   };
@@ -85,12 +107,17 @@ export default function AssignmentGroup() {
           </div>
           <div className="assignment-content">
             {staticGroups.map((assignmentGroup) => (
-              <div className="group-checkbox" key={assignmentGroup.name}>
+              <div
+                className="group-checkbox"
+                key={assignmentGroup.assignmentGroupName}
+              >
                 <Checkbox
-                  label={assignmentGroup.name}
-                  onChange={() => AssignmentGroupChanges(assignmentGroup.name)}
+                  label={assignmentGroup.assignmentGroupName}
+                  onChange={() =>
+                    AssignmentGroupChanges(assignmentGroup.assignmentGroupName)
+                  }
                   checked={filters.assignmentGroup.includes(
-                    assignmentGroup.name
+                    assignmentGroup.assignmentGroupName
                   )}
                 />
               </div>
@@ -106,14 +133,19 @@ export default function AssignmentGroup() {
             <Collapse in={opened}>
               <div className="assignment-content">
                 {expandGroups.map((assignmentGroup) => (
-                  <div className="group-checkbox" key={assignmentGroup.name}>
+                  <div
+                    className="group-checkbox"
+                    key={assignmentGroup.assignmentGroupName}
+                  >
                     <Checkbox
-                      label={assignmentGroup.name}
+                      label={assignmentGroup.assignmentGroupName}
                       onChange={() =>
-                        AssignmentGroupChanges(assignmentGroup.name)
+                        AssignmentGroupChanges(
+                          assignmentGroup.assignmentGroupName
+                        )
                       }
                       checked={filters.assignmentGroup.includes(
-                        assignmentGroup.name
+                        assignmentGroup.assignmentGroupName
                       )}
                     />
                   </div>

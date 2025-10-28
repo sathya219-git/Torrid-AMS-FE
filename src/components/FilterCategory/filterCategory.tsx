@@ -74,71 +74,67 @@ export default function FilterCategory() {
   //Clear All is visible only appliedGroup have filter
   const activeFilters = useAtomValue(resetEnabled);
 
-
   return (
     <Card className="category-result" withBorder>
       <Card.Section inheritPadding>
         <div className="selected-filter">
-          <Text fw={500} size="xl">
-            <div className="filtered-results">
-              <h2>Filtered Results</h2>
-              <div className="filter-tags">
-                {Object.entries(appliedGroups).map(([key, values]) =>
-                  Array.isArray(values)
-                    ? values.map((value) => (
-                        <div className="tag" key={`${key}-${value}`}>
-                          <span>{value}</span>
-                          <button
-                            className="close-btn"
-                            onClick={() =>
-                              handleRemoveFilter(key as FilterKeys, value)
-                            }
-                          >
-                            &times;
-                          </button>
-                        </div>
-                      ))
-                    : null
-                )}
+          <div className="filtered-results">
+            <h2>Filtered Results</h2>
+            <div className="filter-tags">
+              {Object.entries(appliedGroups).map(([key, values]) =>
+                Array.isArray(values)
+                  ? values.map((value) => (
+                      <div className="tag" key={`${key}-${value}`}>
+                        <span>{value}</span>
+                        <button
+                          className="close-btn"
+                          onClick={() =>
+                            handleRemoveFilter(key as FilterKeys, value)
+                          }
+                        >
+                          &times;
+                        </button>
+                      </div>
+                    ))
+                  : null
+              )}
 
-                {appliedGroups.duration.from && (
-                  <div className="tag" key="from-date">
-                    <span>
-                      From:{" "}
-                      {appliedGroups.duration.from.toLocaleDateString("en-GB")}
-                    </span>
-                    <button
-                      className="close-btn"
-                      onClick={() => handleRemoveFilter("duration", "from")}
-                    >
-                      &times;
-                    </button>
-                  </div>
-                )}
-
-                {appliedGroups.duration.to && (
-                  <div className="tag" key="to-date">
-                    <span>
-                      To:{" "}
-                      {appliedGroups.duration.to.toLocaleDateString("en-GB")}
-                    </span>
-                    <button
-                      className="close-btn"
-                      onClick={() => handleRemoveFilter("duration", "to")}
-                    >
-                      &times;
-                    </button>
-                  </div>
-                )}
-
-                {activeFilters && (
-                  <span className="clear-all" onClick={clearAll}>
-                    Clear All
+              {appliedGroups.duration.from && (
+                <div className="tag" key="from-date">
+                  <span>
+                    From:{" "}
+                    {appliedGroups.duration.from.toLocaleDateString("en-GB")}
                   </span>
-                )}
-              </div>
+                  <button
+                    className="close-btn"
+                    onClick={() => handleRemoveFilter("duration", "from")}
+                  >
+                    &times;
+                  </button>
+                </div>
+              )}
+
+              {appliedGroups.duration.to && (
+                <div className="tag" key="to-date">
+                  <span>
+                    To: {appliedGroups.duration.to.toLocaleDateString("en-GB")}
+                  </span>
+                  <button
+                    className="close-btn"
+                    onClick={() => handleRemoveFilter("duration", "to")}
+                  >
+                    &times;
+                  </button>
+                </div>
+              )}
+
+              {activeFilters && (
+                <span className="clear-all" onClick={clearAll}>
+                  Clear All
+                </span>
+              )}
             </div>
-          </Text>
+          </div>
         </div>
       </Card.Section>
     </Card>
