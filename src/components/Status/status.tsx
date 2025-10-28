@@ -29,9 +29,9 @@ export default function Status() {
   const statusChanges = (value: string) => {
     setFilters((prev) => ({
       ...prev,
-      status: prev.status.includes(value)
-        ? prev.status.filter((v) => v !== value)
-        : [...prev.status, value],
+      State: prev.State.includes(value)
+        ? prev.State.filter((v) => v !== value)
+        : [...prev.State, value],
     }));
   };
 
@@ -66,7 +66,7 @@ export default function Status() {
                   <Checkbox
                     label={status.status}
                     onChange={() => statusChanges(status.status)}
-                    checked={filters.status.includes(status.status)}
+                    checked={filters.State.includes(status.status)}
                   />
                   <Badge
                     size="lg"

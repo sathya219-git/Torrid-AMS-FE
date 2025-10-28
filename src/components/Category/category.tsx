@@ -31,27 +31,27 @@ export default function Category() {
 
   const categoryChanges = (value: string) => {
     setFilters((prev) => {
-      const updatedCategories = prev.category.includes(value)
-        ? prev.category.filter((v) => v !== value)
-        : [...prev.category, value];
+      const updatedCategories = prev.Category.includes(value)
+        ? prev.Category.filter((v) => v !== value)
+        : [...prev.Category, value];
 
       // Update selectAll
       setSelectAll(updatedCategories.length === categories.length);
 
-      return { ...prev, category: updatedCategories };
+      return { ...prev, Category: updatedCategories };
     });
   };
 
   // Select
   const selectAllCategories = () => {
     const allCategoryNames = categories.map((c) => c.categoryName);
-    setFilters((prev) => ({ ...prev, category: allCategoryNames }));
+    setFilters((prev) => ({ ...prev, Category: allCategoryNames }));
     setSelectAll(true);
   };
 
   // Deselect
   const deselectAllCategories = () => {
-    setFilters((prev) => ({ ...prev, category: [] }));
+    setFilters((prev) => ({ ...prev, Category: [] }));
     setSelectAll(false);
   };
 
@@ -65,7 +65,7 @@ export default function Category() {
   };
 
   useEffect(() => {
-    if (filters.category.length === 0) {
+    if (filters.Category.length === 0) {
       setSelectAll(false);
     }
   }, [filters]);
@@ -82,7 +82,7 @@ export default function Category() {
             <Checkbox
               label={category.categoryName}
               onChange={() => categoryChanges(category.categoryName)}
-              checked={filters.category.includes(category.categoryName)}
+              checked={filters.Category.includes(category.categoryName)}
             />
             <Text c="dimmed">{category.incidentCount}</Text>
           </div>
