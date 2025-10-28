@@ -65,7 +65,7 @@ export default function Category() {
   };
 
   useEffect(() => {
-    if (filters.assignmentGroup.length === 0) {
+    if (filters.category.length === 0) {
       setSelectAll(false);
     }
   }, [filters]);
@@ -81,12 +81,8 @@ export default function Category() {
           <div className="category-checkbox" key={category.categoryName}>
             <Checkbox
               label={category.categoryName}
-              onChange={() =>
-                categoryChanges(category.categoryName || "Uncategorized")
-              }
-              checked={filters.category.includes(
-                category.categoryName || "Uncategorized"
-              )}
+              onChange={() => categoryChanges(category.categoryName)}
+              checked={filters.category.includes(category.categoryName)}
             />
             <Text c="dimmed">{category.incidentCount}</Text>
           </div>
