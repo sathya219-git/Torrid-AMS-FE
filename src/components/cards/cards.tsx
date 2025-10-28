@@ -10,7 +10,11 @@ import openicon from "../../assets/open_icon.png";
 import inprogress from "../../assets/inprogress_icon.png";
 import closedicon from "../../assets/closed_icon.png";
 import { useAtomValue } from "jotai";
-import { filterState } from "../../store/filterStore";
+import { filterState, appliedFilter } from "../../store/filterStore";
+import React, { useEffect, useState } from "react";
+import { buildFilterQuery } from "../../utils/queryBuilder";
+
+
 
 // --- Data Definition (Used in this file) ---
 // --- Utility Function to Aggregate Summary Cards Data ---
@@ -45,111 +49,182 @@ function getIncidentSummary(data: any[]) {
   return summary;
 }
 
+
 // --- Component Definition ---
 export default function Cards() {
-  const filterOpened = useAtomValue(filterState);
-  const summary = useMemo(() => getIncidentSummary(incidentsData), []);
+    type IncidentSummary = {
+        totalIncidents: number;
+        openIncidents: number;
+        inProgressIncidents: number;
+        closedIncidents: number;
+    };
 
-  return (
-    <div
-      className={`dashboard-container ${filterOpened ? "opened" : "closed"}`}
-    >
-      {/* first div */}
-      <div className={`first-div ${filterOpened ? "full" : "compact"}`}>
-        <div className="summary-cards">
-          {/* Total Incidents Card */}
-          <div className="card incident">
-            <div className="card-icon incident">
-              <img className="icon-property" src={totalincidenticon} alt="" />
-            </div>
-            <div className="card-content">
-              <h3>Total Incident</h3>
-              <p>{summary.total}</p> {/* DYNAMIC VALUE */}
-            </div>
-          </div>
+    interface PriorityStats {
+        totalCount: number;
+        open: number;
+        inProgress: number;
+        closed: number;
+        onHold: number;
+        reopen: number;
+        resolved: number;
+    }
 
-          {/* Open Incidents Card */}
-          <div className="card open">
-            <div className="card-icon open">
-              <img className="icon-property" src={openicon} alt="" />
-            </div>
-            <div className="card-content">
-              <h3>Open</h3>
-              <p>{summary.open}</p> {/* DYNAMIC VALUE */}
-            </div>
-          </div>
+    interface IncidentPrioritySummary {
+        priority: Record<string, PriorityStats[]>;
+        totalAverageResolvedTime: string;
+    }
 
-          {/* In Progress Incidents Card */}
-          <div className="card progress">
-            <div className="card-icon progress">
-              <img className="icon-property" src={inprogress} alt="" />
-            </div>
-            <div className="card-content">
-              <h3>In progress</h3>
-              <p>{summary.inProgress} </p> {/* DYNAMIC VALUE */}
-            </div>
-          </div>
+    const filterOpened = useAtomValue(filterState);
 
-          <div className="card closed">
-            <div className="card-icon closed">
-              <img className="icon-property" src={closedicon} alt="" />
-            </div>
-            <div className="card-content">
-              <h3>Closed</h3>
-              <p>{summary.closed}</p> {/* DYNAMIC VALUE */}
-            </div>
-          </div>
-        </div>
+    const appliedFilters = useAtomValue(appliedFilter);
 
-        {/* INCIDENT PRIORITY// */}
-        <div>
-          <div className="incident-priority-header">
-            <h2>Incident Priority</h2>
-            <div className="metrics-dropdown">
-              <span style={{ fontWeight: "600" }}> Metrics in:</span>
-              <select style={{ fontWeight: "500" }}>
-                <option>Weeks</option>
-                <option>Days</option>
-                <option>Months</option>
-              </select>
-            </div>
-          </div>
-          <div
-            className={`priority-container ${
-              filterOpened ? "" : "compact-priority"
-            }`}
-            style={{ backgroundColor: "#f5f6fa", borderRadius: "12px" }}
-          >
-            <div className="priority-summary">
-              <div className="priority-item">
-                <h3>P1-Critical</h3>
-                <p>{summary.p1}</p> {/* DYNAMIC VALUE */}
-              </div>
-              <div className="priority-item">
-                <h3>P2-High</h3>
-                <p>{summary.p2}</p> {/* DYNAMIC VALUE */}
-              </div>
-              <div className="priority-item">
-                <h3>P3-Moderate</h3>
-                <p>{summary.p3}</p> {/* DYNAMIC VALUE */}
-              </div>
-              <div className="priority-item">
-                <h3>P4-Low</h3>
-                <p>{summary.p4}</p> {/* DYNAMIC VALUE */}
-              </div>
-              <div className="priority-item avg-resolved">
-                <div>
-                  <h3>Avg Resolved Time</h3>
-                  <p>
-                    4132 <small>Weeks</small>
-                  </p>
+    // ✅ State renamed
+    const [incidentSummary, setIncidentSummary] = useState<IncidentSummary | null>(null);
+    const [incidentPrioritySummary, setIncidentPrioritySummary] = useState<IncidentPrioritySummary | null>(null);
+
+
+
+    useEffect(() => {
+        const fetchIncidentSummary = async () => {
+            try {
+                const query = buildFilterQuery(appliedFilters);
+                const url = query
+                    ? `http://localhost:5092/api/Incident/kpis?${query}`
+                    : `http://localhost:5092/api/Incident/kpis`;
+
+                const response = await fetch(url);
+                const data: IncidentSummary = await response.json();
+                console.log("kpis URL"+url);
+                
+                setIncidentSummary(data);
+            } catch (error) {
+                console.error("Error fetching incident summary:", error);
+                setIncidentSummary(null);
+            }
+        };
+
+        fetchIncidentSummary();
+    }, [appliedFilters]);
+
+    useEffect(() => {
+        const fetchIncidentSummary = async () => {
+            try {
+                const query = buildFilterQuery(appliedFilters);
+                const url = query
+                    ? `http://localhost:5092/api/Incident/countbypriority?${query}`
+                    : `http://localhost:5092/api/Incident/countbypriority`;
+
+                console.log("Final URL:", url);
+
+                const response = await fetch(url);
+                const data: IncidentPrioritySummary = await response.json();
+                setIncidentPrioritySummary(data);
+
+            } catch (error) {
+                console.error("Error fetching incident summary:", error);
+                setIncidentPrioritySummary(null);
+            }
+        };
+
+        fetchIncidentSummary();
+    }, [appliedFilters]);
+    const summary = useMemo(() => getIncidentSummary(incidentsData), []);
+
+    return (
+        <div className={`dashboard-container ${filterOpened ? "opened" : "closed"}`}>
+            {/* first div */}
+            <div className={`first-div ${filterOpened ? "full" : "compact"}`}>
+                <div className="summary-cards">
+                    {/* Total Incidents Card */}
+                    <div className="card incident">
+                        <div className="card-icon incident">
+                            <img className="icon-property" src={totalincidenticon} alt="" />
+                        </div>
+                        <div className="card-content">
+                            <h3>Total Incident</h3>
+                            <p>{incidentSummary?.totalIncidents}</p> {/* DYNAMIC VALUE */}
+                        </div>
+                    </div>
+
+                    {/* Open Incidents Card */}
+                    <div className="card open">
+                        <div className="card-icon open">
+                            <img className="icon-property" src={openicon} alt="" />
+                        </div>
+                        <div className="card-content">
+                            <h3>Open</h3>
+                            <p>{incidentSummary?.openIncidents}</p> {/* DYNAMIC VALUE */}
+                        </div>
+                    </div>
+
+                    {/* In Progress Incidents Card */}
+                    <div className="card progress">
+                        <div className="card-icon progress">
+                            <img className="icon-property" src={inprogress} alt="" />
+                        </div>
+                        <div className="card-content">
+                            <h3>In progress</h3>
+                            <p>{incidentSummary?.inProgressIncidents} </p> {/* DYNAMIC VALUE */}
+                        </div>
+                    </div>
+
+                    <div className="card closed">
+                        <div className="card-icon closed">
+                            <img className="icon-property" src={closedicon} alt="" />
+                        </div>
+                        <div className="card-content">
+                            <h3>Closed</h3>
+                            <p>{incidentSummary?.closedIncidents}</p> {/* DYNAMIC VALUE */}
+                        </div>
+                    </div>
                 </div>
-                <span className="card-status-dot green"></span>
-              </div>
+
+                {/* INCIDENT PRIORITY// */}
+                <div>
+
+                    <div className="incident-priority-header">
+                        <h2>Incident Priority</h2>
+                        <div className="metrics-dropdown">
+                            <span style={{ fontWeight: '600' }}> Metrics in:</span>
+                            <select style={{ fontWeight: '500' }}>
+                                <option>Weeks</option>
+                                <option>Days</option>
+                                <option>Months</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div className={`priority-container ${filterOpened ? "" : "compact-priority"}`} style={{ backgroundColor: '#f5f6fa', borderRadius: '12px' }}>
+                        <div className="priority-summary">
+                            <div className="priority-item">
+                                <h3>P1-Critical</h3>
+                                <p>{incidentPrioritySummary?.priority["1 - Critical"]?.[0]?.totalCount ?? 0}</p> {/* DYNAMIC VALUE */}
+                            </div>
+                            <div className="priority-item">
+                                <h3>P2-High</h3>
+                                <p>{incidentPrioritySummary?.priority["2 - High"]?.[0]?.totalCount ?? 0}</p> {/* DYNAMIC VALUE */}
+                            </div>
+                            <div className="priority-item">
+                                <h3>P3-Moderate</h3>
+                                <p>{incidentPrioritySummary?.priority["3 - Moderate"]?.[0]?.totalCount ?? 0}</p> {/* DYNAMIC VALUE */}
+                            </div>
+                            <div className="priority-item">
+                                <h3>P4-Low</h3>
+                                <p>{ incidentPrioritySummary?.priority["4 - Low"]?.[0]?.totalCount ?? 0}</p> {/* DYNAMIC VALUE */}
+                            </div>
+                            <div className="priority-item avg-resolved">
+                                <div>
+                                    <h3>Avg Resolved Time</h3>
+                                    <p>{incidentPrioritySummary?.totalAverageResolvedTime ?? "0 weeks"}</p>
+                                </div>
+                                <span className="card-status-dot green"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-          </div>
-        </div>
-      </div>
+
+
 
       {/* --- INCIDENT PRIORITY SECTION (DYNAMIC PRIORITY COUNTS) --- */}
       <div
