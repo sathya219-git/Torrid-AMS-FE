@@ -143,9 +143,9 @@ export default function DonutCharts() {
             <Group gap={50} justify="center">
               <DonutChart
                 data={chartData}
-                thickness={55}
+                thickness={80}
                 withTooltip
-                size={200}
+                size={250}
                 tooltipDataSource="segment"
                 tooltipProps={{
                   content: CustomTooltip,

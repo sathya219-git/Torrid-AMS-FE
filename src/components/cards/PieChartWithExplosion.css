@@ -23,6 +23,7 @@
 
 
 .pie-state-container {
+  margin-left: 20px;
   display: flex;
   flex-direction: column;
   /* max-height is crucial for preventing overflow if the legend is long */
