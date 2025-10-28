@@ -17,15 +17,13 @@ export default function FilterCategory() {
 
   const clearAll = () => {
     const clearedState: FilterState = {
-      assignmentGroup: [],
-      duration: {
-        from: null,
-        to: null,
-      },
-      category: [],
-      priority: [],
-      status: [],
-      teamMember: [],
+      AssignmentGroup: [],
+      FromDate: null,
+      ToDate: null,
+      Category: [],
+      Priority: [],
+      State: [],
+      AssignedToName: [],
     };
     setAppliedFilters(clearedState);
     setSelectedFilters(clearedState);
@@ -41,54 +39,50 @@ export default function FilterCategory() {
   };
 
   const getUpdatedFilterState = (prev: FilterState, chip: FilterChip) => {
-    if (chip.key === "assignmentGroup") {
+    if (chip.key === "AssignmentGroup") {
       return {
         ...prev,
-        assignmentGroup: prev.assignmentGroup.filter(
+        AssignmentGroup: prev.AssignmentGroup.filter(
           (value) => value !== chip.value
         ),
       };
     }
-    if (chip.key === "category") {
+    if (chip.key === "Category") {
       return {
         ...prev,
-        category: prev.category.filter((value) => value !== chip.value),
+        Category: prev.Category.filter((value) => value !== chip.value),
       };
     }
-    if (chip.key === "duration.from") {
+    if (chip.key === "FromDate") {
       return {
         ...prev,
-        duration: {
-          ...prev.duration,
-          from: null,
-        },
+        FromDate: null,
       };
     }
-    if (chip.key === "duration.to") {
+    if (chip.key === "ToDate") {
       return {
         ...prev,
-        duration: {
-          ...prev.duration,
-          to: null,
-        },
+        ToDate: null,
       };
     }
-    if (chip.key === "priority") {
+    if (chip.key === "Priority") {
       return {
         ...prev,
-        priority: prev.priority.filter((value) => value !== chip.value),
+        Priority: prev.Priority.filter((value) => value !== chip.value),
       };
     }
-    if (chip.key === "status") {
+    if (chip.key === "State") {
       return {
         ...prev,
-        status: prev.status.filter((value) => value !== chip.value),
+        State: prev.State.filter((value) => value !== chip.value),
       };
     }
-    if (chip.key === "teamMember") {
+    if (chip.key === "AssignedToName") {
       return {
         ...prev,
-        teamMember: prev.teamMember.filter((value) => value !== chip.value),
+        AssignedToName: prev.AssignedToName.filter(
+          (value) => value !== chip.value
+        ),
       };
     }
     return prev;

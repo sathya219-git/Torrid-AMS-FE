@@ -4,75 +4,69 @@ export const filterState = atom(true);
 
 export interface FilterChip {
   key:
-    | "assignmentGroup"
-    | "duration.from"
-    | "duration.to"
-    | "category"
-    | "priority"
-    | "status"
-    | "teamMember";
+    | "AssignmentGroup"
+    | "FromDate"
+    | "ToDate"
+    | "Category"
+    | "Priority"
+    | "State"
+    | "AssignedToName";
   value: string;
 }
 
 export interface FilterState {
-  assignmentGroup: string[];
-  duration: {
-    from: Date | null;
-    to: Date | null;
-  };
-  category: string[];
-  priority: string[];
-  status: string[];
-  teamMember: string[];
+  AssignmentGroup: string[];
+  FromDate: Date | null;
+  ToDate: Date | null;
+  Category: string[];
+  Priority: string[];
+  State: string[];
+  AssignedToName: string[];
 }
 
 export const selectedFilter = atom<FilterState>({
-  assignmentGroup: [],
-  duration: {
-    from: null,
-    to: null,
-  },
-  category: [],
-  priority: [],
-  status: [],
-  teamMember: [],
+  AssignmentGroup: [],
+  FromDate: null,
+  ToDate: null,
+  Category: [],
+  Priority: [],
+  State: [],
+  AssignedToName: [],
 });
 
 export const appliedFilter = atom<FilterState>({
-  assignmentGroup: [],
-  duration: {
-    from: null,
-    to: null,
-  },
-  category: [],
-  priority: [],
-  status: [],
-  teamMember: [],
+  AssignmentGroup: [],
+  FromDate: null,
+  ToDate: null,
+  Category: [],
+  Priority: [],
+  State: [],
+  AssignedToName: [],
 });
 
 export const resetEnabled = atom((get) => {
   const filter = get(appliedFilter);
   return (
-    filter.assignmentGroup.length > 0 ||
-    filter.category.length > 0 ||
-    filter.priority.length > 0 ||
-    filter.status.length > 0 ||
-    filter.teamMember.length > 0 ||
-    filter.duration.from !== null ||
-    filter.duration.to !== null
+    filter.AssignmentGroup.length > 0 ||
+    filter.Category.length > 0 ||
+    filter.Priority.length > 0 ||
+    filter.State.length > 0 ||
+    filter.AssignedToName.length > 0 ||
+    filter.FromDate !== null ||
+    filter.ToDate !== null
   );
 });
 
 export const filterEnabled = atom((get) => {
   const filter = get(selectedFilter);
   return (
-    filter.assignmentGroup.length > 0 ||
-    filter.category.length > 0 ||
-    filter.priority.length > 0 ||
-    filter.status.length > 0 ||
-    filter.teamMember.length > 0 ||
-    filter.duration.from !== null ||
-    filter.duration.to !== null
+    filter.AssignmentGroup.length > 0 ||
+    filter.Category.length > 0 ||
+    filter.Priority.length > 0 ||
+    filter.State.length > 0 ||
+    filter.AssignedToName.length > 0 ||
+    filter.FromDate !== null ||
+    filter.ToDate !== null
   );
 });
 
@@ -80,53 +74,53 @@ export const filterChips = atom((get) => {
   const filters = get(appliedFilter);
   const chips: FilterChip[] = [];
   chips.push(
-    ...filters.assignmentGroup.map((value) => {
+    ...filters.AssignmentGroup.map((value) => {
       return {
-        key: "assignmentGroup",
+        key: "AssignmentGroup",
         value: value,
       } as FilterChip;
     })
   );
-  if (filters.duration.from !== null) {
+  if (filters.FromDate !== null) {
     chips.push({
-      key: "duration.from",
-      value: `From : ${filters.duration.from.toLocaleDateString("en-US")}`,
+      key: "FromDate",
+      value: `From : ${filters.FromDate.toLocaleDateString("en-US")}`,
     });
   }
-  if (filters.duration.to !== null) {
+  if (filters.ToDate !== null) {
     chips.push({
-      key: "duration.to",
-      value: `To : ${filters.duration.to.toLocaleDateString("en-US")}`,
+      key: "ToDate",
+      value: `To : ${filters.ToDate.toLocaleDateString("en-US")}`,
     });
   }
   chips.push(
-    ...filters.category.map((value) => {
+    ...filters.Category.map((value) => {
       return {
-        key: "category",
+        key: "Category",
         value: value,
       } as FilterChip;
     })
   );
   chips.push(
-    ...filters.priority.map((value) => {
+    ...filters.Priority.map((value) => {
       return {
-        key: "priority",
+        key: "Priority",
         value: value,
       } as FilterChip;
     })
   );
   chips.push(
-    ...filters.status.map((value) => {
+    ...filters.State.map((value) => {
       return {
-        key: "status",
+        key: "State",
         value: value,
       } as FilterChip;
     })
   );
   chips.push(
-    ...filters.teamMember.map((value) => {
+    ...filters.AssignedToName.map((value) => {
       return {
-        key: "teamMember",
+        key: "AssignedToName",
         value: value,
       } as FilterChip;
     })

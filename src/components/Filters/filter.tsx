@@ -27,12 +27,13 @@ export default function Filter() {
 
   const resetFilters = () => {
     const clearedState: FilterState = {
-      assignmentGroup: [] as string[],
-      duration: { from: null, to: null },
-      category: [] as string[],
-      priority: [] as string[],
-      status: [] as string[],
-      teamMember: [] as string[],
+      AssignmentGroup: [],
+      FromDate: null,
+      ToDate: null,
+      Category: [],
+      Priority: [],
+      State: [],
+      AssignedToName: [],
     };
 
     setSelectedGroups(clearedState);
