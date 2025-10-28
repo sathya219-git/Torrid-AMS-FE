@@ -6,7 +6,7 @@ import { useAtomValue } from "jotai";
 import { filterState } from "../../store/filterStore";
 import { useEffect } from "react";
 import FilterCategory from "../FilterCategory/filterCategory";
-// import FilterCategory from "../FilterCategory/filterCategory"; 
+// import FilterCategory from "../FilterCategory/filterCategory";
 
 export default function FilterResult() {
   const filterOpened = useAtomValue(filterState);
@@ -17,7 +17,6 @@ export default function FilterResult() {
 
   return (
     <div className="card-padding">
-
       <FilterCategory />
       <FilteredResult />
 

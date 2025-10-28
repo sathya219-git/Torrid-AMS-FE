@@ -19,7 +19,7 @@ export default function Priority() {
       .get("http://localhost:5092/api/Incident/countbypriority")
       .then((res) => {
         console.log("API response:", res.data);
-        
+
         const priorityData = res.data.priority || {};
         const parsedData: Priority[] = Object.entries(priorityData).map(
           ([priorityName, details]) => {
@@ -51,12 +51,6 @@ export default function Priority() {
     }));
   };
 
-  // const priorities = [
-  //   { priority: "P1 - Critical", totalCount: 10 },
-  //   { priority: "P2 - High", totalCount: 15 },
-  //   { priority: "P3 - Moderate", totalCount: 25 },
-  //   { priority: "P4 - Low", totalCount: 75 },
-  // ];
   return (
     <div className="priority-container">
       <Text fw={500}>Incident Priority</Text>

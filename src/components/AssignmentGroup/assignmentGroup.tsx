@@ -22,7 +22,6 @@ export default function AssignmentGroup() {
     axios
       .get("http://localhost:5092/api/Incident/assignmentgroups")
       .then((res) => {
-        console.log("API response:", res.data);
         const data = Array.isArray(res.data) ? res.data : [];
         setAssignmentGroups(data);
       })
@@ -31,19 +30,6 @@ export default function AssignmentGroup() {
         setAssignmentGroups([]);
       });
   }, []);
-  // const assignmentGroups = [
-  //   { assignmentGroupName: "Web Support" },
-  //   { assignmentGroupName: "Management Team" },
-  //   { assignmentGroupName: "Store Support" },
-  //   { assignmentGroupName: "Ops Team" },
-  //   { assignmentGroupName: "Test 1" },
-  //   { assignmentGroupName: "Test 2" },
-  //   { assignmentGroupName: "Test 3" },
-  //   { assignmentGroupName: "Test 4" },
-  //   { assignmentGroupName: "Test 5" },
-  //   { assignmentGroupName: "Test 6" },
-  //   { assignmentGroupName: "Test 7" },
-  // ];
 
   const staticGroups = assignmentGroups.slice(0, 4);
 
@@ -66,7 +52,6 @@ export default function AssignmentGroup() {
     if (filters.assignmentGroup.length === 0) {
       setSelectAll(false);
     }
-    console.log(filters);
   }, [filters]);
 
   // SelectAll

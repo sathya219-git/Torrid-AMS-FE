@@ -30,14 +30,6 @@ export default function Category() {
       });
   }, []);
 
-  // const categories = [
-  //   { categoryName: "Ecom systems", incidentCount: 670 },
-  //   { categoryName: "Operartional", incidentCount: 320 },
-  //   { categoryName: "Genaral Questions", incidentCount: 220 },
-  //   { categoryName: "Retail Systems", incidentCount: 120 },
-  //   { categoryName: "Supply Chain", incidentCount: 10 },
-  // ];
-
   const categoryChanges = (value: string) => {
     setFilters((prev) => {
       const updatedCategories = prev.category.includes(value)
