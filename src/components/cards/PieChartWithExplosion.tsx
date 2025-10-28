@@ -9,7 +9,7 @@ type MantinePieChartData = PieChartProps['data'];
 
 // --- 2. Define State Colors for the chart segments ---
 const STATE_COLORS: Record<string, string> = {
-   'Open': '#FC7E80',
+    'Open': '#FC7E80',
     'In progress': '#ECCF5C',
     'On-Hold': '#A291FD',
     'Closed': '#4FDBF5',
@@ -121,7 +121,7 @@ export default function PieChartWithExplosion() {
 
     const chartData = getPieChartData(incidentsData, TARGET_PRIORITY);
     const totalCount = chartData.reduce((sum, item) => sum + item.value, 0);
-    
+
     if (totalCount === 0) {
         return (
             <Stack gap="md" align="center" w={200} h={200}>
@@ -143,13 +143,13 @@ export default function PieChartWithExplosion() {
                     <Box w={300}>
                         <Group gap={50} justify="center">
 
-                            <PieChart 
+                            <PieChart
                                 strokeWidth={1.8}
                                 startAngle={0} endAngle={360}
                                 data={chartData}
                                 withTooltip
                                 tooltipDataSource="segment"
-                                size={200}
+                                size={250}
                                 // Pass the custom component to the content prop
                                 tooltipProps={{
                                     content: CustomTooltip,
@@ -163,14 +163,14 @@ export default function PieChartWithExplosion() {
 
                 <div className='pie-state-container'>
                     {chartData.map(item => (
-                        
+
 
                         <div className='legend-item'>
                             <span className="legend-color-dot" style={{ backgroundColor: item.color }}></span>
                             <span className="legend-state-name">{item.name}</span>
                             <span className="legend-count">{item.value}</span>
                         </div>
-                            
+
                     ))}
 
                 </div>

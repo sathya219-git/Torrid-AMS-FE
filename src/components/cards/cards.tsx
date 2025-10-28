@@ -85,7 +85,7 @@ const filterOpened = useAtomValue(filterState);
                         </div>
                         <div className="card-content">
                             <h3>Open</h3>
-                            <p>{summary.open} <img src={arrow} className="card-status-dot" alt="Up trend" /></p> {/* DYNAMIC VALUE */}
+                            <p>{summary.open}</p> {/* DYNAMIC VALUE */}
                         </div>
                     </div>
 
@@ -96,7 +96,7 @@ const filterOpened = useAtomValue(filterState);
                         </div>
                         <div className="card-content">
                             <h3>In progress</h3>
-                            <p>{summary.inProgress} <img src={arrow} className="card-status-dot" alt="Up trend" /></p> {/* DYNAMIC VALUE */}
+                            <p>{summary.inProgress} </p> {/* DYNAMIC VALUE */}
                         </div>
                     </div>
 
@@ -106,7 +106,7 @@ const filterOpened = useAtomValue(filterState);
                         </div>
                         <div className="card-content">
                             <h3>Closed</h3>
-                            <p>{summary.closed} <img src={redarrow} className="card-status-dot" alt="Down trend" /></p> {/* DYNAMIC VALUE */}
+                            <p>{summary.closed}</p> {/* DYNAMIC VALUE */}
                         </div>
                     </div>
                 </div>
@@ -146,7 +146,7 @@ const filterOpened = useAtomValue(filterState);
                             <div className="priority-item avg-resolved">
                                 <div>
                                     <h3>Avg Resolved Time</h3>
-                                    <p>4132 <small>Weeks</small><img src={arrow} className="card-status-dot" style={{ marginLeft: '10px', marginTop: '5px' }} alt="Up trend" /></p>
+                                    <p>4132 <small>Weeks</small></p>
                                 </div>
                                 <span className="card-status-dot green"></span>
                             </div>
@@ -203,3 +203,4 @@ const filterOpened = useAtomValue(filterState);
         </div>
     );
 }
+

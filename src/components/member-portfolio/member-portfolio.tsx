@@ -96,13 +96,13 @@ const TeamMemberCard = ({ member }: { member: Member }) => (
       >
         {member.avgResolvedTime}
         {/* Using simple text/symbols for the trend icon, corresponding to the CSS color */}
-        <span className="trend-icon">
+        {/* <span className="trend-icon">
           {member.timeTrend === "up" ? (
             <FaArrowCircleDown fill="#C10041" height="15px" width="15px" />
           ) : (
             <FaCircleArrowUp fill="#00AB7F" height="15px" width="15px" />
           )}
-        </span>
+        </span> */}
       </span>
     </div>
   </div>
@@ -146,7 +146,7 @@ export default function MemberPortfolio() {
           {/* Using simple buttons for pagination */}
           <button
             style={{
-              borderRadius: "6px 0 0 6px",
+              borderRadius: "6px 0 0 6px",  
               border: " 1px solid #33303111",
             }}
             className="page-control"
