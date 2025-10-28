@@ -3,18 +3,40 @@ import "./category.css";
 import { useAtom } from "jotai";
 import { selectedFilter } from "../../store/filterStore";
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function Category() {
+  type Category = {
+    categoryName: string;
+    incidentCount: number;
+  };
+
   const [filters, setFilters] = useAtom(selectedFilter);
   const [selectAll, setSelectAll] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
 
-  const categories = [
-    { name: "Ecom systems", count: 670 },
-    { name: "Operartional", count: 320 },
-    { name: "Genaral Questions", count: 220 },
-    { name: "Retail Systems", count: 120 },
-    { name: "Supply Chain", count: 10 },
-  ];
+  //data from API
+  useEffect(() => {
+    axios
+      .get("http://localhost:5092/api/Incident/categorycountbygroup")
+      .then((res) => {
+        console.log("API response:", res.data);
+        const data = Array.isArray(res.data) ? res.data : [];
+        setCategories(data);
+      })
+      .catch((err) => {
+        console.error("Error fetching category counts:", err);
+        setCategories([]);
+      });
+  }, []);
+
+  // const categories = [
+  //   { categoryName: "Ecom systems", incidentCount: 670 },
+  //   { categoryName: "Operartional", incidentCount: 320 },
+  //   { categoryName: "Genaral Questions", incidentCount: 220 },
+  //   { categoryName: "Retail Systems", incidentCount: 120 },
+  //   { categoryName: "Supply Chain", incidentCount: 10 },
+  // ];
 
   const categoryChanges = (value: string) => {
     setFilters((prev) => {
@@ -31,7 +53,7 @@ export default function Category() {
 
   // Select
   const selectAllCategories = () => {
-    const allCategoryNames = categories.map((c) => c.name);
+    const allCategoryNames = categories.map((c) => c.categoryName);
     setFilters((prev) => ({ ...prev, category: allCategoryNames }));
     setSelectAll(true);
   };
@@ -65,13 +87,17 @@ export default function Category() {
       </div>
       <div className="category-content">
         {categories.map((category) => (
-          <div className="category-checkbox" key={category.name}>
+          <div className="category-checkbox" key={category.categoryName}>
             <Checkbox
-              label={category.name}
-              onChange={() => categoryChanges(category.name)}
-              checked={filters.category.includes(category.name)}
+              label={category.categoryName}
+              onChange={() =>
+                categoryChanges(category.categoryName || "Uncategorized")
+              }
+              checked={filters.category.includes(
+                category.categoryName || "Uncategorized"
+              )}
             />
-            <Text c="dimmed">{category.count}</Text>
+            <Text c="dimmed">{category.incidentCount}</Text>
           </div>
         ))}
       </div>

@@ -3,10 +3,12 @@
 .filter-card {
   position: absolute;
   z-index: 99;
-  top: 55px;
-  left: 20px;
+  left: 15px;
   min-width: 400px;
   max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 .export-icon {
   display: flex;

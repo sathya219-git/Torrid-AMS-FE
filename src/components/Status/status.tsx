@@ -3,9 +3,29 @@ import "./status.css";
 import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { selectedFilter } from "../../store/filterStore";
+import axios from "axios";
 
 export default function Status() {
+  type Status = {
+    status: string;
+    incidentCount: number;
+  };
   const [filters, setFilters] = useAtom(selectedFilter);
+  const [statuses, setStatuses] = useState<Status[]>([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:5092/api/Incident/statuscountbypriority")
+      .then((res) => {
+        console.log("API response:", res.data);
+        const data = Array.isArray(res.data) ? res.data : [];
+        setStatuses(data);
+      })
+      .catch((err) => {
+        console.error("Error fetching category counts:", err);
+        setStatuses([]);
+      });
+  }, []);
 
   const statusChanges = (value: string) => {
     setFilters((prev) => ({
@@ -16,14 +36,14 @@ export default function Status() {
     }));
   };
 
-  const statuses = [
-    { name: "Open", count: 370 },
-    { name: "In progress", count: 132 },
-    { name: "Closed", count: 180 },
-    { name: "Reopen", count: 89 },
-    { name: "On Hold", count: 32 },
-    { name: "Resolved", count: 67 },
-  ];
+  // const statuses = [
+  //   { status: "Open", incidentCount: 370 },
+  //   { status: "In progress", incidentCount: 132 },
+  //   { status: "Closed", incidentCount: 180 },
+  //   { status: "Reopen", incidentCount: 89 },
+  //   { status: "On Hold", incidentCount: 32 },
+  //   { status: "Resolved", incidentCount: 67 },
+  // ];
 
   const [checkedMap, setCheckedMap] = useState<Map<string, boolean>>(new Map());
 
@@ -33,7 +53,7 @@ export default function Status() {
     }
     const newMap = new Map();
     statuses.forEach((status) => {
-      newMap.set(status.name, false);
+      newMap.set(status.status, false);
     });
     setCheckedMap(newMap);
   }, []);
@@ -74,18 +94,18 @@ export default function Status() {
         <Accordion.Panel>
           <div className="status-content">
             {statuses.map((status) => {
-              const isSelected = checkedMap.get(status.name) === true;
+              const isSelected = checkedMap.get(status.status) === true;
               return (
                 <div
-                  key={status.name}
+                  key={status.status}
                   className={`status-checkbox ${isSelected ? "selected" : ""}`}
                 >
                   <Checkbox
-                    label={status.name}
+                    label={status.status}
                     // checked={checkedMap.get(status.name) === true}
                     // onChange={() => toggleChecked(status.name)}
-                    onClick={() => statusChanges(status.name)}
-                    checked={filters.status.includes(status.name)}
+                    onClick={() => statusChanges(status.status)}
+                    checked={filters.status.includes(status.status)}
                   />
                   <Badge
                     size="lg"
@@ -94,7 +114,7 @@ export default function Status() {
                     }}
                     variant="filled"
                   >
-                    {status.count}
+                    {status.incidentCount}
                   </Badge>
                 </div>
               );
