@@ -10,6 +10,7 @@ import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
   appliedFilter,
   filterEnabled,
+  FilterState,
   resetEnabled,
   selectedFilter,
 } from "../../store/filterStore";
@@ -25,11 +26,11 @@ export default function Filter() {
   };
 
   const resetFilters = () => {
-    const clearedState = {
+    const clearedState: FilterState = {
       assignmentGroup: [] as string[],
       duration: { from: null, to: null },
       category: [] as string[],
-      incidentPriority: [] as string[],
+      priority: [] as string[],
       status: [] as string[],
       teamMember: [] as string[],
     };
