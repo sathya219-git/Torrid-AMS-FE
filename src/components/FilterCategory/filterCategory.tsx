@@ -1,6 +1,6 @@
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import "./filterCategory.css";
-import { Card, Text } from "@mantine/core";
+import { Card } from "@mantine/core";
 import {
   appliedFilter,
   FilterKeys,

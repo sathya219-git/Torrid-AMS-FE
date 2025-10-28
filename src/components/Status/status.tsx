@@ -102,9 +102,7 @@ export default function Status() {
                 >
                   <Checkbox
                     label={status.status}
-                    // checked={checkedMap.get(status.name) === true}
-                    // onChange={() => toggleChecked(status.name)}
-                    onClick={() => statusChanges(status.status)}
+                    onChange={() => statusChanges(status.status)}
                     checked={filters.status.includes(status.status)}
                   />
                   <Badge
