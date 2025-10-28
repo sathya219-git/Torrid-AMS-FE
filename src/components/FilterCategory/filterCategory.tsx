@@ -1,17 +1,19 @@
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import "./filterCategory.css";
 import { Card } from "@mantine/core";
 import {
   appliedFilter,
-  FilterKeys,
+  FilterChip,
+  filterChips,
   FilterState,
   resetEnabled,
   selectedFilter,
 } from "../../store/filterStore";
 
 export default function FilterCategory() {
-  const [appliedGroups, setAppliedGroups] = useAtom(appliedFilter);
-  const setSelectedGroups = useSetAtom(selectedFilter);
+  const appliedFilterChips = useAtomValue(filterChips);
+  const setAppliedFilters = useSetAtom(appliedFilter);
+  const setSelectedFilters = useSetAtom(selectedFilter);
 
   const clearAll = () => {
     const clearedState: FilterState = {
@@ -21,42 +23,75 @@ export default function FilterCategory() {
         to: null,
       },
       category: [],
-      incidentPriority: [],
+      priority: [],
       status: [],
       teamMember: [],
     };
-    setAppliedGroups(clearedState);
-    setSelectedGroups(clearedState);
+    setAppliedFilters(clearedState);
+    setSelectedFilters(clearedState);
   };
 
-  const handleRemoveFilter = (key: FilterKeys, value: string) => {
-    setAppliedGroups((prev) => {
-      const updated = { ...prev };
-      if (key === "duration") {
-        if (value === "from") {
-          updated.duration = { ...prev.duration, from: null };
-        } else if (value === "to") {
-          updated.duration = { ...prev.duration, to: null };
-        }
-      } else if (Array.isArray(prev[key])) {
-        updated[key] = (prev[key] as string[]).filter((v) => v !== value);
-      }
-      return updated;
+  const handleRemoveFilter = (chip: FilterChip) => {
+    setAppliedFilters((prev) => {
+      return getUpdatedFilterState(prev, chip);
     });
+    setSelectedFilters((prev) => {
+      return getUpdatedFilterState(prev, chip);
+    });
+  };
 
-    setSelectedGroups((prev) => {
-      const updated = { ...prev };
-      if (key === "duration") {
-        if (value === "from") {
-          updated.duration = { ...prev.duration, from: null };
-        } else if (value === "to") {
-          updated.duration = { ...prev.duration, to: null };
-        }
-      } else if (Array.isArray(prev[key])) {
-        updated[key] = (prev[key] as string[]).filter((v) => v !== value);
-      }
-      return updated;
-    });
+  const getUpdatedFilterState = (prev: FilterState, chip: FilterChip) => {
+    if (chip.key === "assignmentGroup") {
+      return {
+        ...prev,
+        assignmentGroup: prev.assignmentGroup.filter(
+          (value) => value !== chip.value
+        ),
+      };
+    }
+    if (chip.key === "category") {
+      return {
+        ...prev,
+        category: prev.category.filter((value) => value !== chip.value),
+      };
+    }
+    if (chip.key === "duration.from") {
+      return {
+        ...prev,
+        duration: {
+          ...prev.duration,
+          from: null,
+        },
+      };
+    }
+    if (chip.key === "duration.to") {
+      return {
+        ...prev,
+        duration: {
+          ...prev.duration,
+          to: null,
+        },
+      };
+    }
+    if (chip.key === "priority") {
+      return {
+        ...prev,
+        priority: prev.priority.filter((value) => value !== chip.value),
+      };
+    }
+    if (chip.key === "status") {
+      return {
+        ...prev,
+        status: prev.status.filter((value) => value !== chip.value),
+      };
+    }
+    if (chip.key === "teamMember") {
+      return {
+        ...prev,
+        teamMember: prev.teamMember.filter((value) => value !== chip.value),
+      };
+    }
+    return prev;
   };
 
   //Clear All is visible only appliedGroup have filter
@@ -69,53 +104,17 @@ export default function FilterCategory() {
           <div className="filtered-results">
             <h2>Filtered Results</h2>
             <div className="filter-tags">
-              {Object.entries(appliedGroups).map(([key, values]) =>
-                Array.isArray(values)
-                  ? values.map((value) => (
-                      <div className="tag" key={`${key}-${value}`}>
-                        <span>{value}</span>
-                        <button
-                          className="close-btn"
-                          onClick={() =>
-                            handleRemoveFilter(key as FilterKeys, value)
-                          }
-                        >
-                          &times;
-                        </button>
-                      </div>
-                    ))
-                  : null
-              )}
-
-              {appliedGroups.duration.from && (
-                <div className="tag" key="from-date">
-                  <span>
-                    From:{" "}
-                    {appliedGroups.duration.from.toLocaleDateString("en-GB")}
-                  </span>
+              {appliedFilterChips.map((chip) => (
+                <div className="tag" key={chip.value}>
+                  <span>{chip.value}</span>
                   <button
                     className="close-btn"
-                    onClick={() => handleRemoveFilter("duration", "from")}
+                    onClick={() => handleRemoveFilter(chip)}
                   >
                     &times;
                   </button>
                 </div>
-              )}
-
-              {appliedGroups.duration.to && (
-                <div className="tag" key="to-date">
-                  <span>
-                    To: {appliedGroups.duration.to.toLocaleDateString("en-GB")}
-                  </span>
-                  <button
-                    className="close-btn"
-                    onClick={() => handleRemoveFilter("duration", "to")}
-                  >
-                    &times;
-                  </button>
-                </div>
-              )}
-
+              ))}
               {activeFilters && (
                 <span className="clear-all" onClick={clearAll}>
                   Clear All
