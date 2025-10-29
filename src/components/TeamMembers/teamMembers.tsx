@@ -93,7 +93,7 @@ export default function TeamMembers() {
                   <div className="team-member-checkbox" key={teamMember.name}>
                     <Checkbox
                       label={teamMember.name}
-                      onClick={() => teamMembersChanges(teamMember.name)}
+                      onChange={() => teamMembersChanges(teamMember.name)}
                       checked={filters.AssignedToName.includes(teamMember.name)}
                     />
                     <Text c="dimmed">{teamMember.totalCount}</Text>

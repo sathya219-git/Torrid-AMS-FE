@@ -1,267 +1,116 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Accordion, Input } from "@mantine/core";
+import React, { useEffect, useState } from "react";
+import { Accordion, Input, Table } from "@mantine/core";
 import "./CriticalIncidentsList.css";
-import { BsSortDown, BsSortUp } from "react-icons/bs";
+import { BsSortUp, BsSortDown } from "react-icons/bs";
 import backward from "../../assets/backward.png";
 import forward from "../../assets/forward.png";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { buildFilterQuery } from "../../utils/queryBuilder";
-import { appliedFilter } from "../../store/filterStore";
-
-const incidentsData = [
-  {
-    id: "INC2233999",
-    description: "Network Outage at Data Center 3.",
-    category: "Ecom Systems",
-    priority: "P1",
-    resolution: "Network connectivity restored; root cause analysis ongoing.",
-    state: "Closed",
-    resolvedDate: "9/2/2025",
-    resolvedTime: "11:22:33 AM",
-  },
-  {
-    id: "INC2233988",
-    description: "Database Server Overload.",
-    category: "Ecom Systems",
-    priority: "P1",
-    resolution: "Server rebooted; investigating memory leak.",
-    state: "Open",
-    resolvedDate: "9/2/2025",
-    resolvedTime: "10:11:22 AM",
-  },
-  {
-    id: "INC2233987",
-    description: "Payment Gateway Failure.",
-    category: "Finance",
-    priority: "P2",
-    resolution: "Service Restored; applied hotfix.",
-    state: "In progress",
-    resolvedDate: "9/2/2025",
-    resolvedTime: "09:00:11 AM",
-  },
-  {
-    id: "INC2233986",
-    description: "DDoS Attack on Web Servers.",
-    category: "Security",
-    priority: "P2",
-    resolution: "Implemented rate limiting; traffic normalized.",
-    state: "On hold",
-    resolvedDate: "9/2/2025",
-    resolvedTime: "07:55:00 AM",
-  },
-  {
-    id: "INC2233985",
-    description: "Critical System Upgrade Failure.",
-    category: "Infrastructure",
-    priority: "P3",
-    resolution: "Rolled back to previous version; investigating root cause.",
-    state: "Reopen",
-    resolvedDate: "9/2/2025",
-    resolvedTime: "06:44:36 AM",
-  },
-  {
-    id: "INC2233984",
-    description: "Data Corruption in Production DB.",
-    category: "Ecom Systems",
-    priority: "P1",
-    resolution: "Restored from backup; running consistency checks.",
-    state: "In progress",
-    resolvedDate: "9/2/2025",
-    resolvedTime: "05:33:44 AM",
-  },
-  {
-    id: "INC2233993",
-    description: "Unexpected Server Shutdown.",
-    category: "Finance",
-    priority: "P3",
-    resolution: "Server restarted; checking hardware logs.",
-    state: "On hold",
-    resolvedDate: "9/2/2025",
-    resolvedTime: "04:22:33 AM",
-  },
-  {
-    id: "INC2233992",
-    description: "SSL Certificate Expired.",
-    category: "Security",
-    priority: "P2",
-    resolution: "Renewed certificate; services restored.",
-    state: "Closed",
-    resolvedDate: "9/2/2025",
-    resolvedTime: "03:11:22 AM",
-  },
-  {
-    id: "INC2233991",
-    description: "Hardware Failure.",
-    category: "Infrastructure",
-    priority: "P4",
-    resolution: "Replaced faulty hardware.",
-    state: "Closed",
-    resolvedDate: "9/2/2025",
-    resolvedTime: "02:00:00 AM",
-  },
-  {
-    id: "INC2233990",
-    description: "Minor UI Bug.",
-    category: "Ecom Systems",
-    priority: "P4",
-    resolution: "Fixed in hotfix release.",
-    state: "Closed",
-    resolvedDate: "9/2/2025",
-    resolvedTime: "01:00:00 AM",
-  },
-];
-
-const ALL_PRIORITIES_KEY = "All Incidents";
-
-const getPriorityDisplayValue = (code: string) => {
-  const mapping: Record<string, string> = {
-    P1: "Critical",
-    P2: "High",
-    P3: "Moderate",
-    P4: "Low",
-  };
-  return `${code}- ${mapping[code] || "Priority"}`;
-};
-
-interface Incident {
-  incidentNo: string;
-  description: string;
-  category: string;
-  resolutionNotes: string;
-  state: string;
-  resolvedDateTime: string;
-}
-
-interface ApiResponse {
-  pagination: any;
-  pageNumber: number;
-  pageSize: number;
-  totalPages: number;
-  totalElements: number;
-  incidents: Incident[];
-}
+import {
+  appliedFilter,
+  Incident,
+  incidentAPIRequests,
+  incidentAPIResponses,
+} from "../../store/filterStore";
 
 const CriticalIncidentsList: React.FC = () => {
-
-
   const appliedFilters = useAtomValue(appliedFilter);
+  const incidentAPIReqs = useAtomValue(incidentAPIRequests);
+  const [incidentAPIResList, setIncidentAPIResList] =
+    useAtom(incidentAPIResponses);
 
-  // 🪣 React state
-  const [ApiResponse, setApiResponse] = useState<ApiResponse | null>(null);
+  const [tabs, setTabs] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState("All Incidents");
+  const [tabCounts, setTabCounts] = useState<Record<string, number>>({});
 
-  // 🧭 Pagination/sorting/metrics state
-  const [pageNumber, setPageNumber] = useState(1);
-  const [pageSize, setPageSize] = useState<number | null>(null);
-  const [sortBy, setSortBy] = useState<string | null>("Alphabetical");
-  const [sortOrder, setSortOrder] = useState<string | null>("ascending");
-  const [metricsUnit, setMetricsUnit] = useState("Weeks");
-
-  // 📡 Fetch data from API
   useEffect(() => {
-    const fetchMemberSummary = async () => {
-      try {
-        const query = buildFilterQuery(appliedFilters);
-        const url = query
-          ? `http://localhost:5092/api/Incident/detailsbypriority?${query}`
-          : `http://localhost:5092/api/Incident/detailsbypriority`;
-        console.log("Critical incident URL:", url);
+    const entry = Object.entries(incidentAPIReqs).find(
+      (entry) => entry[0] === activeTab
+    );
+    if (entry) {
+      const filters = buildFilterQuery({ ...appliedFilters, Priority: [] });
+      const priority = encodeURIComponent(entry[0]);
+      const url =
+        entry[0] === "All Incidents"
+          ? `http://localhost:5092/api/Incident/detailsbypriority?PageNumber=${entry[1].PageNumber}&Search=${entry[1].Search}&SortBy=${entry[1].SortBy}&SortOrder=${entry[1].SortOrder}&${filters}`
+          : `http://localhost:5092/api/Incident/detailsbypriority?Priority=${priority}&PageNumber=${entry[1].PageNumber}&Search=${entry[1].Search}&SortBy=${entry[1].SortBy}&SortOrder=${entry[1].SortOrder}&${filters}`;
+      fetch(url).then((res) => {
+        res.json().then((data) => {
+          setIncidentAPIResList((prev) => {
+            const curr = { ...prev };
+            curr[activeTab] = data;
+            return curr;
+          });
+        });
+      });
+    }
+  }, [incidentAPIReqs, appliedFilters, activeTab]);
 
-        const response = await fetch(url);
-        const data: ApiResponse = await response.json();
+  useEffect(() => {
+    Object.keys(incidentAPIReqs).forEach((key) => {
+      const filters = buildFilterQuery({ ...appliedFilters, Priority: [] });
+      const priority = encodeURIComponent(key);
+      const url =
+        key === "All Incidents"
+          ? `http://localhost:5092/api/Incident/detailsbypriority?PageSize=1&${filters}&Search=${incidentAPIReqs[key].Search}`
+          : `http://localhost:5092/api/Incident/detailsbypriority?Priority=${priority}&Search=${incidentAPIReqs[key].Search}&PageSize=1&${filters}`;
+      fetch(url).then((res) => {
+        res.json().then((data) => {
+          setTabCounts((prev) => {
+            const curr = { ...prev };
+            curr[key] = data.totalElements ?? 0;
+            return curr;
+          });
+        });
+      });
+    });
+  }, [incidentAPIReqs, appliedFilters]);
 
-
-
-        setApiResponse(data);
-      } catch (error) {
-        console.error("Error fetching member summary:", error);
-        setApiResponse(null);
-      }
-    };
-
-    fetchMemberSummary();
-  }, [appliedFilters, pageNumber, pageSize, sortBy, sortOrder, metricsUnit]);
-
-
-
-
-  const dynamicPriorityCodes = useMemo(() => {
-    const codes = Array.from(new Set(incidentsData.map((d) => d.priority)));
-    codes.sort((a, b) => parseInt(a.substring(1)) - parseInt(b.substring(1)));
-    return codes;
-  }, []);
-
-  const dynamicPriorityLevels = dynamicPriorityCodes.map((code) => ({
-    value: getPriorityDisplayValue(code),
-    code,
-  }));
-
-  const [activePriority, setActivePriority] = useState<string | null>(
-    ALL_PRIORITIES_KEY
-  );
+  useEffect(() => {
+    setTabs(Object.keys(incidentAPIReqs));
+  }, [incidentAPIReqs]);
 
   const handleAccordionChange = (value: string | null) => {
-    setActivePriority(value);
+    setActiveTab(value ?? "");
   };
 
   return (
     <div className="incident-dashboard">
       <h1 className="dashboard-title">Critical Incidents List</h1>
 
-      {/* Tabs */}
       <div className="filter-tabs">
-        <button
-          className={`tab-button ${activePriority === ALL_PRIORITIES_KEY ? "active" : ""
-            }`}
-          onClick={() => setActivePriority(ALL_PRIORITIES_KEY)}
-        >
-          All Incidents ({incidentsData.length})
-        </button>
-
-        {dynamicPriorityLevels.map((p) => (
+        {tabs.map((tab, index) => (
           <button
-            key={p.code}
-            className={`tab-button ${activePriority === p.value ? "active" : ""
-              }`}
-            onClick={() => setActivePriority(p.value)}
+            key={tab}
+            className={`tab-button ${activeTab === tab ? "active" : ""}`}
+            onClick={() => setActiveTab(tab)}
           >
-            {p.value} ({incidentsData.filter((d) => d.priority === p.code).length})
+            {index === 0 ? tab : `P${tab}`} ({tabCounts[tab] ?? 0})
           </button>
         ))}
       </div>
 
-      {/* Accordion */}
       <div className="incident-section">
         <Accordion
           chevronPosition="right"
-          value={activePriority}
+          value={activeTab}
           onChange={handleAccordionChange}
         >
-          {/* All incidents */}
-          <Accordion.Item value={ALL_PRIORITIES_KEY}>
-            <Accordion.Control>
-              {ALL_PRIORITIES_KEY} ({incidentsData.length})
-            </Accordion.Control>
-            <Accordion.Panel>
-              <IncidentTable incidents={incidentsData} />
-            </Accordion.Panel>
-          </Accordion.Item>
-
-          {/* Dynamic priorities */}
-          {dynamicPriorityLevels.map((priority) => {
-            const priorityIncidents = incidentsData.filter(
-              (i) => i.priority === priority.code
-            );
-            return (
-              <Accordion.Item key={priority.code} value={priority.value}>
-                <Accordion.Control>
-                  {priority.value} ({priorityIncidents.length})
-                </Accordion.Control>
-                <Accordion.Panel>
-                  <IncidentTable incidents={priorityIncidents} />
-                </Accordion.Panel>
-              </Accordion.Item>
-            );
-          })}
+          {tabs.map((tab, index) => (
+            <Accordion.Item key={tab} value={tab}>
+              <Accordion.Control>
+                {index === 0 ? tab : `P${tab}`} ({tabCounts[tab] ?? 0})
+              </Accordion.Control>
+              <Accordion.Panel>
+                <IncidentTable
+                  tab={tab}
+                  incidents={incidentAPIResList[tab]?.incidents ?? []}
+                  totalElements={incidentAPIResList[tab]?.totalElements ?? 0}
+                  totalPages={incidentAPIResList[tab]?.totalPages ?? 0}
+                />
+              </Accordion.Panel>
+            </Accordion.Item>
+          ))}
         </Accordion>
       </div>
     </div>
@@ -270,79 +119,264 @@ const CriticalIncidentsList: React.FC = () => {
 
 export default CriticalIncidentsList;
 
-const IncidentTable: React.FC<{ incidents: any[] }> = ({ incidents }) => {
+const IncidentTable: React.FC<{
+  tab: string;
+  incidents: Incident[];
+  totalElements: number;
+  totalPages: number;
+}> = ({ tab, incidents, totalElements, totalPages }) => {
+  const [incidentAPIReqs, setIncidentAPIReqs] = useAtom(incidentAPIRequests);
+  const [startRange, setStartRange] = useState(1);
+  const [endRange, setEndRange] = useState(8);
+  const [sortField, setSortField] = useState("");
+  const [sortOrder, setSortOrder] = useState("");
+
+  useEffect(() => {
+    const offset =
+      (incidentAPIReqs[tab]?.PageNumber - 1) * incidentAPIReqs[tab]?.PageSize;
+    setStartRange(offset + 1);
+    const end = offset + incidentAPIReqs[tab]?.PageSize;
+    setEndRange(end > totalElements ? totalElements : end);
+  }, [incidentAPIReqs]);
+
+  const resetPageNumber = () => {
+    setIncidentAPIReqs((prev) => {
+      const curr = { ...prev };
+      curr[tab] = {
+        ...curr[tab],
+        PageNumber: 1,
+      };
+      return curr;
+    });
+  };
+  const nextPage = () => {
+    setIncidentAPIReqs((prev) => {
+      const curr = { ...prev };
+      curr[tab] = {
+        ...curr[tab],
+        PageNumber: curr[tab].PageNumber + 1,
+      };
+      return curr;
+    });
+  };
+
+  const prevPage = () => {
+    setIncidentAPIReqs((prev) => {
+      const curr = { ...prev };
+      curr[tab] = {
+        ...curr[tab],
+        PageNumber:
+          curr[tab].PageNumber > 1
+            ? curr[tab].PageNumber - 1
+            : curr[tab].PageNumber,
+      };
+      return curr;
+    });
+  };
+
+  const lastPage = () => {
+    setIncidentAPIReqs((prev) => {
+      const curr = { ...prev };
+      curr[tab] = {
+        ...curr[tab],
+        PageNumber: totalPages,
+      };
+      return curr;
+    });
+  };
+
+  const search = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      setIncidentAPIReqs((prev) => {
+        const curr = { ...prev };
+        curr[tab] = {
+          ...curr[tab],
+          Search: e.currentTarget.value,
+        };
+        return curr;
+      });
+    } else if (e.currentTarget.value === "") {
+      setIncidentAPIReqs((prev) => {
+        const curr = { ...prev };
+        curr[tab] = {
+          ...curr[tab],
+          Search: "",
+        };
+        return curr;
+      });
+    }
+  };
+
+  const sort = (field: string) => {
+    let order =
+      sortOrder === "desc" ? "" : sortOrder === "asc" ? "desc" : "asc";
+    if (field !== sortField) {
+      order = "asc";
+    }
+    setIncidentAPIReqs((prev) => {
+      const curr = { ...prev };
+      curr[tab] = {
+        ...curr[tab],
+        SortOrder: order,
+        SortBy: order ? field : "",
+      };
+      return curr;
+    });
+    setSortField(order ? field : "");
+    setSortOrder(order);
+  };
+
   return (
     <div className="incident-table-container">
-      {/* Search box (static, no logic) */}
       <Input
         classNames={{
           wrapper: "my-input-wrapper",
           input: "my-input-element",
         }}
         placeholder="Search incidents..."
+        onKeyUp={(e) => search(e)}
       />
 
-      {/* Header */}
-      <div className="incident-row header-row">
-        <span className="col-incident-no">
-          Incident no <BsSortUp size={14} />
-        </span>
-        <span className="col-description">
-          Description <BsSortUp size={14} />
-        </span>
-        <span className="col-category">
-          Category <BsSortUp size={14} />
-        </span>
-        <span className="col-resolution">
-          Resolution notes <BsSortUp size={14} />
-        </span>
-        <span className="col-state">
-          State <BsSortUp size={14} />
-        </span>
-        <span className="col-resolved-date">
-          Resolved Date & Time <BsSortUp size={14} />
-        </span>
-      </div>
-
-      {/* Body */}
-      <div className="incident-body">
-        {incidents.map((incident) => (
-          <div key={incident.id} className="incident-row data-row">
-            <span className="col-incident-no">{incident.id}</span>
-            <span className="col-description">{incident.description}</span>
-            <span className="col-category">{incident.category}</span>
-            <span className="col-resolution">{incident.resolution}</span>
-            <span
-              className={`col-state state-${incident.state
-                .toLowerCase()
-                .replace(" ", "-")}`}
-            >
-              {incident.state}
-            </span>
-            <span className="col-resolved-date">
-              {incident.resolvedDate}
-              <br />
-              {incident.resolvedTime}
-            </span>
-          </div>
-        ))}
-      </div>
-
+      <Table.ScrollContainer minWidth={600}>
+        <Table layout="auto">
+          <Table.Thead>
+            <Table.Tr className="header-row">
+              <Table.Th
+                className="col-incident-no"
+                onClick={() => sort("incidentNo")}
+              >
+                Incident No{" "}
+                {sortField === "incidentNo" ? (
+                  sortOrder === "asc" ? (
+                    <BsSortUp size={14} />
+                  ) : (
+                    <BsSortDown size={14} />
+                  )
+                ) : (
+                  <></>
+                )}
+              </Table.Th>
+              <Table.Th
+                className="col-description"
+                onClick={() => sort("description")}
+              >
+                Description{" "}
+                {sortField === "description" ? (
+                  sortOrder === "asc" ? (
+                    <BsSortUp size={14} />
+                  ) : (
+                    <BsSortDown size={14} />
+                  )
+                ) : (
+                  <></>
+                )}
+              </Table.Th>
+              <Table.Th
+                className="col-category"
+                onClick={() => sort("category")}
+              >
+                Category{" "}
+                {sortField === "category" ? (
+                  sortOrder === "asc" ? (
+                    <BsSortUp size={14} />
+                  ) : (
+                    <BsSortDown size={14} />
+                  )
+                ) : (
+                  <></>
+                )}
+              </Table.Th>
+              <Table.Th
+                className="col-resolution"
+                onClick={() => sort("resolutionNotes")}
+              >
+                Resolution Notes{" "}
+                {sortField === "resolutionNotes" ? (
+                  sortOrder === "asc" ? (
+                    <BsSortUp size={14} />
+                  ) : (
+                    <BsSortDown size={14} />
+                  )
+                ) : (
+                  <></>
+                )}
+              </Table.Th>
+              <Table.Th className="col-state" onClick={() => sort("state")}>
+                State{" "}
+                {sortField === "state" ? (
+                  sortOrder === "asc" ? (
+                    <BsSortUp size={14} />
+                  ) : (
+                    <BsSortDown size={14} />
+                  )
+                ) : (
+                  <></>
+                )}
+              </Table.Th>
+              <Table.Th
+                className="col-resolved-date"
+                onClick={() => sort("resolvedDateTime")}
+              >
+                Resolved Date & Time{" "}
+                {sortField === "resolvedDateTime" ? (
+                  sortOrder === "asc" ? (
+                    <BsSortUp size={14} />
+                  ) : (
+                    <BsSortDown size={14} />
+                  )
+                ) : (
+                  <></>
+                )}
+              </Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody className="incident-body">
+            {incidents.map((incident) => (
+              <Table.Tr
+                key={incident.incidentNo}
+                className="incident-row data-row"
+              >
+                <Table.Td className="col-incident-no">
+                  {incident.incidentNo}
+                </Table.Td>
+                <Table.Td className="col-description">
+                  {incident.description}
+                </Table.Td>
+                <Table.Td className="col-category">
+                  {incident.category}
+                </Table.Td>
+                <Table.Td className="col-resolution">
+                  {incident.resolutionNotes || "-"}
+                </Table.Td>
+                <Table.Td className="col-state">{incident.state}</Table.Td>
+                <Table.Td className="col-resolved-date">
+                  {incident.resolvedDateTime}
+                </Table.Td>
+              </Table.Tr>
+            ))}
+          </Table.Tbody>
+        </Table>
+      </Table.ScrollContainer>
       {/* Pagination UI (static, no logic) */}
       <div className="pagination-footer">
-        <span>Showing 1-10 of {incidents.length} Total Incidents</span>
+        <span>
+          Showing {startRange}-{endRange} of {totalElements} Total Incidents
+        </span>
         <div className="pagination-controls">
-          <button style={{ borderRadius: "6px 0 0 6px" }}>
+          <button
+            onClick={resetPageNumber}
+            style={{ borderRadius: "6px 0 0 6px" }}
+          >
             <img src={forward} alt="" />
             <img src={forward} alt="" />
           </button>
-          <button>
+          <button onClick={prevPage}>
             <img src={forward} alt="" />
           </button>
-          <button>
+          <button onClick={nextPage}>
             <img src={backward} alt="" />
           </button>
-          <button style={{ borderRadius: "0 6px 6px 0" }}>
+          <button onClick={lastPage} style={{ borderRadius: "0 6px 6px 0" }}>
             <img src={backward} alt="" />
             <img src={backward} alt="" />
           </button>
