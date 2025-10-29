@@ -3,6 +3,7 @@ import "./IncidentChart.css";
 import { buildFilterQuery } from "../../utils/queryBuilder";
 import { appliedFilter } from "../../store/filterStore";
 import { useAtomValue } from "jotai";
+import { Group, Text, Box, Stack, Paper } from "@mantine/core";
 
 // --- Data Structure Definitions ---
 interface PriorityStats {
@@ -65,8 +66,7 @@ const buildIncidentChartData = (
 // --- React Component ---
 const IncidentChart: React.FC = () => {
   const appliedFilters = useAtomValue(appliedFilter);
-  const [incidentPrioritySummary, setIncidentPrioritySummary] =
-    useState<IncidentPrioritySummary | null>(null);
+  const [incidentPrioritySummary, setIncidentPrioritySummary] =useState<IncidentPrioritySummary | null>(null);
 
   useEffect(() => {
     const fetchIncidentSummary = async () => {
@@ -99,7 +99,14 @@ const IncidentChart: React.FC = () => {
   const priorityData = incidentPrioritySummary.priority[priorityKey]?.[0];
 
   if (!priorityData)
-    return <div>No data available for priority {priorityKey}</div>;
+    return <div style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
+      <Stack gap="md" align="center" w={200} h={200}>
+        <Text c="dimmed" ta="center">
+          No incidents found for the selected priority.
+        </Text>
+      </Stack>
+      {/* {priorityKey} */}
+      </div>;
 
   // --- Build Chart Data for That Priority ---
   const { data, totalCount, maxCount } = buildIncidentChartData(priorityData);

@@ -1,7 +1,6 @@
 import "./cards.css";
-import { useMemo } from "react";
-import IncidentChart from "./IncidentChart"; // Assuming this is your P1 Chart component
-import { incidentsData } from "../data/incidents";
+import { useMemo, useState, useEffect } from "react";
+import IncidentChart from "./IncidentChart";
 import DonutChart from "./donutChart";
 import PieChartWithExplosion from "./PieChartWithExplosion";
 import LineChart from "./lineChart";
@@ -11,54 +10,10 @@ import inprogress from "../../assets/inprogress_icon.png";
 import closedicon from "../../assets/closed_icon.png";
 import { useAtomValue } from "jotai";
 import { filterState, appliedFilter } from "../../store/filterStore";
-import React, { useEffect, useState } from "react";
 import { buildFilterQuery } from "../../utils/queryBuilder";
+import { incidentsData } from "../data/incidents";
 
-
-
-// --- Data Definition (Used in this file) ---
-// --- Utility Function to Aggregate Summary Cards Data ---
-function getIncidentSummary(data: any[]) {
-  const summary = {
-    total: data.length,
-    open: 0,
-    inProgress: 0,
-    closed: 0,
-    p1: 0,
-    p2: 0,
-    p3: 0,
-    p4: 0,
-  };
-
-  data.forEach((incident) => {
-    const state = incident.state.toLowerCase();
-    const priority = incident.priority.toLowerCase();
-
-    // State Counts
-    if (state === "open") summary.open++;
-    if (state === "in progress") summary.inProgress++;
-    if (state === "closed") summary.closed++;
-
-    // Priority Counts
-    if (priority === "p1") summary.p1++;
-    if (priority === "p2") summary.p2++;
-    if (priority === "p3") summary.p3++;
-    if (priority === "p4") summary.p4++;
-  });
-
-  return summary;
-}
-
-
-// --- Component Definition ---
 export default function Cards() {
-    type IncidentSummary = {
-        totalIncidents: number;
-        openIncidents: number;
-        inProgressIncidents: number;
-        closedIncidents: number;
-    };
-
     interface PriorityStats {
         totalCount: number;
         open: number;
@@ -74,16 +29,23 @@ export default function Cards() {
         totalAverageResolvedTime: string;
     }
 
-    const filterOpened = useAtomValue(filterState);
+    interface IncidentSummary {
+        totalIncidents: number;
+        openIncidents: number;
+        inProgressIncidents: number;
+        closedIncidents: number;
+    }
 
+    const filterOpened = useAtomValue(filterState);
     const appliedFilters = useAtomValue(appliedFilter);
 
-    // ✅ State renamed
     const [incidentSummary, setIncidentSummary] = useState<IncidentSummary | null>(null);
     const [incidentPrioritySummary, setIncidentPrioritySummary] = useState<IncidentPrioritySummary | null>(null);
 
+    // ✅ new state for metric selection
+    const [metrics, setMetrics] = useState<string>("Weeks");
 
-
+    // Fetch KPIs summary
     useEffect(() => {
         const fetchIncidentSummary = async () => {
             try {
@@ -94,77 +56,96 @@ export default function Cards() {
 
                 const response = await fetch(url);
                 const data: IncidentSummary = await response.json();
-                console.log("kpis URL"+url);
-                
+                console.log("kpis URL:", url);
                 setIncidentSummary(data);
             } catch (error) {
                 console.error("Error fetching incident summary:", error);
                 setIncidentSummary(null);
             }
         };
-
         fetchIncidentSummary();
     }, [appliedFilters]);
 
+    // ✅ Fetch incident count by priority (depends on filters + metrics)
     useEffect(() => {
-        const fetchIncidentSummary = async () => {
+        const fetchIncidentPrioritySummary = async () => {
             try {
                 const query = buildFilterQuery(appliedFilters);
-                const url = query
-                    ? `http://localhost:5092/api/Incident/countbypriority?${query}`
-                    : `http://localhost:5092/api/Incident/countbypriority`;
+                const queryWithMetric = query ? `${query}&metrics=${metrics}` : `metrics=${metrics}`;
 
-                console.log("Final URL:", url);
+                const url = `http://localhost:5092/api/Incident/countbypriority?${queryWithMetric}`;
+                console.log("Incident priority URL:", url);
 
                 const response = await fetch(url);
                 const data: IncidentPrioritySummary = await response.json();
-                setIncidentPrioritySummary(data);
 
+                setIncidentPrioritySummary(data);
             } catch (error) {
-                console.error("Error fetching incident summary:", error);
+                console.error("Error fetching incident priority summary:", error);
                 setIncidentPrioritySummary(null);
             }
         };
 
-        fetchIncidentSummary();
-    }, [appliedFilters]);
-    const summary = useMemo(() => getIncidentSummary(incidentsData), []);
+        fetchIncidentPrioritySummary();
+    }, [appliedFilters, metrics]); // ✅ triggers again when metrics change
+
+    const summary = useMemo(() => {
+        const result = {
+            total: incidentsData.length,
+            open: 0,
+            inProgress: 0,
+            closed: 0,
+            p1: 0,
+            p2: 0,
+            p3: 0,
+            p4: 0,
+        };
+        incidentsData.forEach((incident) => {
+            const state = incident.state.toLowerCase();
+            const priority = incident.priority.toLowerCase();
+            if (state === "open") result.open++;
+            if (state === "in progress") result.inProgress++;
+            if (state === "closed") result.closed++;
+            if (priority === "p1") result.p1++;
+            if (priority === "p2") result.p2++;
+            if (priority === "p3") result.p3++;
+            if (priority === "p4") result.p4++;
+        });
+        return result;
+    }, []);
 
     return (
         <div className={`dashboard-container ${filterOpened ? "opened" : "closed"}`}>
-            {/* first div */}
+            {/* ---- TOP CARDS ---- */}
             <div className={`first-div ${filterOpened ? "full" : "compact"}`}>
                 <div className="summary-cards">
-                    {/* Total Incidents Card */}
                     <div className="card incident">
                         <div className="card-icon incident">
                             <img className="icon-property" src={totalincidenticon} alt="" />
                         </div>
                         <div className="card-content">
                             <h3>Total Incident</h3>
-                            <p>{incidentSummary?.totalIncidents}</p> {/* DYNAMIC VALUE */}
+                            <p>{incidentSummary?.totalIncidents}</p>
                         </div>
                     </div>
 
-                    {/* Open Incidents Card */}
                     <div className="card open">
                         <div className="card-icon open">
                             <img className="icon-property" src={openicon} alt="" />
                         </div>
                         <div className="card-content">
                             <h3>Open</h3>
-                            <p>{incidentSummary?.openIncidents}</p> {/* DYNAMIC VALUE */}
+                            <p>{incidentSummary?.openIncidents}</p>
                         </div>
                     </div>
 
-                    {/* In Progress Incidents Card */}
                     <div className="card progress">
                         <div className="card-icon progress">
                             <img className="icon-property" src={inprogress} alt="" />
                         </div>
                         <div className="card-content">
                             <h3>In progress</h3>
-                            <p>{incidentSummary?.inProgressIncidents} </p> {/* DYNAMIC VALUE */}
+                            <p>{incidentSummary?.inProgressIncidents}</p>
                         </div>
                     </div>
 
@@ -174,101 +155,105 @@ export default function Cards() {
                         </div>
                         <div className="card-content">
                             <h3>Closed</h3>
-                            <p>{incidentSummary?.closedIncidents}</p> {/* DYNAMIC VALUE */}
+                            <p>{incidentSummary?.closedIncidents}</p>
                         </div>
                     </div>
                 </div>
 
-                {/* INCIDENT PRIORITY// */}
+                {/* ---- INCIDENT PRIORITY HEADER ---- */}
                 <div>
-
                     <div className="incident-priority-header">
                         <h2>Incident Priority</h2>
                         <div className="metrics-dropdown">
-                            <span style={{ fontWeight: '600' }}> Metrics in:</span>
-                            <select style={{ fontWeight: '500' }}>
-                                <option>Weeks</option>
-                                <option>Days</option>
-                                <option>Months</option>
+                            <span style={{ fontWeight: "600" }}> Metrics in:</span>
+                            <select
+                                value={metrics}
+                                onChange={(e) => setMetrics(e.target.value)} // ✅ trigger re-fetch
+                                style={{ fontWeight: "500" }}
+                            >
+                                <option value="Weeks">Weeks</option>
+                                <option value="Days">Days</option>
+                                <option value="Months">Months</option>
                             </select>
                         </div>
                     </div>
-                    <div className={`priority-container ${filterOpened ? "" : "compact-priority"}`} style={{ backgroundColor: '#f5f6fa', borderRadius: '12px' }}>
+
+                    {/* ---- PRIORITY SUMMARY ---- */}
+                    <div
+                        className={`priority-container ${filterOpened ? "" : "compact-priority"}`}
+                        style={{ backgroundColor: "#f5f6fa", borderRadius: "12px" }}
+                    >
                         <div className="priority-summary">
                             <div className="priority-item">
                                 <h3>P1-Critical</h3>
-                                <p>{incidentPrioritySummary?.priority["1 - Critical"]?.[0]?.totalCount ?? 0}</p> {/* DYNAMIC VALUE */}
+                                <p>{incidentPrioritySummary?.priority["1 - Critical"]?.[0]?.totalCount ?? 0}</p>
                             </div>
                             <div className="priority-item">
                                 <h3>P2-High</h3>
-                                <p>{incidentPrioritySummary?.priority["2 - High"]?.[0]?.totalCount ?? 0}</p> {/* DYNAMIC VALUE */}
+                                <p>{incidentPrioritySummary?.priority["2 - High"]?.[0]?.totalCount ?? 0}</p>
                             </div>
                             <div className="priority-item">
                                 <h3>P3-Moderate</h3>
-                                <p>{incidentPrioritySummary?.priority["3 - Moderate"]?.[0]?.totalCount ?? 0}</p> {/* DYNAMIC VALUE */}
+                                <p>{incidentPrioritySummary?.priority["3 - Moderate"]?.[0]?.totalCount ?? 0}</p>
                             </div>
                             <div className="priority-item">
                                 <h3>P4-Low</h3>
-                                <p>{ incidentPrioritySummary?.priority["4 - Low"]?.[0]?.totalCount ?? 0}</p> {/* DYNAMIC VALUE */}
+                                <p>{incidentPrioritySummary?.priority["4 - Low"]?.[0]?.totalCount ?? 0}</p>
                             </div>
+
+                            {/* ✅ Dynamic Avg Resolved Time */}
                             <div className="priority-item avg-resolved">
                                 <div>
                                     <h3>Avg Resolved Time</h3>
-                                    <p>{incidentPrioritySummary?.totalAverageResolvedTime ?? "0 weeks"}</p>
+                                    <p>
+                                        {(() => {
+                                            const timeText = incidentPrioritySummary?.totalAverageResolvedTime ?? "0 weeks";
+                                            const [value, unit] = timeText.split(" ");
+                                            return (
+                                                <>
+                                                    {value} <small>{unit}</small>
+                                                </>
+                                            );
+                                        })()}
+                                    </p>
                                 </div>
                                 <span className="card-status-dot green"></span>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
 
+            {/* ---- CHARTS SECTION ---- */}
+            <div className={`incident-priority-section ${filterOpened ? "full" : "expanded"}`}>
+                <div className="charts-grid">
+                    <div className="chart-card">
+                        <h3>P1- Critical ({incidentPrioritySummary?.priority["1 - Critical"]?.[0]?.totalCount ?? 0})</h3>
+                        <IncidentChart />
+                    </div>
 
+                    <div className="chart-card">
+                        <h3>P2- High ({incidentPrioritySummary?.priority["2 - High"]?.[0]?.totalCount ?? 0})</h3>
+                        <div className="chart-doughnut-container doughnut-p2">
+                            <PieChartWithExplosion />
+                        </div>
+                    </div>
 
-      {/* --- INCIDENT PRIORITY SECTION (DYNAMIC PRIORITY COUNTS) --- */}
-      <div
-        className={`incident-priority-section ${
-          filterOpened ? "full" : "expanded"
-        }`}
-      >
-        {/* --- CHARTS GRID --- */}
-        <div className="charts-grid">
-          {/* P1 Chart (Bar Chart) */}
-          <div className="chart-card">
-            {/* IncidentChart assumes it internally targets P1 based on previous discussion */}
-            <IncidentChart />
-          </div>
+                    <div className="chart-card">
+                        <h3>P3- Moderate ({incidentPrioritySummary?.priority["3 - Moderate"]?.[0]?.totalCount ?? 0})</h3>
+                        <div className="chart-line-container">
+                            <LineChart />
+                        </div>
+                    </div>
 
-          {/* P2 Chart (Doughnut Chart - remains static for now) */}
-          <div className="chart-card">
-            <h3>P2- High ({summary.p2})</h3> {/* DYNAMIC VALUE */}
-            {/* ... (Static Doughnut Chart JSX) ... */}
-            <div className="chart-doughnut-container doughnut-p2">
-              <PieChartWithExplosion />
+                    <div className="chart-card">
+                        <h3>P4- Low ({incidentPrioritySummary?.priority["4 - Low"]?.[0]?.totalCount ?? 0})</h3>
+                        <div className="chart-doughnut-container">
+                            <DonutChart />
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-
-          {/* P3 Chart (Line Chart - remains static for now) */}
-          <div className="chart-card">
-            <h3>P3- Moderate ({summary.p3})</h3> {/* DYNAMIC VALUE */}
-            {/* ... (Static Line Chart JSX) ... */}
-            <div className="chart-line-container">
-              {/* <AreaChartSection/> */}
-              <LineChart />
-            </div>
-          </div>
-
-          {/* P4 Chart (Doughnut Chart - remains static for now) */}
-          <div className="chart-card">
-            <h3>P4- Low ({summary.p4})</h3>
-            {/* ... (Static Doughnut Chart JSX) ... */}
-            <div className="chart-doughnut-container">
-              <DonutChart></DonutChart>
-            </div>
-          </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 }

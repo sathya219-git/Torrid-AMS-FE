@@ -1,22 +1,24 @@
+import { FilterState } from "../store/filterStore";
+
 // utils/queryBuilder.ts
 export const buildFilterQuery = (filters: any): string => {
   const params = new URLSearchParams();
 
   // Handle duration separately
-  if (filters.duration?.from) {
-    params.append("FromDate", new Date(filters.duration.from).toLocaleString());
+  if (filters.FromDate) {
+    params.append("FromDate", new Date(filters.FromDate).toLocaleString());
   }
-  if (filters.duration?.to) {
-    params.append("ToDate", new Date(filters.duration.to).toLocaleString());
+  if (filters.ToDate) {
+    params.append("ToDate", new Date(filters.ToDate).toLocaleString());
   }
 
   // Handle arrays (like category, assignmentGroup, etc.)
   const mapping: Record<string, string> = {
-    assignmentGroup: "AssignmentGroup",
-    category: "Category",
-    incidentPriority: "IncidentPriority",
-    status: "Status",
-    teamMember: "TeamMember",
+    AssignmentGroup: "AssignmentGroup",
+    Category: "Category",
+    Priority: "Priority",
+    State: "State",
+    AssignedToName: "AssignedToName",
   };
 
   Object.keys(mapping).forEach((key) => {

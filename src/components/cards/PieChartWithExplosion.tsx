@@ -134,7 +134,7 @@ export default function PieChartWithExplosion() {
   const [incidentPrioritySummary, setIncidentPrioritySummary] =
     useState<IncidentPrioritySummary | null>(null);
 
-  const TARGET_PRIORITY = "4 - Low";
+  const TARGET_PRIORITY = "2 - High";
 
   useEffect(() => {
     const fetchIncidentSummary = async () => {
@@ -177,8 +177,10 @@ export default function PieChartWithExplosion() {
   const totalCount = chartData.reduce((sum, item) => sum + item.value, 0);
 
   return (
+    
     <div className="piechart-root-container">
       <div className="second-row-container">
+        
         <div className="pie-contaier">
           <Box w={300}>
             <Group gap={50} justify="center">
