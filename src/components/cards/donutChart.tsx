@@ -1,13 +1,15 @@
 import { DonutChart, PieChartProps } from "@mantine/charts";
 import { Group, Text, Box, Stack, Paper } from "@mantine/core";
 import "./PieChartWithExplosion.css";
-// NOTE: We no longer need to import TooltipProps from 'recharts' after the fix
-import { Incident, incidentsData } from "../data/incidents";
+import { useAtomValue } from "jotai";
+import { appliedFilter } from "../../store/filterStore";
+import { useEffect, useState } from "react";
+import { buildFilterQuery } from "../../utils/queryBuilder";
 
-// --- 1. Define the specific type for the PieChart data array ---
+// --- Define chart data type ---
 type MantinePieChartData = PieChartProps["data"];
 
-// --- 2. Define State Colors for the chart segments ---
+// --- Define color mapping ---
 const STATE_COLORS: Record<string, string> = {
   Open: "#FC7E80",
   "In progress": "#ECCF5C",
@@ -17,63 +19,21 @@ const STATE_COLORS: Record<string, string> = {
   Reopen: "#FC88F0",
 };
 
-// --- 3. Data Transformation Function (Unchanged) ---
-function getPieChartData(
-  incidents: Incident[],
-  targetPriority: string
-): MantinePieChartData {
-  const filteredIncidents = incidents.filter(
-    (incident) => incident.priority === targetPriority
-  );
-
-  const stateCounts = filteredIncidents.reduce((acc, incident) => {
-    const stateKey = incident.state;
-    acc[stateKey] = (acc[stateKey] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-
-  const pieChartData: MantinePieChartData = Object.entries(stateCounts).map(
-    ([state, count]) => ({
-      name: state,
-      value: count,
-      color: STATE_COLORS[state] || STATE_COLORS["default"],
-    })
-  );
-
-  return pieChartData;
-}
-
-// ------------------------------------------------------------------
-// --- 4. Custom Tooltip Component with Type Fix --------------------
-// ------------------------------------------------------------------
-
-// FIX: Define the required props explicitly to avoid the Recharts generic issue.
+// --- Tooltip ---
 interface CustomTooltipProps {
   active?: boolean;
-  // The type that Recharts passes for the data. We use a simple array type.
   payload?: Array<{
-    // This is the property that holds the data object (name, value, color)
     payload: {
       name: string;
       value: number;
       color: string;
     };
-    // Other Recharts internal properties can be ignored or typed as any
-    [key: string]: any;
   }>;
-  // Other Recharts internal properties
-  label?: string | number;
 }
 
 const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
-  // TypeScript will now correctly identify 'payload' as an array of objects
   if (active && payload && payload.length) {
-    // We only care about the first (and only) segment payload since tooltipDataSource="segment"
-    const dataPoint = payload[0].payload;
-    const name: string = dataPoint.name;
-    const value: number = dataPoint.value;
-    const color: string = dataPoint.color;
-
+    const { name, value, color } = payload[0].payload;
     return (
       <Paper
         radius="md"
@@ -90,7 +50,6 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
         }}
       >
         <Group wrap="nowrap">
-          {/* Colored circle */}
           <Box
             w={8}
             h={8}
@@ -99,28 +58,21 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
               borderRadius: "50%",
             }}
           />
-
           <Stack
             gap={0}
             style={{
-              display: "flex",
               flexDirection: "row",
               alignItems: "center",
-              justifyContent: "center",
             }}
           >
-            {/* State Name */}
             <Text fw={300} fz="sm" c="#ffffff6e">
               {name}
             </Text>
-            {/* Incident Count */}
             <Text
               c="#fff"
-              lh={1.2}
               style={{
                 marginLeft: "15px",
                 fontSize: "14px",
-                color: "#fff",
                 fontWeight: "bold",
               }}
             >
@@ -131,27 +83,112 @@ const CustomTooltip = ({ active, payload }: CustomTooltipProps) => {
       </Paper>
     );
   }
-
   return null;
 };
 
-// ------------------------------------------------------------------
-// --- 5. Component Implementation (Unchanged) ---
-// ------------------------------------------------------------------
+// --- API Response Types ---
+interface PriorityStats {
+  totalCount: number;
+  open: number;
+  inProgress: number;
+  closed: number;
+  onHold: number;
+  reopen: number;
+  resolved: number;
+}
+
+interface IncidentPrioritySummary {
+  priority: Record<string, PriorityStats[]>; // ✅ FIXED: Array
+  totalAverageResolvedTime: string;
+}
 
 export default function DonutCharts() {
-  const TARGET_PRIORITY = "P4";
+  const appliedFilters = useAtomValue(appliedFilter);
+  const [chartData, setChartData] = useState<MantinePieChartData>([]);
 
-  const chartData = getPieChartData(incidentsData, TARGET_PRIORITY);
-  const totalCount = chartData.reduce((sum, item) => sum + item.value, 0);
+  useEffect(() => {
+    const fetchIncidentSummary = async () => {
+      try {
+        const query = buildFilterQuery(appliedFilters);
+        const url = query
+          ? `http://localhost:5092/api/Incident/countbypriority?${query}`
+          : `http://localhost:5092/api/Incident/countbypriority`;
 
-  if (totalCount === 0) {
+        console.log("Donut URL:", url);
+
+        const response = await fetch(url);
+        const data: IncidentPrioritySummary = await response.json();
+        console.log("API Response:", data);
+
+        // --- Extract & Transform Data ---
+        const targetPriority = "4 - Low"; // You can make this prop-based
+        const priorityList = data.priority[targetPriority];
+
+        if (!priorityList || priorityList.length === 0) {
+          setChartData([]);
+          return;
+        }
+
+        const priorityData = priorityList[0]; // ✅ Take first object
+
+        const transformed: MantinePieChartData = [
+          {
+            name: "Open",
+            value: priorityData.open,
+            color:
+              priorityData.open === 0 ? "#E0E0E0" : STATE_COLORS["Open"],
+          },
+          {
+            name: "In progress",
+            value: priorityData.inProgress,
+            color:
+              priorityData.inProgress === 0
+                ? "#E0E0E0"
+                : STATE_COLORS["In progress"],
+          },
+          {
+            name: "On-Hold",
+            value: priorityData.onHold,
+            color:
+              priorityData.onHold === 0 ? "#E0E0E0" : STATE_COLORS["On-Hold"],
+          },
+          {
+            name: "Closed",
+            value: priorityData.closed,
+            color:
+              priorityData.closed === 0 ? "#E0E0E0" : STATE_COLORS["Closed"],
+          },
+          {
+            name: "Resolved",
+            value: priorityData.resolved,
+            color:
+              priorityData.resolved === 0
+                ? "#E0E0E0"
+                : STATE_COLORS["Resolved"],
+          },
+          {
+            name: "Reopen",
+            value: priorityData.reopen,
+            color:
+              priorityData.reopen === 0 ? "#E0E0E0" : STATE_COLORS["Reopen"],
+          },
+        ];
+
+        setChartData(transformed);
+      } catch (error) {
+        console.error("Error fetching incident summary:", error);
+        setChartData([]);
+      }
+    };
+
+    fetchIncidentSummary();
+  }, [appliedFilters]);
+
+  if (chartData.length === 0) {
     return (
       <Stack gap="md" align="center" w={200} h={200}>
-        {/* <Title order={4}>Incidents by State</Title>
-                <Badge color="blue">Priority: {TARGET_PRIORITY}</Badge> */}
         <Text c="dimmed" ta="center">
-          No incidents found for priority **{TARGET_PRIORITY}**.
+          No incidents found for the selected priority.
         </Text>
       </Stack>
     );

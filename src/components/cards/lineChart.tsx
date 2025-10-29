@@ -11,7 +11,9 @@ import {
   ChartOptions,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import { incidentsData } from "../data/incidents";
+import { useAtomValue } from "jotai";
+import { appliedFilter } from "../../store/filterStore";
+import { buildFilterQuery } from "../../utils/queryBuilder";
 
 ChartJS.register(
   CategoryScale,
@@ -32,12 +34,55 @@ const stateColors: Record<string, string> = {
   Reopen: "#FC88F0",
 };
 
+interface PriorityStats {
+  totalCount: number;
+  open: number;
+  inProgress: number;
+  closed: number;
+  onHold: number;
+  reopen: number;
+  resolved: number;
+}
+
+interface IncidentPrioritySummary {
+  priority: Record<string, PriorityStats[]>;
+  totalAverageResolvedTime: string;
+}
+
 const LineChart: React.FC = () => {
+  const appliedFilters = useAtomValue(appliedFilter);
+  const [incidentPrioritySummary, setIncidentPrioritySummary] =
+    useState<IncidentPrioritySummary | null>(null);
+
   const chartRef = useRef<any>(null);
   const [gradient, setGradient] = useState<string | CanvasGradient>(
     "rgba(73, 85, 85, 0.2)"
   );
 
+  // Fetch API data
+  useEffect(() => {
+    const fetchIncidentSummary = async () => {
+      try {
+        const query = buildFilterQuery(appliedFilters);
+        const url = query
+          ? `http://localhost:5092/api/Incident/countbypriority?${query}`
+          : `http://localhost:5092/api/Incident/countbypriority`;
+
+        console.log("Line URL:", url);
+
+        const response = await fetch(url);
+        const data: IncidentPrioritySummary = await response.json();
+        setIncidentPrioritySummary(data);
+      } catch (error) {
+        console.error("Error fetching incident summary:", error);
+        setIncidentPrioritySummary(null);
+      }
+    };
+
+    fetchIncidentSummary();
+  }, [appliedFilters]);
+
+  // Set gradient
   useEffect(() => {
     const chart = chartRef.current;
     if (chart) {
@@ -49,17 +94,28 @@ const LineChart: React.FC = () => {
     }
   }, []);
 
-  const p3Incidents = incidentsData.filter((i) => i.priority === "P3");
+  // 🔹 Prepare chart data dynamically from API response
+  let labels: string[] = [];
+  let values: number[] = [];
+  let pointColors: string[] = [];
 
-  const stateCountMap: Record<string, number> = {};
-  p3Incidents.forEach((incident) => {
-    const state = incident.state;
-    stateCountMap[state] = (stateCountMap[state] || 0) + 1;
-  });
+  if (incidentPrioritySummary?.priority) {
+    const p3Data = incidentPrioritySummary.priority["3 - Moderate"]?.[0];
+    if (p3Data) {
+      const stateCountMap: Record<string, number> = {
+        Open: p3Data.open,
+        "In progress": p3Data.inProgress,
+        "On-Hold": p3Data.onHold,
+        Closed: p3Data.closed,
+        Resolved: p3Data.resolved,
+        Reopen: p3Data.reopen,
+      };
 
-  const labels = Object.keys(stateCountMap);
-  const values = Object.values(stateCountMap);
-  const pointColors = labels.map((state) => stateColors[state] || "#000");
+      labels = Object.keys(stateCountMap);
+      values = Object.values(stateCountMap);
+      pointColors = labels.map((state) => stateColors[state] || "#000");
+    }
+  }
 
   const data = {
     labels,
@@ -90,48 +146,26 @@ const LineChart: React.FC = () => {
       easing: "easeOutQuad",
     },
     layout: {
-      padding: {
-        top: 10,
-        left: 0,
-        right: 0,
-        bottom: 0,
-      },
+      padding: { top: 10, left: 0, right: 0, bottom: 0 },
     },
     plugins: {
-      legend: {
-        display: false,
-      },
+      legend: { display: false },
       tooltip: {
         cornerRadius: 12,
-        padding: {
-          top: 8,
-          bottom: 8,
-          left: 16, // ✅ LEFT PADDING
-          right: 16, // ✅ RIGHT PADDING
-        },
-
-        bodySpacing: 20, // space between items
-        boxPadding: 15, // space between color box and text
+        padding: { top: 8, bottom: 8, left: 16, right: 16 },
+        bodySpacing: 20,
+        boxPadding: 15,
         enabled: true,
         backgroundColor: "black",
         titleFont: { size: 0 },
-        bodyFont: {
-          size: 14,
-          weight: "normal",
-        },
-
+        bodyFont: { size: 14, weight: "normal" },
         displayColors: true,
         usePointStyle: true,
         boxWidth: 5,
         boxHeight: 5,
         callbacks: {
           title: () => "",
-          label: (context) => {
-            const state = context.label;
-            const count = context.formattedValue;
-
-            return `${state} ${count}`;
-          },
+          label: (context) => `${context.label}: ${context.formattedValue}`,
           labelTextColor: () => "#ffffff80",
           labelColor: (context) => {
             const dataset = context.dataset as any;
@@ -157,16 +191,11 @@ const LineChart: React.FC = () => {
         borderColor: "#fff",
         hoverBorderColor: "black",
       },
-      line: {
-        borderWidth: 0.5,
-      },
+      line: { borderWidth: 0.5 },
     },
     clip: false,
     scales: {
-      x: {
-        grid: { display: false },
-        ticks: { padding: 0 },
-      },
+      x: { grid: { display: false }, ticks: { padding: 0 } },
       y: {
         display: false,
         beginAtZero: true,
@@ -174,15 +203,16 @@ const LineChart: React.FC = () => {
         ticks: { padding: 0 },
       },
     },
-    hover: {
-      mode: "nearest",
-      intersect: true,
-    },
+    hover: { mode: "nearest", intersect: true },
   };
 
   return (
     <div style={{ width: "100%", height: "100%" }}>
-      <Line ref={chartRef} data={data} options={options} />
+      {incidentPrioritySummary ? (
+        <Line ref={chartRef} data={data} options={options} />
+      ) : (
+        <p style={{ textAlign: "center", color: "#999" }}>Loading data...</p>
+      )}
     </div>
   );
 };

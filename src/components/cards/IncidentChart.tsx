@@ -1,40 +1,45 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./IncidentChart.css";
-// Ensure the path is correct based on your project structure:
-// If 'IncidentChart.tsx' is in 'src/components/cards/' and data is in 'src/data/',
-// then '../data/incidents' is correct (goes up one level to 'src/components/', then into 'data/')
-import { Incident, incidentsData } from "../data/incidents";
+import { buildFilterQuery } from "../../utils/queryBuilder";
+import { appliedFilter } from "../../store/filterStore";
+import { useAtomValue } from "jotai";
+import { Group, Text, Box, Stack, Paper } from "@mantine/core";
 
 // --- Data Structure Definitions ---
+interface PriorityStats {
+  totalCount: number;
+  open: number;
+  inProgress: number;
+  closed: number;
+  onHold: number;
+  reopen: number;
+  resolved: number;
+}
 
-// NOTE: The 'Incident' interface is now imported, but 'IncidentStateData' is local
+interface IncidentPrioritySummary {
+  priority: Record<string, PriorityStats[]>;
+  totalAverageResolvedTime: string;
+}
+
 interface IncidentStateData {
   state: string;
   count: number;
   color: string;
 }
 
-// --- Utility Function to Aggregate Data (Fixed with Colors) ---
-
-const aggregateIncidentData = (
-  incidents: Incident[],
-  priority: string // Target priority is passed internally as 'P1'
+// --- Utility to Build Chart Data from API Response ---
+const buildIncidentChartData = (
+  stats: PriorityStats
 ): { data: IncidentStateData[]; totalCount: number; maxCount: number } => {
-  const filteredIncidents = incidents.filter(
-    (inc) => inc.priority === priority
-  );
-
-  // Initialize all states with 0
   const stateCounts: Record<string, number> = {
-    Open: 0,
-    "In progress": 0,
-    Closed: 0,
-    "On-Hold": 0,
-    Reopen: 0,
-    Resolved: 0,
+    Open: stats.open,
+    "In progress": stats.inProgress,
+    Closed: stats.closed,
+    "On-Hold": stats.onHold,
+    Reopen: stats.reopen,
+    Resolved: stats.resolved,
   };
 
-  // *** FIX: Correct color mapping for each state ***
   const stateColors: Record<string, string> = {
     Open: "#FC7E80",
     "In progress": "#ECCF5C",
@@ -44,20 +49,13 @@ const aggregateIncidentData = (
     Reopen: "#FC88F0",
   };
 
-  filteredIncidents.forEach((inc) => {
-    if (stateCounts.hasOwnProperty(inc.state)) {
-      stateCounts[inc.state] += 1;
-    }
-  });
-
-  const totalCount = filteredIncidents.length;
+  const totalCount = stats.totalCount;
   const maxCount = Math.max(...Object.values(stateCounts), 1);
 
   const chartData: IncidentStateData[] = Object.keys(stateCounts).map(
     (state) => ({
-      state: state,
+      state,
       count: stateCounts[state],
-      // *** FIX: Correctly assigns the color from the map ***
       color: stateColors[state],
     })
   );
@@ -65,25 +63,60 @@ const aggregateIncidentData = (
   return { data: chartData, totalCount, maxCount };
 };
 
-// --- React Component (TSX) ---
-
-// No props are required for the component
+// --- React Component ---
 const IncidentChart: React.FC = () => {
-  // *** KEY FIX: Hardcode the target priority internally to 'P1' ***
-  const targetPriority = "P1";
+  const appliedFilters = useAtomValue(appliedFilter);
+  const [incidentPrioritySummary, setIncidentPrioritySummary] =useState<IncidentPrioritySummary | null>(null);
 
-  // Use the imported incidentsData and the internal priority target
-  const { data, totalCount, maxCount } = aggregateIncidentData(
-    incidentsData,
-    targetPriority
-  );
+  useEffect(() => {
+    const fetchIncidentSummary = async () => {
+      try {
+        const query = buildFilterQuery(appliedFilters);
+        const url = query
+          ? `http://localhost:5092/api/Incident/countbypriority?${query}`
+          : `http://localhost:5092/api/Incident/countbypriority`;
+
+        console.log("Incident URL:", url);
+
+        const response = await fetch(url);
+        const data: IncidentPrioritySummary = await response.json();
+        setIncidentPrioritySummary(data);
+      } catch (error) {
+        console.error("Error fetching incident summary:", error);
+        setIncidentPrioritySummary(null);
+      }
+    };
+
+    fetchIncidentSummary();
+  }, [appliedFilters]);
+
+  // --- Handle Loading or Empty Data ---
+  if (!incidentPrioritySummary)
+    return <div>Loading incident priority summary...</div>;
+
+  // Example: Pick a specific priority (say, “2 - High”)
+  const priorityKey = "1 - Critical";
+  const priorityData = incidentPrioritySummary.priority[priorityKey]?.[0];
+
+  if (!priorityData)
+    return <div style={{display:'flex', alignItems:'center', justifyContent:'center'}}>
+      <Stack gap="md" align="center" w={200} h={200}>
+        <Text c="dimmed" ta="center">
+          No incidents found for the selected priority.
+        </Text>
+      </Stack>
+      {/* {priorityKey} */}
+      </div>;
+
+  // --- Build Chart Data for That Priority ---
+  const { data, totalCount, maxCount } = buildIncidentChartData(priorityData);
 
   return (
     <div className="incident-chart-container">
-      {/* Title is based on the internal targetPriority */}
       <h2 className="chart-title">
-        {targetPriority}- Critical ({totalCount})
+        {priorityKey} ({totalCount})
       </h2>
+
       <div className="bar-chart">
         {data.map((item, index) => (
           <div className="bar-column" key={index}>
@@ -91,7 +124,6 @@ const IncidentChart: React.FC = () => {
             <div
               className="bar"
               style={{
-                // Bars use the correct, calculated color
                 height: `${(item.count / maxCount) * 100}%`,
                 backgroundColor: item.color,
               }}
