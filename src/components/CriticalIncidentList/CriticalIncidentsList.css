@@ -106,39 +106,6 @@
   border-color: rgba(177, 170, 170, 0.466);
 }
 
-/* --- Table (Desktop Layout - CSS Grid) --- */
-.incident-table-container {
-  overflow-x: auto;
-}
-
-.incident-row {
-  padding: 10px 20px;
-
-  display: grid;
-  /* Define columns (6 total) */
-  grid-template-columns:
-    minmax(90px, 1.5fr)
-    /* Incident No */
-    2.5fr
-    /* Description */
-    1.5fr
-    /* Category */
-    2fr
-    /* Resolution */
-    minmax(120px, 1fr)
-    /* State */
-    minmax(90px, 0.9fr);
-  /* Resolved Date & Time */
-
-  /* * 💡 FIX: Add horizontal padding (e.g., 20px) here. 
-    * This creates the desired spacing between the content and the container edge.
-    */
-
-  border-bottom: 1px solid var(--border-light);
-  gap: 10px;
-  align-items: center;
-}
-
 .header-row {
   border-radius: 10px;
   background-color: hsl(229, 35%, 94%);
@@ -152,11 +119,34 @@
   margin-top: 0;
 }
 
-.header-row span {
-  display: flex;
-  align-items: center;
+.header-row th {
+  padding-bottom: 20px;
+  padding-top: 20px;
   cursor: pointer;
-  gap: 7px;
+}
+
+.col-incident-no {
+  max-width: 130px;
+}
+
+.col-description {
+  max-width: 200px;
+}
+
+.col-category {
+  max-width: 130px;
+}
+
+.col-resolution {
+  max-width: 200px;
+}
+
+.col-state {
+  max-width: 100px;
+}
+
+.col-resolved-date {
+  max-width: 140px;
 }
 
 .sort-icon {

@@ -74,7 +74,7 @@ export default function MemberPortfolio() {
 
   // 🧭 Pagination/sorting/metrics state
   const [pageNumber, setPageNumber] = useState(1);
-  const [pageSize, setPageSize] = useState<number | null>(null);
+  const [pageSize, setPageSize] = useState<number | null>(5);
   const [sortBy, setSortBy] = useState<string | null>("Alphabetical");
   const [sortOrder, setSortOrder] = useState<string | null>("ascending");
   const [metricsUnit, setMetricsUnit] = useState("Weeks");

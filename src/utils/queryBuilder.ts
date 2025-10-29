@@ -1,15 +1,16 @@
-import { FilterState } from "../store/filterStore";
-
 // utils/queryBuilder.ts
 export const buildFilterQuery = (filters: any): string => {
   const params = new URLSearchParams();
 
   // Handle duration separately
   if (filters.FromDate) {
-    params.append("FromDate", new Date(filters.FromDate).toLocaleString());
+    params.append(
+      "FromDate",
+      new Date(filters.FromDate).toLocaleString("en-US")
+    );
   }
   if (filters.ToDate) {
-    params.append("ToDate", new Date(filters.ToDate).toLocaleString());
+    params.append("ToDate", new Date(filters.ToDate).toLocaleString("en-US"));
   }
 
   // Handle arrays (like category, assignmentGroup, etc.)
