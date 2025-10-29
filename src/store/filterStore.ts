@@ -3,11 +3,11 @@ import { atom } from "jotai";
 export const filterState = atom(true);
 
 export interface PaginatedRequest {
-  PageNumber: Number;
-  PageSize: Number;
-  SortOrder: String;
-  SortBy: String;
-  Search: String;
+  PageNumber: number;
+  PageSize: number;
+  SortOrder: string;
+  SortBy: string;
+  Search: string;
 }
 
 export interface FilterChip {
@@ -137,11 +137,30 @@ export const filterChips = atom((get) => {
 });
 
 export const incidentAPIRequests = atom<Record<string, PaginatedRequest>>({
-  all: {
+  "All Incidents": {
     PageNumber: 1,
-    PageSize: 4,
+    PageSize: 8,
     SortOrder: "",
     SortBy: "",
     Search: "",
   },
 });
+
+export interface Incident {
+  incidentNo: string;
+  description: string;
+  category: string;
+  resolutionNotes: string;
+  state: string;
+  resolvedDateTime: string;
+}
+
+export interface PaginatedResponse {
+  pageNumber: number;
+  pageSize: number;
+  totalPages: number;
+  totalElements: number;
+  incidents: Incident[];
+}
+
+export const incidentAPIResponses = atom<Record<string, PaginatedResponse>>({});

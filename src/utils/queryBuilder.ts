@@ -1,5 +1,3 @@
-import { FilterState } from "../store/filterStore";
-
 // utils/queryBuilder.ts
 export const buildFilterQuery = (filters: any): string => {
   const params = new URLSearchParams();
