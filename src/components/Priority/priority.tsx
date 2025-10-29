@@ -1,7 +1,7 @@
 import { Checkbox, Text } from "@mantine/core";
 import "./priority.css";
 import { useAtom } from "jotai";
-import { selectedFilter } from "../../store/filterStore";
+import { incidentAPIRequests, selectedFilter } from "../../store/filterStore";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -13,18 +13,28 @@ export default function Priority() {
 
   const [filters, setFilters] = useAtom(selectedFilter);
   const [priorities, setPriorities] = useState<Priority[]>([]);
+  const [incidentAPIReqs, setIncidentAPIRequests] =
+    useAtom(incidentAPIRequests);
 
   useEffect(() => {
     axios
       .get("http://localhost:5092/api/Incident/countbypriority")
       .then((res) => {
         const priorityData = res.data.priority || {};
+        const updatedIncidentAPIReqs = { ...incidentAPIReqs };
         const parsedData: Priority[] = Object.entries(priorityData).map(
           ([priorityName, details]) => {
             const totalCount =
               Array.isArray(details) && details.length > 0
                 ? details[0].totalCount
                 : 0;
+            updatedIncidentAPIReqs[priorityName] = {
+              PageNumber: 1,
+              PageSize: 4,
+              SortOrder: "",
+              SortBy: "",
+              Search: "",
+            };
             return {
               priority: priorityName,
               totalCount,
@@ -32,6 +42,7 @@ export default function Priority() {
           }
         );
 
+        setIncidentAPIRequests(updatedIncidentAPIReqs);
         setPriorities(parsedData);
       })
       .catch((err) => {

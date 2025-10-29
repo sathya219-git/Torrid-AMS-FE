@@ -2,6 +2,14 @@ import { atom } from "jotai";
 
 export const filterState = atom(true);
 
+export interface PaginatedRequest {
+  PageNumber: Number;
+  PageSize: Number;
+  SortOrder: String;
+  SortBy: String;
+  Search: String;
+}
+
 export interface FilterChip {
   key:
     | "AssignmentGroup"
@@ -126,4 +134,14 @@ export const filterChips = atom((get) => {
     })
   );
   return chips;
+});
+
+export const incidentAPIRequests = atom<Record<string, PaginatedRequest>>({
+  all: {
+    PageNumber: 1,
+    PageSize: 4,
+    SortOrder: "",
+    SortBy: "",
+    Search: "",
+  },
 });
