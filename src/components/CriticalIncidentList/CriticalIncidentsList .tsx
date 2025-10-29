@@ -5,7 +5,10 @@ import { BsSortUp, BsSortDown } from "react-icons/bs";
 import backward from "../../assets/backward.png";
 import forward from "../../assets/forward.png";
 import { useAtom, useAtomValue } from "jotai";
-import { buildFilterQuery } from "../../utils/queryBuilder";
+import {
+  buildFilterQuery,
+  buildIncidentsQuery,
+} from "../../utils/queryBuilder";
 import {
   appliedFilter,
   Incident,
@@ -28,13 +31,32 @@ const CriticalIncidentsList: React.FC = () => {
       (entry) => entry[0] === activeTab
     );
     if (entry) {
-      const filters = buildFilterQuery({ ...appliedFilters, Priority: [] });
-      const priority = encodeURIComponent(entry[0]);
-      const url =
-        entry[0] === "All Incidents"
-          ? `http://localhost:5092/api/Incident/detailsbypriority?PageNumber=${entry[1].PageNumber}&Search=${entry[1].Search}&SortBy=${entry[1].SortBy}&SortOrder=${entry[1].SortOrder}&${filters}`
-          : `http://localhost:5092/api/Incident/detailsbypriority?Priority=${priority}&PageNumber=${entry[1].PageNumber}&Search=${entry[1].Search}&SortBy=${entry[1].SortBy}&SortOrder=${entry[1].SortOrder}&${filters}`;
-      fetch(url).then((res) => {
+      if (
+        entry[0] !== "All Incidents" &&
+        appliedFilters.Priority.length > 0 &&
+        !appliedFilters.Priority.includes(entry[0])
+      ) {
+        setIncidentAPIResList((prev) => {
+          const curr = { ...prev };
+          curr[activeTab] = {
+            ...curr[activeTab],
+            incidents: [],
+          };
+          return curr;
+        });
+        return;
+      }
+      const params = buildIncidentsQuery(
+        {
+          ...appliedFilters,
+          Priority:
+            entry[0] === "All Incidents" ? appliedFilters.Priority : [entry[0]],
+        },
+        entry[1]
+      );
+      fetch(
+        `http://localhost:5092/api/Incident/detailsbypriority?${params}`
+      ).then((res) => {
         res.json().then((data) => {
           setIncidentAPIResList((prev) => {
             const curr = { ...prev };
@@ -48,7 +70,22 @@ const CriticalIncidentsList: React.FC = () => {
 
   useEffect(() => {
     Object.keys(incidentAPIReqs).forEach((key) => {
-      const filters = buildFilterQuery({ ...appliedFilters, Priority: [] });
+      if (
+        key !== "All Incidents" &&
+        appliedFilters.Priority.length > 0 &&
+        !appliedFilters.Priority.includes(key)
+      ) {
+        setTabCounts((prev) => {
+          const curr = { ...prev };
+          curr[key] = 0;
+          return curr;
+        });
+        return;
+      }
+      const filters = buildFilterQuery({
+        ...appliedFilters,
+        Priority: key === "All Incidents" ? appliedFilters.Priority : [],
+      });
       const priority = encodeURIComponent(key);
       const url =
         key === "All Incidents"
@@ -137,7 +174,7 @@ const IncidentTable: React.FC<{
     setStartRange(offset + 1);
     const end = offset + incidentAPIReqs[tab]?.PageSize;
     setEndRange(end > totalElements ? totalElements : end);
-  }, [incidentAPIReqs]);
+  }, [incidentAPIReqs, totalElements, totalPages]);
 
   const resetPageNumber = () => {
     setIncidentAPIReqs((prev) => {

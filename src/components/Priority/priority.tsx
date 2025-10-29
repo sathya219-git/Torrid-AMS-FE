@@ -30,7 +30,7 @@ export default function Priority() {
                 : 0;
             updatedIncidentAPIReqs[priorityName] = {
               PageNumber: 1,
-              PageSize: 4,
+              PageSize: 8,
               SortOrder: "",
               SortBy: "",
               Search: "",
