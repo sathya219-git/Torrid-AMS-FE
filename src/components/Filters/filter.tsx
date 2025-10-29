@@ -42,7 +42,7 @@ export default function Filter() {
 
   return (
     <Card padding="lg" radius="md">
-      <Card.Section>
+      <Card.Section pb="lg">
         <AssignmentGroup />
       </Card.Section>
 
@@ -50,7 +50,7 @@ export default function Filter() {
         <Duration />
       </Card.Section>
 
-      <Card.Section inheritPadding pb="lg">
+      <Card.Section pb="lg">
         <Category />
       </Card.Section>
 
