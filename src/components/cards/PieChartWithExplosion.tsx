@@ -177,8 +177,8 @@ export default function PieChartWithExplosion() {
   const totalCount = chartData.reduce((sum, item) => sum + item.value, 0);
 
   return (
-    
     <div className="piechart-root-container">
+      
       <div className="second-row-container">
         
         <div className="pie-contaier">

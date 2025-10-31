@@ -146,7 +146,7 @@ export default function MemberPortfolio() {
       <header className="portfolio-header">
         <h1 style={{ color: "#333B69" }}>Team Member Portfolio</h1>
         <div className="controls">
-          <label>
+          {/* <label>
             <b>Metrics in:</b>
           </label>
           <select
@@ -156,7 +156,7 @@ export default function MemberPortfolio() {
           >
             <option value="Weeks">Weeks</option>
             <option value="Days">Days</option>
-          </select>
+          </select> */}
 
           <label>
             <b>Sort by:</b>
