@@ -3,6 +3,156 @@
 /* Fonts - Import this in your main index.html or in the CSS file if using a build tool */
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
+
+
+
+
+/* Basic Card Container Styling */
+.summary-card {
+    background-color: #F5F6FA;
+    border-radius: 8px;
+    /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); */
+    padding: 20px;
+    max-width: 100%; /* Limit max width for desktop view */
+    /* margin: 20px auto;  */
+    font-family: Arial, sans-serif;
+}
+
+/* Header Section (Priority Tag & Metrics) */
+.header-section {
+    display: flex;
+    align-items: center;
+    gap: 30px; /* Space between priority tag and metrics */
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    flex-wrap: wrap; /* Allow wrapping on small screens */
+}
+
+/* Priority Tag Styling (P1 - Critical 450) */
+.priority-tag {
+    background-color: #e6f0ff; /* Light blue background */
+    color: #004d99; /* Darker blue text */
+    padding: 10px 15px;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    min-width: 120px; /* Ensure a minimum size */
+}
+
+.priority-label {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.count {
+    font-size: 28px;
+    font-weight: bold;
+    color: #004d99; /* Maintain dark blue for the count */
+}
+
+/* Metrics Group Styling */
+.metric-group {
+    display: flex;
+    gap: 40px; /* Space between metric items */
+    flex-grow: 1; /* Allow metrics to take up available space */
+    justify-content: space-around; /* Distribute space evenly */
+}
+
+.metric-item {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.metric-title {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.metric-value {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.arrow-up {
+    color: #00b300; /* Green for up arrow */
+    font-size: 14px;
+    line-height: 1; /* Align vertically */
+}
+
+/* Status Section (Open, In Progress, etc.) */
+.status-section {
+  border-radius: 10px;
+    display: grid;
+    background-color: white;
+    /* 6 equal columns for the 6 status items */
+    grid-template-columns: repeat(6, 1fr);
+    gap: 15px;
+    padding: 10px;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.status-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.status-label {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.status-count {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+
+/* --- Responsiveness: Adjust layout for smaller screens (e.g., mobile) --- */
+@media (max-width: 650px) {
+    .header-section {
+        flex-direction: column; /* Stack priority tag and metrics */
+        align-items: flex-start; /* Align everything to the left */
+        gap: 20px;
+    }
+
+    .priority-tag {
+        min-width: 100%; /* Make the priority tag full width */
+        flex-direction: row; /* Layout label and count side-by-side */
+        justify-content: space-between;
+        padding: 15px;
+    }
+
+    .metric-group {
+        width: 100%;
+        justify-content: space-between; /* Space out the two metrics */
+        gap: 20px;
+    }
+
+    /* On very small screens, the status items may need fewer columns */
+    .status-section {
+        /* Switch to 3 columns per row */
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px 5px; /* Adjust spacing */
+    }
+}
+
+@media (max-width: 400px) {
+    /* For tiny phones, maybe 2 columns for status */
+    .status-section {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
 body {
   font-family: "Inter";
   /* Added sans-serif as a fallback */
@@ -10,7 +160,12 @@ body {
   margin: 0;
   color: #333;
 }
-
+.priority-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  row-gap: 15px;
+}
 .dashboard-container {
   display: flex;
   gap: 20px;
@@ -259,29 +414,27 @@ body {
 }
 
 .priority-summary {
+  /* background-color: violet; */
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   /* allow wrapping */
-  /* gap: 20px; */
+  gap: 20px;
   /* spacing between items */
-  margin-bottom: 30px;
+  /* margin-bottom: 30px; */
 }
 
-.priority-summary > * {
-  flex: 1 1 150px;
-  /* grow, shrink, basis */
-  min-width: 150px;
-  /* minimum width per item */
-  box-sizing: border-box;
-  /* include padding/border in width */
-}
+
 
 .priority-item {
-  background-color: #f5f6fa;
+
+  background-color: #007bff;
+  flex-basis: 50%;
+  flex-wrap: wrap;
+  max-width:48%;
   border-radius: 12px;
-  padding: 15px 20px;
-  margin-left: 23px;
-  /* box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); */
+  /* padding: 20px; */
+  /* margin-left: 23px; */
 }
 
 .priority-item h3 {
