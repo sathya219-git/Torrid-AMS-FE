@@ -76,70 +76,41 @@ export default function Category() {
   }, [filters]);
 
   return (
-    <Accordion
-      defaultValue="category"
-      classNames={{ item: "accordion-border" }}
-    >
-      <Accordion.Item key="category" value="category">
-        <Accordion.Control>
-          <Text fw={500}>Category</Text>
-        </Accordion.Control>
-        <Accordion.Panel>
-          <div className="category-container">
-            <div className="select-all">
-              <Checkbox
-                label="Select All"
-                checked={selectAll}
-                onChange={handleSelectAll}
-              />
-            </div>
-            <div className="category-content">
-              {staticCategories.map((category) => (
-                <div className="category-checkbox" key={category.categoryName}>
-                  <Checkbox
-                    label={category.categoryName}
-                    onChange={() => categoryChanges(category.categoryName)}
-                    checked={filters.Category.includes(category.categoryName)}
-                  />
-                  <Text c="dimmed">{category.incidentCount}</Text>
-                </div>
-              ))}
-            </div>
-            <div
-              className={
-                opened
-                  ? "category-content-expanded"
-                  : "category-content-collapsed"
-              }
-            >
-              <Collapse in={opened}>
-                <div className="category-content">
-                  {expandCategories.map((category) => (
-                    <div
-                      className="category-checkbox"
-                      key={category.categoryName}
-                    >
-                      <Checkbox
-                        label={category.categoryName}
-                        onChange={() => categoryChanges(category.categoryName)}
-                        checked={filters.Category.includes(
-                          category.categoryName
-                        )}
-                      />
-                      <Text c="dimmed">{category.incidentCount}</Text>
-                    </div>
-                  ))}
-                </div>
-              </Collapse>
-            </div>
-            <Text className="view" onClick={() => setOpened((prev) => !prev)}>
-              {opened
-                ? "View Less"
-                : "View More (" + expandCategories.length + "+)"}
-            </Text>
+  <Accordion
+    defaultValue="category"
+    classNames={{ item: "accordion-border" }}
+  >
+    <Accordion.Item key="category" value="category">
+      <Accordion.Control>
+        <Text fw={500}>Category</Text>
+      </Accordion.Control>
+      <Accordion.Panel>
+        <div className="category-container">
+          <div className="select-all">
+            <Checkbox
+              label="Select All"
+              checked={selectAll}
+              onChange={handleSelectAll}
+            />
           </div>
-        </Accordion.Panel>
-      </Accordion.Item>
-    </Accordion>
-  );
+
+          {/* Scrollable container for all categories */}
+          <div className="category-scroll">
+            {[...staticCategories, ...expandCategories].map((category) => (
+              <div className="category-checkbox" key={category.categoryName}>
+                <Checkbox
+                  label={category.categoryName}
+                  onChange={() => categoryChanges(category.categoryName)}
+                  checked={filters.Category.includes(category.categoryName)}
+                />
+                <Text c="dimmed">{category.incidentCount}</Text>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Accordion.Panel>
+    </Accordion.Item>
+  </Accordion>
+);
+
 }

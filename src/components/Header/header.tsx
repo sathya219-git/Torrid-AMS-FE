@@ -78,7 +78,7 @@ export default function Header() {
       >
         <div className="modal">
           <Text fw={300}>
-            Are you sure!, Do you really want to dowmnload it as excel ?
+            Are you sure!, Do you really want to download it as excel ?
           </Text>
         </div>
         <div className="button-group-modal">
