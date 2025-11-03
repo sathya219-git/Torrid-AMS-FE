@@ -2,7 +2,7 @@ import { Card } from "@mantine/core";
 import "./TeamMembersPortfolio.css";
 import { filterState } from "../../store/filterStore";
 import { useAtomValue } from "jotai";
-import CriticalIncidentsList from "../CriticalIncidentList/CriticalIncidentsList ";
+import IncidentsList from "../IncidentList/IncidentsList/IncidentsList";
 
 export default function TeamMembersPortfolio() {
   const filterOpened = useAtomValue(filterState);
@@ -16,7 +16,7 @@ export default function TeamMembersPortfolio() {
       withBorder
     >
       <Card.Section withBorder inheritPadding py="xl">
-        <CriticalIncidentsList />
+        <IncidentsList />
       </Card.Section>
     </Card>
   );

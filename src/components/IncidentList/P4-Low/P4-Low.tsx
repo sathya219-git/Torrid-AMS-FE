@@ -1,0 +1,28 @@
+import { Accordion, Input, Text } from "@mantine/core";
+import "./P4-Low.css";
+import IncidentTable from "../IncidentTable/IncidentTable";
+import { useState } from "react";
+
+export default function P4Low() {
+  const [search, setSearch] = useState("");
+  return (
+    <div className="p4-container">
+      <Accordion.Item value={"4 - Low"}>
+        <Accordion.Control>
+          <Text fw={700}> P4 - Low (512)</Text>
+        </Accordion.Control>
+        <Accordion.Panel>
+          <div className="p4-search">
+            <Input
+              className=""
+              placeholder="Search incidents..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+          <IncidentTable priority="4 - Low" search={search} />
+        </Accordion.Panel>
+      </Accordion.Item>
+    </div>
+  );
+}
