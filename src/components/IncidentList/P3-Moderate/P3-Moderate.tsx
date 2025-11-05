@@ -9,7 +9,7 @@ export default function P3Moderate() {
     <div className="p3-container">
       <Accordion.Item value={"3 - Moderate"}>
         <Accordion.Control>
-          <Text fw={700}> P3 - Moderate (4342)</Text>
+          <Text fw={700}> P3 - Moderate </Text>
         </Accordion.Control>
         <Accordion.Panel>
           <div className="p3-search">

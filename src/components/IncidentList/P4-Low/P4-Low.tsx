@@ -9,7 +9,7 @@ export default function P4Low() {
     <div className="p4-container">
       <Accordion.Item value={"4 - Low"}>
         <Accordion.Control>
-          <Text fw={700}> P4 - Low (512)</Text>
+          <Text fw={700}> P4 - Low </Text>
         </Accordion.Control>
         <Accordion.Panel>
           <div className="p4-search">

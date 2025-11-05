@@ -9,7 +9,7 @@ export default function P2High() {
     <div className="p2-container">
       <Accordion.Item value={"2 - High"}>
         <Accordion.Control>
-          <Text fw={700}>P2 - High (9)</Text>
+          <Text fw={700}>P2 - High </Text>
         </Accordion.Control>
         <Accordion.Panel>
           <div className="p2-search">

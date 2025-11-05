@@ -9,7 +9,7 @@ export default function P1Critical() {
     <div className="p1-container">
       <Accordion.Item value={"1 - Critical"}>
         <Accordion.Control>
-          <Text fw={700}> P1 - Critical (0)</Text>
+          <Text fw={700}> P1 - Critical </Text>
         </Accordion.Control>
         <Accordion.Panel>
           <div className="p1-search">
