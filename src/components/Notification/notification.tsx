@@ -18,11 +18,11 @@ export default function Notification() {
           <div className="notification-header">
             <Text fw={700}>Your Notification</Text>
             <div>
-              <DoneAllIcon fontSize="small" />
+              {/* <DoneAllIcon fontSize="small" /> */}
               <CloseIcon fontSize="small" />
             </div>
           </div>
-          <Button.Group className="button-group">
+          {/* <Button.Group className="button-group">
             <Button variant="filled" color=" #60aaeb">
               View all
               <Badge className="count-badge"> 370</Badge>
@@ -35,7 +35,7 @@ export default function Notification() {
               Read
               <Badge className="count-badge"> 350</Badge>
             </Button>
-          </Button.Group>
+          </Button.Group> */}
           <div className="notification">
             <>
               <div className="popover-msgs">

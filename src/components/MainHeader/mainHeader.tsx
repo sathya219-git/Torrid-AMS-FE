@@ -8,7 +8,7 @@ export default function MainHeader() {
     <div className="main-header">
       <img src={logo} className="logo" />
       <div className="header-right">
-        {/* <Notification /> */}
+        <Notification />
         <User />
       </div>
     </div>
