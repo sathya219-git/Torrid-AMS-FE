@@ -7,6 +7,7 @@ import Login from "./pages/Login/login";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Dashboard from "./pages/Dashboard/dashboard";
 import "@mantine/dates/styles.css";
+import ForgotPassword from "./pages/ForgotPassword/forgotPassword";
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
               <Route path="/" element={<Login />} />
               <Route path="/login" element={<Login />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/forgotPassword" element={<ForgotPassword />} />
             </Routes>
           </BrowserRouter>
         </MantineProvider>
