@@ -113,7 +113,7 @@ const CriticalIncidentsList: React.FC = () => {
 
   return (
     <div className="incident-dashboard">
-      <h1 className="dashboard-title">Critical Incidents List</h1>
+      <h1 className="dashboard-title">Incidents List</h1>
 
       <div className="filter-tabs">
         {tabs.map((tab, index) => (
