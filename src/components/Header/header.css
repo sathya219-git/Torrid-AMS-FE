@@ -5,11 +5,13 @@
 }
 
 .page-title {
-  padding-top: 30px;
+  /* padding-top: 30px; */
   padding-left: 30px;
 }
 
 .page-right {
+  padding-top: 23px;
+  gap:17px;
   display: flex;
   align-items: center;
   padding-right: 20px;
@@ -26,7 +28,8 @@
 .page-download {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  /* align-items: flex-start; */
+  align-items: center;
   gap: 6px;
 }
 

@@ -5,15 +5,19 @@ import {
   appliedFilter,
   FilterChip,
   filterChips,
+  filterState,
   FilterState,
   resetEnabled,
   selectedFilter,
 } from "../../store/filterStore";
+import { colors } from "@mui/material";
 
 export default function FilterCategory() {
   const appliedFilterChips = useAtomValue(filterChips);
   const setAppliedFilters = useSetAtom(appliedFilter);
   const setSelectedFilters = useSetAtom(selectedFilter);
+  const activeFilters = useAtomValue(resetEnabled);
+  const filterOpened = useAtomValue(filterState);
 
   const clearAll = () => {
     const clearedState: FilterState = {
@@ -30,73 +34,40 @@ export default function FilterCategory() {
   };
 
   const handleRemoveFilter = (chip: FilterChip) => {
-    setAppliedFilters((prev) => {
-      return getUpdatedFilterState(prev, chip);
-    });
-    setSelectedFilters((prev) => {
-      return getUpdatedFilterState(prev, chip);
-    });
+    setAppliedFilters((prev) => getUpdatedFilterState(prev, chip));
+    setSelectedFilters((prev) => getUpdatedFilterState(prev, chip));
   };
 
   const getUpdatedFilterState = (prev: FilterState, chip: FilterChip) => {
-    if (chip.key === "AssignmentGroup") {
-      return {
-        ...prev,
-        AssignmentGroup: prev.AssignmentGroup.filter(
-          (value) => value !== chip.value
-        ),
-      };
+    switch (chip.key) {
+      case "AssignmentGroup":
+        return { ...prev, AssignmentGroup: prev.AssignmentGroup.filter(v => v !== chip.value) };
+      case "Category":
+        return { ...prev, Category: prev.Category.filter(v => v !== chip.value) };
+      case "FromDate":
+        return { ...prev, FromDate: null };
+      case "ToDate":
+        return { ...prev, ToDate: null };
+      case "Priority":
+        return { ...prev, Priority: prev.Priority.filter(v => v !== chip.value) };
+      case "State":
+        return { ...prev, State: prev.State.filter(v => v !== chip.value) };
+      case "AssignedToName":
+        return { ...prev, AssignedToName: prev.AssignedToName.filter(v => v !== chip.value) };
+      default:
+        return prev;
     }
-    if (chip.key === "Category") {
-      return {
-        ...prev,
-        Category: prev.Category.filter((value) => value !== chip.value),
-      };
-    }
-    if (chip.key === "FromDate") {
-      return {
-        ...prev,
-        FromDate: null,
-      };
-    }
-    if (chip.key === "ToDate") {
-      return {
-        ...prev,
-        ToDate: null,
-      };
-    }
-    if (chip.key === "Priority") {
-      return {
-        ...prev,
-        Priority: prev.Priority.filter((value) => value !== chip.value),
-      };
-    }
-    if (chip.key === "State") {
-      return {
-        ...prev,
-        State: prev.State.filter((value) => value !== chip.value),
-      };
-    }
-    if (chip.key === "AssignedToName") {
-      return {
-        ...prev,
-        AssignedToName: prev.AssignedToName.filter(
-          (value) => value !== chip.value
-        ),
-      };
-    }
-    return prev;
   };
 
-  //Clear All is visible only appliedGroup have filter
-  const activeFilters = useAtomValue(resetEnabled);
-
   return (
-    <Card className="category-result" withBorder>
+    <Card
+      className={`category-result ${filterOpened ? "opened" : "closed"}`}
+      withBorder
+    >
       <Card.Section inheritPadding>
         <div className="selected-filter">
           <div className="filtered-results">
-            <h2>Filtered Results</h2>
+            <h1 style={{color:"#333B69",paddingLeft:"10px"}}>Filtered Results</h1>
             <div className="filter-tags">
               {appliedFilterChips.map((chip) => (
                 <div className="tag" key={chip.value}>

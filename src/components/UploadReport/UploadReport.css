@@ -1,0 +1,263 @@
+/* --- Global Styles for Context --- */
+body {
+    background-color: #f8f9fa;
+    /* Matches the container background */
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.main-upload-area {
+    background-color: #ffff;
+    display: flex;
+    min-width: 408px;
+    max-width: 400px;
+    padding: 20px;
+    border-radius: 8px;
+}
+.upload-area {
+    /* margin: 50px; */
+    background-color: #F5F6FA;
+    /* margin: 20px; */
+    flex: 1;
+    border: 2px dashed #e0e0e0;
+    border-radius: 8px;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    /* min-height: 400px; */
+}
+
+/* --- Main Layout and Container --- */
+.upload-report-container {
+    padding: 40px;
+}
+
+.report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.report-title {
+    color: #333;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.content-wrapper {
+    display: flex;
+    gap: 20px;
+    background-color: #f5f6fa;
+    border-radius: 10px;
+    /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); */
+}
+
+/* --- Left Panel: Upload Area --- */
+
+
+.upload-icon {
+    font-size: 4rem;
+    color: #00246d;
+    line-height: 1;
+    /* Ensures the arrow is centered */
+}
+
+.upload-text-main {
+    margin-top: 15px;
+    font-weight: 600;
+    color: #333;
+}
+
+.upload-text-support {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 20px;
+}
+
+/* --- Right Panel: Upload History --- */
+.history-panel {
+    border-radius: 8px;
+    background-color: #f5f6fa;
+    flex: 1;
+    padding: 20px;
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.history-title {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #444;
+}
+
+.history-collapse-icon {
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: #6c757d;
+}
+
+/* --- Search Bar --- */
+.search-container {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px 40px 10px 15px;
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    transition: border-color 0.2s;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+.search-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    pointer-events: none;
+    /* Allows clicks to pass through to the input */
+}
+
+/* --- History Table --- */
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+.history-table th,
+.history-table td {
+    padding: 12px;
+}
+
+.history-table thead tr {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #e0e0e0;
+    color: #555;
+    font-weight: 600;
+}
+
+.history-table th {
+    cursor: pointer;
+}
+
+.history-table tbody tr {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.history-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+/* --- Status Badges --- */
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    display: inline-block;
+    min-width: 60px;
+    text-align: center;
+}
+
+.status-uploaded {
+    color: #0c6800;
+    /* Dark Green */
+    background-color: #d4edda;
+    /* Light Green */
+}
+
+.status-failed {
+    color: #842029;
+    /* Dark Red */
+    background-color: #f8d7da;
+    /* Light Red */
+}
+
+.download-link {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.download-link:hover {
+    text-decoration: underline;
+    color: #0056b3;
+}
+
+/* --- Buttons --- */
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: #007bff;
+    border: 1px solid #007bff;
+    padding: 10px 25px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    margin-top: 25px;
+}
+
+.btn-secondary:hover {
+    background-color: #e9f5ff;
+}
+
+/* --- Pagination --- */
+.pagination-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.pagination-controls button {
+    border: 1px solid #ced4da;
+    background-color: white;
+    padding: 5px 10px;
+    margin: 0 3px;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #333;
+}
+
+.pagination-controls button:hover:not(:disabled) {
+    background-color: #f0f0f0;
+}

@@ -30,8 +30,8 @@
 
 /* Priority Tag Styling (P1 - Critical 450) */
 .priority-tag {
-    background-color: #e6f0ff; /* Light blue background */
-    color: #004d99; /* Darker blue text */
+    background-color: #dae0f7; /* Light blue background */
+    color: #4B5FAE; /* Darker blue text */
     padding: 10px 15px;
     border-radius: 6px;
     display: flex;

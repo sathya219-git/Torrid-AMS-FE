@@ -1,9 +1,19 @@
-.category-result {
+.category-result.opened {
   margin-left: auto;
   height: auto;
   padding: 1px;
   padding-top: 0px;
-  background: #dce6e6;
-  transition: width 0.5s ease-in-out;
+  background-color: #dce6e6; /* light blue */
+  transition: background-color 0.3s ease-in-out;
   width: calc(100% - 430px);
+}
+
+.category-result.closed {
+  margin-left: auto;
+  height: auto;
+  padding: 1px;
+  padding-top: 0px;
+  background-color: #dce6e6; /* light gray */
+  transition: background-color 0.3s ease-in-out;
+  width: 100%;
 }

@@ -161,7 +161,7 @@ export default function Cards() {
         </div>
 
         {/* ---- INCIDENT PRIORITY HEADER ---- */}
-        <div style={{backgroundColor:"#fff"}}>
+        <div style={{ backgroundColor: "#fff" }}>
           <div className="incident-priority-header">
             <h2>Incident Priority</h2>
           </div>
@@ -194,27 +194,32 @@ export default function Cards() {
                   <div className="status-section">
                     <div className="status-item">
                       <span className="status-label">Open</span>
-                      <span className="status-count">220</span>
+                      <span className="status-count">{incidentPrioritySummary?.priority["1 - Critical"]?.[0]?.open ?? 0}
+                      </span>
                     </div>
                     <div className="status-item">
                       <span className="status-label">In Progress</span>
-                      <span className="status-count">30</span>
+                      <span className="status-count">{incidentPrioritySummary?.priority["1 - Critical"]?.[0]?.inProgress ?? 0}
+                      </span>
                     </div>
                     <div className="status-item">
                       <span className="status-label">Closed</span>
-                      <span className="status-count">50</span>
+                      <span className="status-count"> {incidentPrioritySummary?.priority["1 - Critical"]?.[0]?.closed ?? 0}</span>
                     </div>
                     <div className="status-item">
                       <span className="status-label">Reopen</span>
-                      <span className="status-count">50</span>
+                      <span className="status-count">          {incidentPrioritySummary?.priority["1 - Critical"]?.[0]?.reopen ?? 0}
+                      </span>
                     </div>
                     <div className="status-item">
                       <span className="status-label">On Hold</span>
-                      <span className="status-count">30</span>
+                      <span className="status-count">          {incidentPrioritySummary?.priority["1 - Critical"]?.[0]?.onHold ?? 0}
+                      </span>
                     </div>
                     <div className="status-item">
                       <span className="status-label">Resolved</span>
-                      <span className="status-count">70</span>
+                      <span className="status-count">          {incidentPrioritySummary?.priority["1 - Critical"]?.[0]?.resolved ?? 0}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -241,27 +246,32 @@ export default function Cards() {
                   <div className="status-section">
                     <div className="status-item">
                       <span className="status-label">Open</span>
-                      <span className="status-count">220</span>
+                      <span className="status-count">{incidentPrioritySummary?.priority["2 - High"]?.[0]?.open ?? 0}
+                      </span>
                     </div>
                     <div className="status-item">
                       <span className="status-label">In Progress</span>
-                      <span className="status-count">30</span>
+                      <span className="status-count">{incidentPrioritySummary?.priority["2 - High"]?.[0]?.inProgress ?? 0}
+                      </span>
                     </div>
                     <div className="status-item">
                       <span className="status-label">Closed</span>
-                      <span className="status-count">50</span>
+                      <span className="status-count"> {incidentPrioritySummary?.priority["2 - High"]?.[0]?.closed ?? 0}</span>
                     </div>
                     <div className="status-item">
                       <span className="status-label">Reopen</span>
-                      <span className="status-count">50</span>
+                      <span className="status-count">          {incidentPrioritySummary?.priority["2 - High"]?.[0]?.reopen ?? 0}
+                      </span>
                     </div>
                     <div className="status-item">
                       <span className="status-label">On Hold</span>
-                      <span className="status-count">30</span>
+                      <span className="status-count">          {incidentPrioritySummary?.priority["2 - High"]?.[0]?.onHold ?? 0}
+                      </span>
                     </div>
                     <div className="status-item">
                       <span className="status-label">Resolved</span>
-                      <span className="status-count">70</span>
+                      <span className="status-count">          {incidentPrioritySummary?.priority["2 - High"]?.[0]?.resolved ?? 0}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -288,27 +298,32 @@ export default function Cards() {
                   <div className="status-section">
                     <div className="status-item">
                       <span className="status-label">Open</span>
-                      <span className="status-count">220</span>
+                      <span className="status-count">{incidentPrioritySummary?.priority["3 - Moderate"]?.[0]?.open ?? 0}
+                      </span>
                     </div>
                     <div className="status-item">
                       <span className="status-label">In Progress</span>
-                      <span className="status-count">30</span>
+                      <span className="status-count">{incidentPrioritySummary?.priority["3 - Moderate"]?.[0]?.inProgress ?? 0}
+                      </span>
                     </div>
                     <div className="status-item">
                       <span className="status-label">Closed</span>
-                      <span className="status-count">50</span>
+                      <span className="status-count"> {incidentPrioritySummary?.priority["3 - Moderate"]?.[0]?.closed ?? 0}</span>
                     </div>
                     <div className="status-item">
                       <span className="status-label">Reopen</span>
-                      <span className="status-count">50</span>
+                      <span className="status-count">          {incidentPrioritySummary?.priority["3 - Moderate"]?.[0]?.reopen ?? 0}
+                      </span>
                     </div>
                     <div className="status-item">
                       <span className="status-label">On Hold</span>
-                      <span className="status-count">30</span>
+                      <span className="status-count">          {incidentPrioritySummary?.priority["3 - Moderate"]?.[0]?.onHold ?? 0}
+                      </span>
                     </div>
                     <div className="status-item">
                       <span className="status-label">Resolved</span>
-                      <span className="status-count">70</span>
+                      <span className="status-count">          {incidentPrioritySummary?.priority["3 - Moderate"]?.[0]?.resolved ?? 0}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -335,27 +350,32 @@ export default function Cards() {
                   <div className="status-section">
                     <div className="status-item">
                       <span className="status-label">Open</span>
-                      <span className="status-count">220</span>
+                      <span className="status-count">{incidentPrioritySummary?.priority["4 - Low"]?.[0]?.open ?? 0}
+                      </span>
                     </div>
                     <div className="status-item">
                       <span className="status-label">In Progress</span>
-                      <span className="status-count">30</span>
+                      <span className="status-count">{incidentPrioritySummary?.priority["4 - Low"]?.[0]?.inProgress ?? 0}
+                      </span>
                     </div>
                     <div className="status-item">
                       <span className="status-label">Closed</span>
-                      <span className="status-count">50</span>
+                      <span className="status-count"> {incidentPrioritySummary?.priority["4 - Low"]?.[0]?.closed ?? 0}</span>
                     </div>
                     <div className="status-item">
                       <span className="status-label">Reopen</span>
-                      <span className="status-count">50</span>
+                      <span className="status-count">          {incidentPrioritySummary?.priority["4 - Low"]?.[0]?.reopen ?? 0}
+                      </span>
                     </div>
                     <div className="status-item">
                       <span className="status-label">On Hold</span>
-                      <span className="status-count">30</span>
+                      <span className="status-count">          {incidentPrioritySummary?.priority["4 - Low"]?.[0]?.onHold ?? 0}
+                      </span>
                     </div>
                     <div className="status-item">
                       <span className="status-label">Resolved</span>
-                      <span className="status-count">70</span>
+                      <span className="status-count">          {incidentPrioritySummary?.priority["4 - Low"]?.[0]?.resolved ?? 0}
+                      </span>
                     </div>
                   </div>
                 </div>

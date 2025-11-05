@@ -33,35 +33,42 @@ interface MemberDetailsResponse {
 
 // 🧱 Individual member card
 const TeamMemberCard = ({ member }: { member: MemberDetail }) => (
-  <div className="member-card">
-    <div className="member-info">
-      <div className="member-id-circle">{member.totalCount}</div>
-      <div className="member-name">{member.name ?? "Unknown"}</div>
-    </div>
 
+  <div className="member-card">
     <div className="metrics-grid">
       <div className="metric-item">
-        <span className="metric-label">P1-Critical</span>
+        {/* <span className="metric-label">Incident Count</span> */}
+        <span className="metric-value">{member.totalCount}</span>
+      </div><div className="metric-item">
+        {/* <span className="metric-label">Name</span> */}
+        <span className="metric-value">{member.name ?? "-"}</span>
+      </div>
+
+
+      <div className="metric-item">
+        {/* <span className="metric-label">P1-Critical</span> */}
         <span className="metric-value">{member.p1}</span>
       </div>
       <div className="metric-item">
-        <span className="metric-label">P2-High</span>
+        {/* <span className="metric-label">P2-High</span> */}
         <span className="metric-value">{member.p2}</span>
       </div>
       <div className="metric-item">
-        <span className="metric-label">P3-Moderate</span>
+        {/* <span className="metric-label">P3-Moderate</span> */}
         <span className="metric-value">{member.p3}</span>
       </div>
       <div className="metric-item">
-        <span className="metric-label">P4-Low</span>
+        {/* <span className="metric-label">P4-Low</span> */}
         <span className="metric-value">{member.p4}</span>
+      </div>
+
+      <div className="metric-item">
+        {/* <span className="metric-label">Avg Resolved Time</span> */}
+        <span className="metric-value">{member.avgResolvedTime}</span>
       </div>
     </div>
 
-    <div className="avg-resolved-time">
-      <span className="avg-label">Avg Resolved Time</span>
-      <span className="avg-value">{member.avgResolvedTime}</span>
-    </div>
+
   </div>
 );
 
@@ -174,8 +181,25 @@ export default function MemberPortfolio() {
 
       {/* Main List of Member Cards */}
       <main className="member-list">
+        <div className="member-card">
+
+          <div className="metrics-grid">
+            <div className="metric-item">Incident count</div>
+            <div className="metric-item">Name</div>
+            <div className="metric-item">P1-Critical</div>
+            <div className="metric-item">P2-High</div>
+            <div className="metric-item">P3-Moderate</div>
+            <div className="metric-item">P4-Low</div>
+            <div className="metric-item">Avg Resolution time</div>
+
+          </div>
+          {/* hhhhh */}
+        </div>
+
         {memberDetailsSummary?.memberDetails?.length ? (
           memberDetailsSummary.memberDetails.map((member, index) => (
+
+
             <TeamMemberCard key={index} member={member} />
           ))
         ) : (
