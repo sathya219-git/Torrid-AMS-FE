@@ -30,7 +30,7 @@ export default function Duration() {
 
   return (
     <div className="duration-container">
-      <Text fw={500}>Duration</Text>
+      <Text fw={700}>Duration</Text>
       <div className="duration-content">
         <DatePickerInput
           valueFormat="DD/MM/YYYY"

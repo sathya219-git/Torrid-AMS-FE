@@ -52,7 +52,7 @@ export default function Status() {
     <Accordion defaultValue="status" classNames={{ item: "accordion-border" }}>
       <Accordion.Item key="status" value="status">
         <Accordion.Control>
-          <Text fw={500}>Status</Text>
+          <Text fw={700}>Status</Text>
         </Accordion.Control>
         <Accordion.Panel>
           <div className="status-content">

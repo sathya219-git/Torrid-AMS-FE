@@ -17,13 +17,7 @@ type BreachedIncidents = {
   breachSLA: string;
 };
 
-export default function BreachedListTable({
-  priority,
-  search,
-}: {
-  priority: string;
-  search: string;
-}) {
+export default function BreachedListTable({ priority }: { priority: string }) {
   const [breachedIncidents, setBreachedIncidents] = useState<
     BreachedIncidents[]
   >([]);
@@ -63,7 +57,7 @@ export default function BreachedListTable({
   useEffect(() => {
     const url = `http://localhost:5092/api/Incident/detailsbypriority?Priority=${encodeURIComponent(
       priority
-    )}&Search=${encodeURIComponent(search)}&PageNumber=${currentPage}`;
+    )}&PageNumber=${currentPage}`;
 
     axios
       .get(url)
@@ -74,7 +68,7 @@ export default function BreachedListTable({
         setTotalPages(res.data.totalPages);
       })
       .catch((err) => console.error("Axios Error:", err));
-  }, [priority, search, currentPage]);
+  }, [priority, currentPage]);
 
   // sorting function
   const handleSort = (field: keyof BreachedIncidents) => {
