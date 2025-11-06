@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: row;
   gap: 75px;
-  padding-left: 30px;
+  padding-left: 35px;
 }
 
 .incident-scroll {
@@ -29,4 +29,16 @@
 
 .incident-scroll::-webkit-scrollbar-track {
   background: #f3f3f3;
+}
+
+.accordion-border:last-of-type {
+  border-bottom: none;
+}
+
+.Accordion-title {
+  background-color: #f5f6fa;
+}
+
+.accordion-padding {
+  padding: 0px;
 }

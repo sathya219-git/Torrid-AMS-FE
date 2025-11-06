@@ -1,3 +1,14 @@
 .priority-search {
   padding-top: 5px;
 }
+.accordion-border:last-of-type {
+  border-bottom: none;
+}
+
+.Accordion-title {
+  background-color: #f5f6fa;
+}
+
+.accordion-padding {
+  padding: 0%;
+}
