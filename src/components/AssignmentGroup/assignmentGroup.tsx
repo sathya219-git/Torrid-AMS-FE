@@ -80,7 +80,7 @@ export default function AssignmentGroup() {
     <Accordion defaultValue="group" classNames={{ item: "accordion-border" }}>
       <Accordion.Item key="group" value="group">
         <Accordion.Control>
-          <Text fw={500}>Assignment Torrid Group</Text>
+          <Text fw={700}>Assignment Torrid Group</Text>
         </Accordion.Control>
         <Accordion.Panel>
           <div className="select-all">

@@ -1,4 +1,4 @@
-import { Accordion, Checkbox, Collapse, Text } from "@mantine/core";
+import { Accordion, Checkbox, Text } from "@mantine/core";
 import "./category.css";
 import { useAtom } from "jotai";
 import { selectedFilter } from "../../store/filterStore";
@@ -12,7 +12,7 @@ export default function Category() {
   };
 
   const [filters, setFilters] = useAtom(selectedFilter);
-  const [opened, setOpened] = useState(false);
+  // const [opened, setOpened] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
 
@@ -76,41 +76,40 @@ export default function Category() {
   }, [filters]);
 
   return (
-  <Accordion
-    defaultValue="category"
-    classNames={{ item: "accordion-border" }}
-  >
-    <Accordion.Item key="category" value="category">
-      <Accordion.Control>
-        <Text fw={500}>Category</Text>
-      </Accordion.Control>
-      <Accordion.Panel>
-        <div className="category-container">
-          <div className="select-all">
-            <Checkbox
-              label="Select All"
-              checked={selectAll}
-              onChange={handleSelectAll}
-            />
-          </div>
+    <Accordion
+      defaultValue="category"
+      classNames={{ item: "accordion-border" }}
+    >
+      <Accordion.Item key="category" value="category">
+        <Accordion.Control>
+          <Text fw={700}>Category</Text>
+        </Accordion.Control>
+        <Accordion.Panel>
+          <div className="category-container">
+            <div className="select-all">
+              <Checkbox
+                label="Select All"
+                checked={selectAll}
+                onChange={handleSelectAll}
+              />
+            </div>
 
-          {/* Scrollable container for all categories */}
-          <div className="category-scroll">
-            {[...staticCategories, ...expandCategories].map((category) => (
-              <div className="category-checkbox" key={category.categoryName}>
-                <Checkbox
-                  label={category.categoryName}
-                  onChange={() => categoryChanges(category.categoryName)}
-                  checked={filters.Category.includes(category.categoryName)}
-                />
-                <Text c="dimmed">{category.incidentCount}</Text>
-              </div>
-            ))}
+            {/* Scrollable container for all categories */}
+            <div className="category-scroll">
+              {[...staticCategories, ...expandCategories].map((category) => (
+                <div className="category-checkbox" key={category.categoryName}>
+                  <Checkbox
+                    label={category.categoryName}
+                    onChange={() => categoryChanges(category.categoryName)}
+                    checked={filters.Category.includes(category.categoryName)}
+                  />
+                  <Text c="dimmed">{category.incidentCount}</Text>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      </Accordion.Panel>
-    </Accordion.Item>
-  </Accordion>
-);
-
+        </Accordion.Panel>
+      </Accordion.Item>
+    </Accordion>
+  );
 }
