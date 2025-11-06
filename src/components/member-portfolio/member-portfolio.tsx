@@ -41,7 +41,7 @@ const TeamMemberCard = ({ member }: { member: MemberDetail }) => (
         <span className="metric-value">{member.totalCount}</span>
       </div><div className="metric-item">
         {/* <span className="metric-label">Name</span> */}
-        <span className="metric-value">{member.name ?? "-"}</span>
+        <span className="metric-value">{member.name ?? "Null"}</span>
       </div>
 
 

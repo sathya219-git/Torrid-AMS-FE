@@ -16,7 +16,7 @@ export default function MainHeader({ activeTab, onTabChange }: MainHeaderProps) 
 
       <Tabs color="blue" radius="xs" value={activeTab} onChange={onTabChange}>
         <Tabs.List>
-          <Tabs.Tab value="Upload-Report">Upload Report</Tabs.Tab>
+          <Tabs.Tab value="Upload-Report">Upload File</Tabs.Tab>
           <Tabs.Tab value="dashboard">Dashboard</Tabs.Tab>
         </Tabs.List>
       </Tabs>

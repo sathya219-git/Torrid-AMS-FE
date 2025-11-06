@@ -114,7 +114,7 @@ export default function Header() {
           </div>
 
           {/* Uploaded button */}
-          <div className="page-download">
+          {/* <div className="page-download">
             <Text fw={500}>Uploaded</Text>
             <Button
               onClick={() => setOpened(true)}
@@ -133,7 +133,7 @@ export default function Header() {
             >
               <RiFileExcel2Fill size={22} color="#31c684" />
             </Button>
-          </div>
+          </div> */}
         </div>
       </div>
 

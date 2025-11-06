@@ -1,30 +1,36 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
-.filter-container {
+.filter-slide {
   position: absolute;
+  top: 80px; /* adjust depending on header height */
+  left: 0;
   z-index: 99;
-  left: 15px;
   min-width: 400px;
   max-width: 400px;
-  transition: all 0.4s ease-in-out;
-  opacity: 1;
-  transform: translateX(0);
+  transition: transform 0.5s ease, opacity 0.4s ease;
 }
 
-.filter-container.hidden {
+/* when opened — visible & in position */
+.filter-slide.show {
+  transform: translateX(15px); /* slides into view */
+  opacity: 1;
+}
+
+/* when closed — slides out of screen */
+.filter-slide.hide {
+  transform: translateX(-450px); /* move completely left */
   opacity: 0;
-  transform: translateX(-30px);
   pointer-events: none;
 }
 
-.filter-card.open {
+.filter-card {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0px 3px 14px rgba(0, 0, 0, 0.15);
   border-radius: 10px;
   background-color: white;
-  transition: all 0.3s ease-in-out;
+  transition: background-color 0.3s ease;
 }
 
 .export-icon {
