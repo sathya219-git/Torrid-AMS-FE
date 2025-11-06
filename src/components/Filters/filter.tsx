@@ -1,5 +1,5 @@
 import { Button, Card } from "@mantine/core";
-import Priority from "../Priority/priority";
+// import Priority from "../Priority/priority";
 import "./filter.css";
 import Category from "../Category/category";
 import AssignmentGroup from "../AssignmentGroup/assignmentGroup";
@@ -54,9 +54,9 @@ export default function Filter() {
         <Category />
       </Card.Section>
 
-      <Card.Section inheritPadding pb="lg">
+      {/* <Card.Section inheritPadding pb="lg">
         <Priority />
-      </Card.Section>
+      </Card.Section> */}
 
       <Card.Section pb="lg">
         <Status />

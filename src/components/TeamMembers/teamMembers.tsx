@@ -1,4 +1,4 @@
-import { Accordion, Checkbox, Collapse, Input, Text } from "@mantine/core";
+import { Accordion, Checkbox, Input, Text } from "@mantine/core";
 import SearchIcon from "@mui/icons-material/Search";
 import "./teamMembers.css";
 import { useEffect, useState } from "react";
@@ -13,7 +13,7 @@ export default function TeamMembers() {
   };
 
   const [filters, setFilters] = useAtom(selectedFilter);
-  const [opened, setOpened] = useState(false);
+  // const [opened, setOpened] = useState(false);
   const [searchMember, setSearchMember] = useState("");
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
 
@@ -53,43 +53,42 @@ export default function TeamMembers() {
   };
 
   return (
-  <Accordion defaultValue="teamMembers">
-    <Accordion.Item key="teamMembers" value="teamMembers">
-      <Accordion.Control>
-        <Text fw={500}>Assigned Team Members</Text>
-      </Accordion.Control>
-      <Accordion.Panel>
-        <div className="search">
-          <Input
-            placeholder="Search here..."
-            leftSection={<SearchIcon fontSize="medium" />}
-            value={searchMember}
-            onChange={(e) => setSearchMember(e.target.value)}
-          />
-        </div>
+    <Accordion defaultValue="teamMembers">
+      <Accordion.Item key="teamMembers" value="teamMembers">
+        <Accordion.Control>
+          <Text fw={700}>Assigned Team Members</Text>
+        </Accordion.Control>
+        <Accordion.Panel>
+          <div className="search">
+            <Input
+              placeholder="Search here..."
+              leftSection={<SearchIcon fontSize="medium" />}
+              value={searchMember}
+              onChange={(e) => setSearchMember(e.target.value)}
+            />
+          </div>
 
-        {/* Scrollable container for team members */}
-        <div className="team-member-scroll">
-          {[...staticTeamMembers, ...expandTeamMembers].map((teamMember) => (
-            <div className="team-member-checkbox" key={teamMember.name}>
-              <Checkbox
-                label={teamMember.name}
-                onChange={() => teamMembersChanges(teamMember.name)}
-                checked={filters.AssignedToName.includes(teamMember.name)}
-              />
-              <Text c="dimmed">{teamMember.totalCount}</Text>
-            </div>
-          ))}
-        </div>
+          {/* Scrollable container for team members */}
+          <div className="team-member-scroll">
+            {[...staticTeamMembers, ...expandTeamMembers].map((teamMember) => (
+              <div className="team-member-checkbox" key={teamMember.name}>
+                <Checkbox
+                  label={teamMember.name}
+                  onChange={() => teamMembersChanges(teamMember.name)}
+                  checked={filters.AssignedToName.includes(teamMember.name)}
+                />
+                <Text c="dimmed">{teamMember.totalCount}</Text>
+              </div>
+            ))}
+          </div>
 
-        {searchMember && staticTeamMembers.length === 0 && (
-          <Text c="dimmed" size="sm">
-            No match found for "{searchMember}"
-          </Text>
-        )}
-      </Accordion.Panel>
-    </Accordion.Item>
-  </Accordion>
-);
-
+          {searchMember && staticTeamMembers.length === 0 && (
+            <Text c="dimmed" size="sm">
+              No match found for "{searchMember}"
+            </Text>
+          )}
+        </Accordion.Panel>
+      </Accordion.Item>
+    </Accordion>
+  );
 }
