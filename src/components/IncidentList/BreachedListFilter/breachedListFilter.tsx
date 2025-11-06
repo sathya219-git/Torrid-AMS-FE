@@ -54,10 +54,13 @@ export default function BreachedListFilter() {
     { status: "More than 1day" },
   ];
   return (
-    <Accordion defaultValue="filter">
+    <Accordion
+      defaultValue="filter"
+      classNames={{ item: "accordion-border", content: "accordion-padding" }}
+    >
       <Accordion.Item key="filter" value="filter">
-        <Accordion.Control>
-          <Text fw={500}> Filter </Text>
+        <Accordion.Control className="Accordion-title">
+          <Text fw={600}> Filter </Text>
         </Accordion.Control>
         <Accordion.Panel>
           <div className="BL-filter-container">

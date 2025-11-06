@@ -33,13 +33,18 @@ export default function IncidentsList() {
         </Tabs.List>
 
         <Tabs.Panel value="P1-Critical">
-          <Accordion>
+          <Accordion classNames={{ content: "accordion-padding" }}>
             <P1Critical />
           </Accordion>
-          <Accordion>
+          <Accordion
+            classNames={{
+              item: "accordion-border",
+              content: "accordion-padding",
+            }}
+          >
             <Accordion.Item value={"1 - Critical"}>
               <Accordion.Control>
-                <Text fw={700}> P1 - Critical Breach List </Text>
+                <Text fw={700}>P1 - Critical Breach List </Text>
               </Accordion.Control>
               <Accordion.Panel>
                 <div>
@@ -52,13 +57,18 @@ export default function IncidentsList() {
         </Tabs.Panel>
 
         <Tabs.Panel value="P2-High">
-          <Accordion>
+          <Accordion classNames={{ content: "accordion-padding" }}>
             <P2High />
           </Accordion>
-          <Accordion>
+          <Accordion
+            classNames={{
+              item: "accordion-border",
+              content: "accordion-padding",
+            }}
+          >
             <Accordion.Item value={"2 - High"}>
               <Accordion.Control>
-                <Text fw={700}> P2 - High Breach List </Text>
+                <Text fw={700}>P2 - High Breach List </Text>
               </Accordion.Control>
               <Accordion.Panel>
                 <div>
@@ -71,13 +81,18 @@ export default function IncidentsList() {
         </Tabs.Panel>
 
         <Tabs.Panel value="P3-Moderate">
-          <Accordion>
+          <Accordion classNames={{ content: "accordion-padding" }}>
             <P3Moderate />
           </Accordion>
-          <Accordion>
+          <Accordion
+            classNames={{
+              item: "accordion-border",
+              content: "accordion-padding",
+            }}
+          >
             <Accordion.Item value={"3 - Moderate"}>
               <Accordion.Control>
-                <Text fw={700}> P3 - Moderate Breach List </Text>
+                <Text fw={700}>P3 - Moderate Breach List </Text>
               </Accordion.Control>
               <Accordion.Panel>
                 <div>
@@ -90,13 +105,18 @@ export default function IncidentsList() {
         </Tabs.Panel>
 
         <Tabs.Panel value="P4-Low">
-          <Accordion>
+          <Accordion classNames={{ content: "accordion-padding" }}>
             <P4Low />
           </Accordion>
-          <Accordion>
+          <Accordion
+            classNames={{
+              item: "accordion-border",
+              content: "accordion-padding",
+            }}
+          >
             <Accordion.Item value={"4 - Low"}>
               <Accordion.Control>
-                <Text fw={700}> P4 - Low Breach List </Text>
+                <Text fw={700}>P4 - Low Breach List </Text>
               </Accordion.Control>
               <Accordion.Panel>
                 <div>
