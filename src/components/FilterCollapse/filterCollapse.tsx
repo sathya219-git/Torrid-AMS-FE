@@ -9,13 +9,11 @@ export default function FilterCollapse() {
   const [opened, setOpened] = useAtom(filterState);
   const filterOpened = useAtomValue(filterState);
 
-  const onClick = () => {
-    setOpened((prev) => !prev);
-  };
+  const onClick = () => setOpened((prev) => !prev);
 
   return (
-    <div className={`filter-container ${filterOpened ? "visible" : "hidden"}`}>
-      <Card className="filter-card open">
+    <div className={`filter-slide ${filterOpened ? "show" : "hide"}`}>
+      <Card className="filter-card">
         <Card.Section
           withBorder
           inheritPadding
@@ -28,7 +26,6 @@ export default function FilterCollapse() {
             <img src={Filtericon} alt="Download" height="17" width="17" />
           </Text>
         </Card.Section>
-
         <Collapse in={opened}>
           <Filter />
         </Collapse>
