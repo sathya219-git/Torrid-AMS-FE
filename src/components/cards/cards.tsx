@@ -1,9 +1,5 @@
 import "./cards.css";
 import { useMemo, useState, useEffect } from "react";
-import IncidentChart from "./IncidentChart";
-import DonutChart from "./donutChart";
-import PieChartWithExplosion from "./PieChartWithExplosion";
-import LineChart from "./lineChart";
 import totalincidenticon from "../../assets/total_incident_icon.png";
 import openicon from "../../assets/open_icon.png";
 import inprogress from "../../assets/inprogress_icon.png";
@@ -24,9 +20,14 @@ export default function Cards() {
     resolved: number;
   }
 
+  interface PriorityDetails {
+    details: PriorityStats[];
+    avgResolvedTime: string;
+    totalResolvedTime: string;
+  }
+
   interface IncidentPrioritySummary {
-    priority: Record<string, PriorityStats[]>;
-    totalAverageResolvedTime: string;
+    priority: Record<string, PriorityDetails>;
   }
 
   interface IncidentSummary {
@@ -42,10 +43,9 @@ export default function Cards() {
   const [incidentSummary, setIncidentSummary] = useState<IncidentSummary | null>(null);
   const [incidentPrioritySummary, setIncidentPrioritySummary] = useState<IncidentPrioritySummary | null>(null);
 
-  // ✅ new state for metric selection
   const [metrics, setMetrics] = useState<string>("Weeks");
 
-  // Fetch KPIs summary
+  // Fetch KPI summary
   useEffect(() => {
     const fetchIncidentSummary = async () => {
       try {
@@ -54,9 +54,9 @@ export default function Cards() {
           ? `http://localhost:5092/api/Incident/kpis?${query}`
           : `http://localhost:5092/api/Incident/kpis`;
 
+        console.log("KPI URL:", url);
         const response = await fetch(url);
         const data: IncidentSummary = await response.json();
-        console.log("kpis URL:", url);
         setIncidentSummary(data);
       } catch (error) {
         console.error("Error fetching incident summary:", error);
@@ -66,13 +66,12 @@ export default function Cards() {
     fetchIncidentSummary();
   }, [appliedFilters]);
 
-  // ✅ Fetch incident count by priority (depends on filters + metrics)
+  // Fetch incident priority summary
   useEffect(() => {
     const fetchIncidentPrioritySummary = async () => {
       try {
         const query = buildFilterQuery(appliedFilters);
         const queryWithMetric = query ? `${query}&metrics=${metrics}` : `metrics=${metrics}`;
-
         const url = `http://localhost:5092/api/Incident/countbypriority?${queryWithMetric}`;
         console.log("Incident priority URL:", url);
 
@@ -87,7 +86,7 @@ export default function Cards() {
     };
 
     fetchIncidentPrioritySummary();
-  }, [appliedFilters, metrics]); // ✅ triggers again when metrics change
+  }, [appliedFilters, metrics]);
 
   const summary = useMemo(() => {
     const result = {
@@ -95,24 +94,22 @@ export default function Cards() {
       open: 0,
       inProgress: 0,
       closed: 0,
-      p1: 0,
-      p2: 0,
-      p3: 0,
-      p4: 0,
     };
     incidentsData.forEach((incident) => {
       const state = incident.state.toLowerCase();
-      const priority = incident.priority.toLowerCase();
       if (state === "open") result.open++;
       if (state === "in progress") result.inProgress++;
       if (state === "closed") result.closed++;
-      if (priority === "p1") result.p1++;
-      if (priority === "p2") result.p2++;
-      if (priority === "p3") result.p3++;
-      if (priority === "p4") result.p4++;
     });
     return result;
   }, []);
+
+  const priorities = [
+    { label: "1 - Critical", display: "P1 - Critical" },
+    { label: "2 - High", display: "P2 - High" },
+    { label: "3 - Moderate", display: "P3 - Moderate" },
+    { label: "4 - Low", display: "P4 - Low" },
+  ];
 
   return (
     <div className="dashboard-container opened">
@@ -121,309 +118,113 @@ export default function Cards() {
         <div className="summary-cards">
           <div className="card incident">
             <div className="card-icon incident">
-              <img className="icon-property" src={totalincidenticon} alt="" />
+              <img className="icon-property" src={totalincidenticon} alt="Total Incidents" />
             </div>
             <div className="card-content">
               <h3>Total Incidents</h3>
-              <p>{incidentSummary?.totalIncidents}</p>
+              <p>{incidentSummary?.totalIncidents ?? 0}</p>
             </div>
           </div>
 
           <div className="card open">
             <div className="card-icon open">
-              <img className="icon-property" src={openicon} alt="" />
+              <img className="icon-property" src={openicon} alt="Open" />
             </div>
             <div className="card-content">
               <h3>Open</h3>
-              <p>{incidentSummary?.openIncidents}</p>
+              <p>{incidentSummary?.openIncidents ?? 0}</p>
             </div>
           </div>
 
           <div className="card progress">
             <div className="card-icon progress">
-              <img className="icon-property" src={inprogress} alt="" />
+              <img className="icon-property" src={inprogress} alt="In Progress" />
             </div>
             <div className="card-content">
-              <h3>In progress</h3>
-              <p>{incidentSummary?.inProgressIncidents}</p>
+              <h3>In Progress</h3>
+              <p>{incidentSummary?.inProgressIncidents ?? 0}</p>
             </div>
           </div>
 
           <div className="card closed">
             <div className="card-icon closed">
-              <img className="icon-property" src={closedicon} alt="" />
+              <img className="icon-property" src={closedicon} alt="Closed" />
             </div>
             <div className="card-content">
               <h3>Closed</h3>
-              <p>{incidentSummary?.closedIncidents}</p>
+              <p>{incidentSummary?.closedIncidents ?? 0}</p>
             </div>
           </div>
         </div>
 
-        {/* ---- INCIDENT PRIORITY HEADER ---- */}
+        {/* ---- INCIDENT PRIORITY SECTION ---- */}
         <div style={{ backgroundColor: "#fff" }}>
           <div className="incident-priority-header">
             <h2>Incident Priority</h2>
           </div>
 
-          {/* ---- PRIORITY SUMMARY ---- */}
-          <div
-            className="priority-container"
-            style={{ borderRadius: "12px" }}
-          >
+          <div className="priority-container" style={{ borderRadius: "12px" }}>
             <div className="priority-summary">
-              <div className="priority-item">
-
-                <div className="summary-card">
-                  <div className="header-section">
-                    <div className="priority-tag">
-                      <span className="priority-label">P1 - Critical</span>
-                      <span className="count">{incidentPrioritySummary?.priority["1 - Critical"]?.[0]?.totalCount ?? 0}</span>
-                    </div>
-                    <div className="metric-group">
-                      <div className="metric-item">
-                        <span className="metric-title">Total Resolved Time</span>
-                        <span className="metric-value">2 day, 45 min <span className="arrow-up">&#9650;</span></span>
+              {priorities.map(({ label, display }) => {
+                const priorityData = incidentPrioritySummary?.priority[label];
+                const stats = priorityData?.details?.[0];
+                return (
+                  <div className="priority-item" key={label}>
+                    <div className="summary-card">
+                      <div className="header-section">
+                        <div className="priority-tag">
+                          <span className="priority-label">{display}</span>
+                          <span className="count">{stats?.totalCount ?? 0}</span>
+                        </div>
+                        <div className="metric-group">
+                          <div className="metric-item">
+                            <span className="metric-title">Total Resolved Time</span>
+                            <span className="metric-value">
+                              {priorityData?.totalResolvedTime ?? "—"}
+                            </span>
+                          </div>
+                          <div className="metric-item">
+                            <span className="metric-title">Avg Resolved Time</span>
+                            <span className="metric-value">
+                              {priorityData?.avgResolvedTime ?? "—"}
+                            </span>
+                          </div>
+                        </div>
                       </div>
-                      <div className="metric-item">
-                        <span className="metric-title">Avg Resolved Time</span>
-                        <span className="metric-value">20hrs <span className="arrow-up">&#9650;</span></span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="status-section">
-                    <div className="status-item">
-                      <span className="status-label">Open</span>
-                      <span className="status-count">{incidentPrioritySummary?.priority["1 - Critical"]?.[0]?.open ?? 0}
-                      </span>
-                    </div>
-                    <div className="status-item">
-                      <span className="status-label">In Progress</span>
-                      <span className="status-count">{incidentPrioritySummary?.priority["1 - Critical"]?.[0]?.inProgress ?? 0}
-                      </span>
-                    </div>
-                    <div className="status-item">
-                      <span className="status-label">Closed</span>
-                      <span className="status-count"> {incidentPrioritySummary?.priority["1 - Critical"]?.[0]?.closed ?? 0}</span>
-                    </div>
-                    <div className="status-item">
-                      <span className="status-label">Reopen</span>
-                      <span className="status-count">          {incidentPrioritySummary?.priority["1 - Critical"]?.[0]?.reopen ?? 0}
-                      </span>
-                    </div>
-                    <div className="status-item">
-                      <span className="status-label">On Hold</span>
-                      <span className="status-count">          {incidentPrioritySummary?.priority["1 - Critical"]?.[0]?.onHold ?? 0}
-                      </span>
-                    </div>
-                    <div className="status-item">
-                      <span className="status-label">Resolved</span>
-                      <span className="status-count">          {incidentPrioritySummary?.priority["1 - Critical"]?.[0]?.resolved ?? 0}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="priority-item">
-
-                <div className="summary-card">
-                  <div className="header-section">
-                    <div className="priority-tag">
-                      <span className="priority-label">P2 - High</span>
-                      <span className="count">{incidentPrioritySummary?.priority["2 - High"]?.[0]?.totalCount ?? 0}</span>
-                    </div>
-                    <div className="metric-group">
-                      <div className="metric-item">
-                        <span className="metric-title">Total Resolved Time</span>
-                        <span className="metric-value">2 day, 45 min <span className="arrow-up">&#9650;</span></span>
-                      </div>
-                      <div className="metric-item">
-                        <span className="metric-title">Avg Resolved Time</span>
-                        <span className="metric-value">20hrs <span className="arrow-up">&#9650;</span></span>
+                      <div className="status-section">
+                        <div className="status-item">
+                          <span className="status-label">Open</span>
+                          <span className="status-count">{stats?.open ?? 0}</span>
+                        </div>
+                        <div className="status-item">
+                          <span className="status-label">In Progress</span>
+                          <span className="status-count">{stats?.inProgress ?? 0}</span>
+                        </div>
+                        <div className="status-item">
+                          <span className="status-label">Closed</span>
+                          <span className="status-count">{stats?.closed ?? 0}</span>
+                        </div>
+                        <div className="status-item">
+                          <span className="status-label">Reopen</span>
+                          <span className="status-count">{stats?.reopen ?? 0}</span>
+                        </div>
+                        <div className="status-item">
+                          <span className="status-label">On Hold</span>
+                          <span className="status-count">{stats?.onHold ?? 0}</span>
+                        </div>
+                        <div className="status-item">
+                          <span className="status-label">Resolved</span>
+                          <span className="status-count">{stats?.resolved ?? 0}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <div className="status-section">
-                    <div className="status-item">
-                      <span className="status-label">Open</span>
-                      <span className="status-count">{incidentPrioritySummary?.priority["2 - High"]?.[0]?.open ?? 0}
-                      </span>
-                    </div>
-                    <div className="status-item">
-                      <span className="status-label">In Progress</span>
-                      <span className="status-count">{incidentPrioritySummary?.priority["2 - High"]?.[0]?.inProgress ?? 0}
-                      </span>
-                    </div>
-                    <div className="status-item">
-                      <span className="status-label">Closed</span>
-                      <span className="status-count"> {incidentPrioritySummary?.priority["2 - High"]?.[0]?.closed ?? 0}</span>
-                    </div>
-                    <div className="status-item">
-                      <span className="status-label">Reopen</span>
-                      <span className="status-count">          {incidentPrioritySummary?.priority["2 - High"]?.[0]?.reopen ?? 0}
-                      </span>
-                    </div>
-                    <div className="status-item">
-                      <span className="status-label">On Hold</span>
-                      <span className="status-count">          {incidentPrioritySummary?.priority["2 - High"]?.[0]?.onHold ?? 0}
-                      </span>
-                    </div>
-                    <div className="status-item">
-                      <span className="status-label">Resolved</span>
-                      <span className="status-count">          {incidentPrioritySummary?.priority["2 - High"]?.[0]?.resolved ?? 0}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="priority-item">
-
-                <div className="summary-card">
-                  <div className="header-section">
-                    <div className="priority-tag">
-                      <span className="priority-label">P3 - Moderate</span>
-                      <span className="count">{incidentPrioritySummary?.priority["3 - Moderate"]?.[0]?.totalCount ?? 0}</span>
-                    </div>
-                    <div className="metric-group">
-                      <div className="metric-item">
-                        <span className="metric-title">Total Resolved Time</span>
-                        <span className="metric-value">2 day, 45 min <span className="arrow-up">&#9650;</span></span>
-                      </div>
-                      <div className="metric-item">
-                        <span className="metric-title">Avg Resolved Time</span>
-                        <span className="metric-value">20hrs <span className="arrow-up">&#9650;</span></span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="status-section">
-                    <div className="status-item">
-                      <span className="status-label">Open</span>
-                      <span className="status-count">{incidentPrioritySummary?.priority["3 - Moderate"]?.[0]?.open ?? 0}
-                      </span>
-                    </div>
-                    <div className="status-item">
-                      <span className="status-label">In Progress</span>
-                      <span className="status-count">{incidentPrioritySummary?.priority["3 - Moderate"]?.[0]?.inProgress ?? 0}
-                      </span>
-                    </div>
-                    <div className="status-item">
-                      <span className="status-label">Closed</span>
-                      <span className="status-count"> {incidentPrioritySummary?.priority["3 - Moderate"]?.[0]?.closed ?? 0}</span>
-                    </div>
-                    <div className="status-item">
-                      <span className="status-label">Reopen</span>
-                      <span className="status-count">          {incidentPrioritySummary?.priority["3 - Moderate"]?.[0]?.reopen ?? 0}
-                      </span>
-                    </div>
-                    <div className="status-item">
-                      <span className="status-label">On Hold</span>
-                      <span className="status-count">          {incidentPrioritySummary?.priority["3 - Moderate"]?.[0]?.onHold ?? 0}
-                      </span>
-                    </div>
-                    <div className="status-item">
-                      <span className="status-label">Resolved</span>
-                      <span className="status-count">          {incidentPrioritySummary?.priority["3 - Moderate"]?.[0]?.resolved ?? 0}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="priority-item">
-
-                <div className="summary-card">
-                  <div className="header-section">
-                    <div className="priority-tag">
-                      <span className="priority-label">P4 - Low</span>
-                      <span className="count">{incidentPrioritySummary?.priority["4 - Low"]?.[0]?.totalCount ?? 0}</span>
-                    </div>
-                    <div className="metric-group">
-                      <div className="metric-item">
-                        <span className="metric-title">Total Resolved Time</span>
-                        <span className="metric-value">2 day, 45 min <span className="arrow-up">&#9650;</span></span>
-                      </div>
-                      <div className="metric-item">
-                        <span className="metric-title">Avg Resolved Time</span>
-                        <span className="metric-value">20hrs <span className="arrow-up">&#9650;</span></span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="status-section">
-                    <div className="status-item">
-                      <span className="status-label">Open</span>
-                      <span className="status-count">{incidentPrioritySummary?.priority["4 - Low"]?.[0]?.open ?? 0}
-                      </span>
-                    </div>
-                    <div className="status-item">
-                      <span className="status-label">In Progress</span>
-                      <span className="status-count">{incidentPrioritySummary?.priority["4 - Low"]?.[0]?.inProgress ?? 0}
-                      </span>
-                    </div>
-                    <div className="status-item">
-                      <span className="status-label">Closed</span>
-                      <span className="status-count"> {incidentPrioritySummary?.priority["4 - Low"]?.[0]?.closed ?? 0}</span>
-                    </div>
-                    <div className="status-item">
-                      <span className="status-label">Reopen</span>
-                      <span className="status-count">          {incidentPrioritySummary?.priority["4 - Low"]?.[0]?.reopen ?? 0}
-                      </span>
-                    </div>
-                    <div className="status-item">
-                      <span className="status-label">On Hold</span>
-                      <span className="status-count">          {incidentPrioritySummary?.priority["4 - Low"]?.[0]?.onHold ?? 0}
-                      </span>
-                    </div>
-                    <div className="status-item">
-                      <span className="status-label">Resolved</span>
-                      <span className="status-count">          {incidentPrioritySummary?.priority["4 - Low"]?.[0]?.resolved ?? 0}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* ✅ Dynamic Avg Resolved Time */}
-              {/* <div className="priority-item avg-resolved">
-                <div>
-                  <h3>Avg Resolved Time</h3>
-                  <p>{incidentPrioritySummary?.totalAverageResolvedTime ?? "0 weeks"}</p>
-                </div>
-                <span className="card-status-dot green"></span>
-              </div> */}
+                );
+              })}
             </div>
           </div>
         </div>
       </div>
-
-      {/* ---- CHARTS SECTION ---- */}
-      {/* <div className={`incident-priority-section ${filterOpened ? "full" : "expanded"}`}>
-        <div className="charts-grid">
-          <div className="chart-card">
-            <h3>P1- Critical ({incidentPrioritySummary?.priority["1 - Critical"]?.[0]?.totalCount ?? 0})</h3>
-            <IncidentChart />
-          </div>
-
-          <div className="chart-card">
-            <h3>P2- High ({incidentPrioritySummary?.priority["2 - High"]?.[0]?.totalCount ?? 0})</h3>
-            <div className="chart-doughnut-container doughnut-p2">
-              <PieChartWithExplosion />
-            </div>
-          </div>
-
-          <div className="chart-card">
-            <h3>P3- Moderate ({incidentPrioritySummary?.priority["3 - Moderate"]?.[0]?.totalCount ?? 0})</h3>
-            <div className="chart-line-container">
-              <LineChart />
-            </div>
-          </div>
-
-          <div className="chart-card">
-            <h3>P4- Low ({incidentPrioritySummary?.priority["4 - Low"]?.[0]?.totalCount ?? 0})</h3>
-            <div className="chart-doughnut-container">
-              <DonutChart />
-            </div>
-          </div>
-        </div>
-      </div> */}
     </div>
   );
 }

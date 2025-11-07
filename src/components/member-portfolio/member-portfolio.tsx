@@ -15,7 +15,8 @@ interface MemberDetail {
   p3: number;
   p4: number;
   totalCount: number;
-  avgResolvedTime: string;
+  lastUpdated: string;
+  actualResolvedTime:string;
 }
 
 interface Pagination {
@@ -31,7 +32,6 @@ interface MemberDetailsResponse {
   pagination: Pagination;
 }
 
-// 🧱 Individual member card
 const TeamMemberCard = ({ member }: { member: MemberDetail }) => (
 
   <div className="member-card">
@@ -64,7 +64,7 @@ const TeamMemberCard = ({ member }: { member: MemberDetail }) => (
 
       <div className="metric-item">
         {/* <span className="metric-label">Avg Resolved Time</span> */}
-        <span className="metric-value">{member.avgResolvedTime}</span>
+        <span className="metric-value">{member.actualResolvedTime}</span>
       </div>
     </div>
 
