@@ -91,8 +91,8 @@ export default function Header() {
           <div className="page-download">
             <Text fw={500}>Filter</Text>
             <Button
-              onClick={() => setFilterOpened((prev) => !prev)} // ✅ toggle filter panel
-              bg={filterOpened ? "#4880FF" : "#dee4f0"} // ✅ change color dynamically
+              onClick={() => setFilterOpened((prev) => !prev)} 
+              bg={filterOpened ? "#4880FF" : "#dee4f0"} 
               radius="md"
               size="md"
               p="8px"

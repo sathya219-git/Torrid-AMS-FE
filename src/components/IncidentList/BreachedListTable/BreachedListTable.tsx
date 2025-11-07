@@ -9,11 +9,11 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 type BreachedIncidents = {
-  incidentNo: string;
+  incidentNumber: string;
   assignedTo: string;
-  description: string;
+  shortDescription: string;
   category: string;
-  avgResolutionTime: string;
+  actualResolvedTime: string;
   breachSLA: string;
 };
 
@@ -55,16 +55,16 @@ export default function BreachedListTable({ priority }: { priority: string }) {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   useEffect(() => {
-    const url = `http://localhost:5092/api/Incident/detailsbypriority?Priority=${encodeURIComponent(
+    const url = `http://localhost:5092/api/Incident/breachlistbypriority?Priority=${encodeURIComponent(
       priority
     )}&PageNumber=${currentPage}`;
 
     axios
       .get(url)
       .then((res) => {
-        console.log(res.data.incidents);
+        console.log("Breached response :", res.data.items);
         settotalElements(res.data.totalElements);
-        setBreachedIncidents(res.data.incidents ?? []);
+        setBreachedIncidents(res.data.items ?? []);
         setTotalPages(res.data.totalPages);
       })
       .catch((err) => console.error("Axios Error:", err));
@@ -107,10 +107,10 @@ export default function BreachedListTable({ priority }: { priority: string }) {
       <Table>
         <Table.Thead>
           <Table.Tr>
-            <Table.Th onClick={() => handleSort("incidentNo")}>
+            <Table.Th onClick={() => handleSort("incidentNumber")}>
               <div className="bl-table-headers">
                 <span> Incident_No </span>
-                <span> {renderSortIcon("incidentNo")} </span>
+                <span> {renderSortIcon("incidentNumber")} </span>
               </div>
             </Table.Th>
 
@@ -127,10 +127,10 @@ export default function BreachedListTable({ priority }: { priority: string }) {
             <Table.Th>
               <div
                 className="bl-table-headers"
-                onClick={() => handleSort("description")}
+                onClick={() => handleSort("shortDescription")}
               >
                 <span> Description </span>
-                <span> {renderSortIcon("description")} </span>
+                <span> {renderSortIcon("shortDescription")} </span>
               </div>
             </Table.Th>
 
@@ -144,10 +144,10 @@ export default function BreachedListTable({ priority }: { priority: string }) {
             <Table.Th>
               <div
                 className="bl-table-headers"
-                onClick={() => handleSort("avgResolutionTime")}
+                onClick={() => handleSort("actualResolvedTime")}
               >
                 <span> Avg Resolution Time </span>
-                <span> {renderSortIcon("avgResolutionTime")} </span>
+                <span> {renderSortIcon("actualResolvedTime")} </span>
               </div>
             </Table.Th>
 
@@ -175,12 +175,12 @@ export default function BreachedListTable({ priority }: { priority: string }) {
             </Table.Tr>
           ) : (
             breachedIncidents.map((breachedIncident) => (
-              <Table.Tr key={breachedIncident.incidentNo}>
-                <Table.Td>{breachedIncident.incidentNo}</Table.Td>
+              <Table.Tr key={breachedIncident.incidentNumber}>
+                <Table.Td>{breachedIncident.incidentNumber}</Table.Td>
                 <Table.Td>{breachedIncident.assignedTo}</Table.Td>
-                <Table.Td>{breachedIncident.description}</Table.Td>
+                <Table.Td>{breachedIncident.shortDescription}</Table.Td>
                 <Table.Td>{breachedIncident.category}</Table.Td>
-                <Table.Td>{breachedIncident.avgResolutionTime}</Table.Td>
+                <Table.Td>{breachedIncident.actualResolvedTime}</Table.Td>
                 <Table.Td>{breachedIncident.breachSLA}</Table.Td>
               </Table.Tr>
             ))
