@@ -7,14 +7,17 @@ import { FaSortAmountDownAlt } from "react-icons/fa";
 import { FaSortAmountUp } from "react-icons/fa";
 import backward from "../../../assets/backward.png";
 import forward from "../../../assets/forward.png";
+import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 
 type Incident = {
   incidentNo: string;
-  description: string;
+  assignedTo: string;
+  shortDescription: string;
   category: string;
-  resolutionNotes: string;
+  actualResolvedTime: string;
   state: string;
   resolvedDateTime: string;
+  breachSLA: string;
 };
 
 export default function IncidentTable({
@@ -70,7 +73,7 @@ export default function IncidentTable({
     axios
       .get(url)
       .then((res) => {
-        console.log(res.data.incidents);
+        console.log("Incidents response :", res.data.incidents);
         settotalElements(res.data.totalElements);
         setIncidents(res.data.incidents ?? []);
         setTotalPages(res.data.totalPages);
@@ -121,10 +124,17 @@ export default function IncidentTable({
               </div>
             </Table.Th>
 
-            <Table.Th onClick={() => handleSort("description")}>
+            <Table.Th onClick={() => handleSort("assignedTo")}>
+              <div className="table-headers">
+                <span> Assigned To </span>
+                <span> {renderSortIcon("assignedTo")} </span>
+              </div>
+            </Table.Th>
+
+            <Table.Th onClick={() => handleSort("shortDescription")}>
               <div className="table-headers">
                 <span> Description </span>
-                <span> {renderSortIcon("description")} </span>
+                <span> {renderSortIcon("shortDescription")} </span>
               </div>
             </Table.Th>
 
@@ -135,13 +145,6 @@ export default function IncidentTable({
               </div>
             </Table.Th>
 
-            <Table.Th onClick={() => handleSort("resolutionNotes")}>
-              <div className="table-headers">
-                <span> Resolution Notes </span>
-                <span> {renderSortIcon("resolutionNotes")} </span>
-              </div>
-            </Table.Th>
-
             <Table.Th onClick={() => handleSort("state")}>
               <div className="table-headers">
                 <span> State </span>
@@ -149,10 +152,24 @@ export default function IncidentTable({
               </div>
             </Table.Th>
 
+            <Table.Th onClick={() => handleSort("actualResolvedTime")}>
+              <div className="table-headers">
+                <span> Actual Resolved Time </span>
+                <span> {renderSortIcon("actualResolvedTime")} </span>
+              </div>
+            </Table.Th>
+
             <Table.Th onClick={() => handleSort("resolvedDateTime")}>
               <div className="table-headers">
-                <span> Resolved_Date_&_Time </span>
+                <span> Resolved Date & Time </span>
                 <span> {renderSortIcon("resolvedDateTime")} </span>
+              </div>
+            </Table.Th>
+
+            <Table.Th onClick={() => handleSort("breachSLA")}>
+              <div className="table-headers">
+                <span> Breach SLA </span>
+                <span> {renderSortIcon("breachSLA")} </span>
               </div>
             </Table.Th>
           </Table.Tr>
@@ -162,23 +179,42 @@ export default function IncidentTable({
           {totalElements === 0 ? (
             <Table.Tr>
               <Table.Td
-                colSpan={6}
+                colSpan={8}
                 style={{ textAlign: "center", padding: 20 }}
               >
                 No incidents found
               </Table.Td>
             </Table.Tr>
           ) : (
-            incidents.map((incident) => (
-              <Table.Tr key={incident.incidentNo}>
-                <Table.Td>{incident.incidentNo}</Table.Td>
-                <Table.Td>{incident.description}</Table.Td>
-                <Table.Td>{incident.category}</Table.Td>
-                <Table.Td>{incident.resolutionNotes}</Table.Td>
-                <Table.Td>{incident.state}</Table.Td>
-                <Table.Td>{incident.resolvedDateTime}</Table.Td>
-              </Table.Tr>
-            ))
+            incidents.map((incident) => {
+              const isBreached = incident.breachSLA !== "No Breach";
+
+              return (
+                <Table.Tr
+                  key={incident.incidentNo}
+                  style={{
+                    backgroundColor: isBreached ? "#f8babaff" : "transparent",
+                    outline: isBreached ? "2px solid #ff4d4d" : "none",
+                    outlineOffset: "-2px",
+                  }}
+                >
+                  <Table.Td>{incident.incidentNo}</Table.Td>
+                  <Table.Td>{incident.assignedTo}</Table.Td>
+                  <Table.Td>{incident.shortDescription}</Table.Td>
+                  <Table.Td>{incident.category}</Table.Td>
+                  <Table.Td>{incident.state}</Table.Td>
+                  <Table.Td>{incident.actualResolvedTime}</Table.Td>
+                  <Table.Td>{incident.resolvedDateTime}</Table.Td>
+
+                  <Table.Td className="hightlight-downarrow">
+                    {incident.breachSLA}
+                    {isBreached && (
+                      <ArrowDropDownCircleIcon className="arrow" />
+                    )}
+                  </Table.Td>
+                </Table.Tr>
+              );
+            })
           )}
         </Table.Tbody>
       </Table>

@@ -74,7 +74,11 @@ export default function Filter() {
         >
           Reset Filter
         </Button>
-        <Button onClick={applyFilters} disabled={!isFilterEnabled}>
+        <Button
+          variant="filled"
+          onClick={applyFilters}
+          disabled={!isFilterEnabled}
+        >
           Apply Filter
         </Button>
       </div>

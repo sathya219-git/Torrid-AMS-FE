@@ -6,9 +6,8 @@ import { useState } from "react";
 export default function P3Moderate() {
   const [search, setSearch] = useState("");
   return (
-    <div className="p3-container">
       <Accordion.Item value={"3 - Moderate"}>
-        <Accordion.Control>
+        <Accordion.Control className="Accordion-title">
           <Text fw={700}> P3 - Moderate </Text>
         </Accordion.Control>
         <Accordion.Panel>
@@ -23,6 +22,5 @@ export default function P3Moderate() {
           <IncidentTable priority="3 - Moderate" search={search} />
         </Accordion.Panel>
       </Accordion.Item>
-    </div>
   );
 }

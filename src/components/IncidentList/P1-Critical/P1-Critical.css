@@ -1,6 +1,7 @@
-.p1-container {
-  padding: 5px;
-}
 .p1-search {
   padding-top: 5px;
+}
+
+.Accordion-title {
+  background-color: #f5f6fa;
 }
