@@ -7,6 +7,7 @@ import { appliedFilter, filterState } from "../../store/filterStore"; // ✅ imp
 import { PiExport } from "react-icons/pi";
 import { CiFilter } from "react-icons/ci";
 import { RiFileExcel2Fill } from "react-icons/ri";
+import { buildFilterQuery } from "../../utils/queryBuilder";
 
 export default function Header() {
   const [opened, setOpened] = useState(false);
@@ -23,34 +24,41 @@ export default function Header() {
     if (!downloadClicked) return;
     
     const downloadExcel = async () => {
-      setIsDownloading(true);
-      try {
-        const response = await axios.get(
-          "http://localhost:5092/api/Incident/export",
-          {
-            params: filters,
-            responseType: "blob",
-          }
-        );
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute(
-          "download",
-          `IncidentsExport_${new Date().toLocaleString()}.xlsx`
-        );
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      } catch (error) {
-        console.error("Error exporting filtered result:", error);
-        alert("Failed to export filtered result. Please try again.");
-      } finally {
-        setIsDownloading(false);
-        setDownloadClicked(false);
-        setOpened(false);
-      }
-    };
+  const query = buildFilterQuery(filters); // ✅ use filters, not appliedFilter
+
+  setIsDownloading(true);
+  try {
+    const url = `http://localhost:5092/api/Incident/export?${query}`;
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    // ✅ Convert response to blob
+    const blob = await response.blob();
+    const fileUrl = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = fileUrl;
+    link.setAttribute(
+      "download",
+      `IncidentsExport_${new Date().toLocaleString()}.xlsx`
+    );
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    console.log("Excel file downloaded successfully!");
+  } catch (error) {
+    console.error("Error exporting filtered result:", error);
+    alert("Failed to export filtered result. Please try again.");
+  } finally {
+    setIsDownloading(false);
+    setDownloadClicked(false);
+    setOpened(false);
+  }
+};
 
     downloadExcel();
   }, [downloadClicked, filters]);

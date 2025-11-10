@@ -28,61 +28,71 @@
 
 /* Priority Tag Styling (P1 - Critical 450) */
 .priority-tag {
-    background-color: #dae0f7; /* Light blue background */
-    color: #4B5FAE; /* Darker blue text */
-    padding: 10px 15px;
-    border-radius: 6px;
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    min-width: 120px; /* Ensure a minimum size */
+  background-color: #dae0f7;
+  /* Light blue background */
+  color: #4B5FAE;
+  /* Darker blue text */
+  padding: 10px 15px;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  min-width: 120px;
+  /* Ensure a minimum size */
 }
 
 .priority-label {
-    font-size: 14px;
-    font-weight: 500;
-    margin-bottom: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 4px;
 }
 
 .count {
-    font-size: 28px;
-    font-weight: bold;
-    color: #004d99; /* Maintain dark blue for the count */
+  font-size: 28px;
+  font-weight: bold;
+  color: #004d99;
+  /* Maintain dark blue for the count */
 }
 
 /* Metrics Group Styling */
 .metric-group {
-    display: flex;
-    gap: 40px; /* Space between metric items */
-    flex-grow: 1; /* Allow metrics to take up available space */
-    justify-content: space-around; /* Distribute space evenly */
+  display: flex;
+  gap: 40px;
+  /* Space between metric items */
+  flex-grow: 1;
+  /* Allow metrics to take up available space */
+  justify-content: space-around;
+  /* Distribute space evenly */
 }
 
 .metric-item {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
 }
 
 .metric-title {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 4px;
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 4px;
 }
 
 .metric-value {
-    font-size: 18px;
-    font-weight: bold;
-    color: #333;
-    display: flex;
-    align-items: center;
-    gap: 5px;
+  font-size: 18px;
+  font-family: "Inter", sans-serif;
+  font-weight: bold;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .arrow-up {
-    color: #00b300; /* Green for up arrow */
-    font-size: 14px;
-    line-height: 1; /* Align vertically */
+  color: #00b300;
+  /* Green for up arrow */
+  font-size: 14px;
+  line-height: 1;
+  /* Align vertically */
 }
 
 /* Status Section (Open, In Progress, etc.) */
@@ -98,20 +108,20 @@
 }
 
 .status-item {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .status-label {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 4px;
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 4px;
 }
 
 .status-count {
-    font-size: 20px;
-    font-weight: bold;
-    color: #333;
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
 }
 
 
@@ -184,6 +194,7 @@
     align-items: center;
   }
 }
+
 body {
   font-family: "Inter";
   /* Added sans-serif as a fallback */
@@ -191,12 +202,14 @@ body {
   margin: 0;
   color: #333;
 }
+
 .priority-container {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   row-gap: 15px;
 }
+
 .dashboard-container {
   display: flex;
   gap: 20px;
@@ -300,7 +313,7 @@ body {
   margin-bottom: 30px;
 }
 
-.summary-cards > * {
+.summary-cards>* {
   flex: 1 1 200px;
   /* grow, shrink, basis */
   min-width: 200px;
@@ -418,6 +431,7 @@ body {
   font-weight: 600;
   margin: 0;
 }
+
 .metrics-dropdown {
   display: flex;
   align-items: center;
@@ -458,6 +472,7 @@ body {
   background-color: #fff;
   transition: all 0.3s ease;
 }
+
 /* --- Charts Grid --- */
 .charts-grid {
   display: grid;
@@ -470,7 +485,8 @@ body {
 .chart-card {
   background-color: #f5f6fa;
   border-radius: 12px;
-  padding: 20px 30px 80px 30px; /* top right bottom left */
+  padding: 20px 30px 80px 30px;
+  /* top right bottom left */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
   min-height: 250px;
   display: flex;
