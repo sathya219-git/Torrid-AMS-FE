@@ -71,7 +71,6 @@ export default function IncidentTable({
   useEffect(() => {
     const fetchIncidents = async () => {
       try {
-        console.log("applied filter : ", appliedFilter);
         const query = buildFilterQuery(appliedFilters);
 
         const url = `http://localhost:5092/api/Incident/detailsbypriority?Priority=${encodeURIComponent(
@@ -93,25 +92,22 @@ export default function IncidentTable({
   }, [priority, search, currentPage, appliedFilters]);
 
   const buildFilterQuery = (appliedFilters: FilterState) => {
-    let query = "";
+    const params = new URLSearchParams();
 
     if (appliedFilters.Category?.length > 0) {
-      query += `&Category=${appliedFilters.Category.join(",")}`;
+      params.append("Category", appliedFilters.Category.join(","));
     }
     if (appliedFilters.Priority?.length > 0) {
-      query += `&Priority=${appliedFilters.Priority.join(",")}`;
+      params.append("Priority", appliedFilters.Priority.join(","));
     }
     if (appliedFilters.State?.length > 0) {
-      query += `&State=${appliedFilters.State.join(",")}`;
+      params.append("State", appliedFilters.State.join(","));
     }
     if (appliedFilters.AssignedToName?.length > 0) {
-      query += `&AssignedTo=${appliedFilters.AssignedToName.join(",")}`;
+      params.append("AssignedToName", appliedFilters.AssignedToName.join(","));
     }
-    if (appliedFilters.FromDate)
-      query += `&FromDate=${appliedFilters.FromDate}`;
-    if (appliedFilters.ToDate) query += `&ToDate=${appliedFilters.ToDate}`;
-
-    return query;
+    const queryString = params.toString();
+    return queryString ? `&${queryString}` : "";
   };
 
   // sorting function
