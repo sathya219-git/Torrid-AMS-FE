@@ -21,7 +21,7 @@ export default function Header() {
 
   useEffect(() => {
     if (!downloadClicked) return;
-
+    
     const downloadExcel = async () => {
       setIsDownloading(true);
       try {

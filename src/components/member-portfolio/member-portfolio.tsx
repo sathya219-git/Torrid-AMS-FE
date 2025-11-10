@@ -6,6 +6,7 @@ import { useAtomValue } from "jotai";
 import { appliedFilter } from "../../store/filterStore";
 import { useEffect, useState } from "react";
 import { buildFilterQuery } from "../../utils/queryBuilder";
+import { GoSortAsc, GoSortDesc } from "react-icons/go";
 
 // 🧩 Type definitions
 interface MemberDetail {
@@ -15,7 +16,8 @@ interface MemberDetail {
   p3: number;
   p4: number;
   totalCount: number;
-  avgResolvedTime: string;
+  lastUpdated: string;
+  actualResolvedTime: string;
 }
 
 interface Pagination {
@@ -31,44 +33,31 @@ interface MemberDetailsResponse {
   pagination: Pagination;
 }
 
-// 🧱 Individual member card
 const TeamMemberCard = ({ member }: { member: MemberDetail }) => (
-
   <div className="member-card">
     <div className="metrics-grid">
       <div className="metric-item">
-        {/* <span className="metric-label">Incident Count</span> */}
         <span className="metric-value">{member.totalCount}</span>
-      </div><div className="metric-item">
-        {/* <span className="metric-label">Name</span> */}
+      </div>
+      <div className="metric-item">
         <span className="metric-value">{member.name ?? "Null"}</span>
       </div>
-
-
       <div className="metric-item">
-        {/* <span className="metric-label">P1-Critical</span> */}
         <span className="metric-value">{member.p1}</span>
       </div>
       <div className="metric-item">
-        {/* <span className="metric-label">P2-High</span> */}
         <span className="metric-value">{member.p2}</span>
       </div>
       <div className="metric-item">
-        {/* <span className="metric-label">P3-Moderate</span> */}
         <span className="metric-value">{member.p3}</span>
       </div>
       <div className="metric-item">
-        {/* <span className="metric-label">P4-Low</span> */}
         <span className="metric-value">{member.p4}</span>
       </div>
-
       <div className="metric-item">
-        {/* <span className="metric-label">Avg Resolved Time</span> */}
-        <span className="metric-value">{member.avgResolvedTime}</span>
+        <span className="metric-value">{member.actualResolvedTime}</span>
       </div>
     </div>
-
-
   </div>
 );
 
@@ -82,8 +71,8 @@ export default function MemberPortfolio() {
   // 🧭 Pagination/sorting/metrics state
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState<number | null>(5);
-  const [sortBy, setSortBy] = useState<string | null>("Alphabetical");
-  const [sortOrder, setSortOrder] = useState<string | null>("ascending");
+  const [sortBy, setSortBy] = useState<string>("name");
+  const [sortOrder, setSortOrder] = useState<string>("ascending");
   const [metricsUnit, setMetricsUnit] = useState("Weeks");
 
   // 📡 Fetch data from API
@@ -94,34 +83,24 @@ export default function MemberPortfolio() {
         let url = `http://localhost:5092/api/Incident/nameandcountbypriority`;
 
         const params = new URLSearchParams();
+        if (query) url += `?${query}`;
 
-        // 🔍 include filters directly in the URL
-        if (query) {
-          url += `?${query}`;
-        }
-
-        // 📄 Append pagination, sorting, metrics
         params.append("PageNumber", (pageNumber || 1).toString());
         if (pageSize) params.append("PageSize", pageSize.toString());
         if (sortBy) params.append("SortBy", sortBy);
         if (sortOrder) params.append("SortOrder", sortOrder);
         if (metricsUnit) params.append("Metrics", metricsUnit);
 
-        // Combine filters + params
         url += query ? `&${params.toString()}` : `?${params.toString()}`;
-
         console.log("Final URL:", url);
 
         const response = await fetch(url);
         const data: MemberDetailsResponse = await response.json();
-
         setMemberDetailsSummary(data);
 
-        // Sync pagination
         if (data.pagination) {
           setPageNumber(data.pagination.page ?? pageNumber);
           setPageSize(data.pagination.pageSize ?? pageSize);
-          setSortBy(data.pagination.sortBy ?? sortBy);
         }
       } catch (error) {
         console.error("Error fetching member summary:", error);
@@ -147,59 +126,73 @@ export default function MemberPortfolio() {
   const totalRecords = memberDetailsSummary?.pagination?.totalRecords ?? 0;
   const totalPages = memberDetailsSummary?.pagination?.totalPages ?? 1;
 
+  // 🔄 Column sort click handler
+  const handleSort = (column: string) => {
+    if (sortBy === column) {
+      setSortOrder(sortOrder === "ascending" ? "descending" : "ascending");
+    } else {
+      setSortBy(column);
+      setSortOrder("ascending");
+    }
+  };
+
+  // 🧱 Column configuration for cleaner rendering
+  const columns = [
+    { label: "Incident Count", key: "totalCount" },
+    { label: "Name", key: "name" },
+    { label: "P1-Critical", key: "p1" },
+    { label: "P2-High", key: "p2" },
+    { label: "P3-Moderate", key: "p3" },
+    { label: "P4-Low", key: "p4" },
+    { label: "Actual Resolved Time", key: "actualResolvedTime" },
+  ];
+
   return (
     <div className="team-portfolio-container">
-      {/* Header with Title and Controls */}
+      {/* Header */}
       <header className="portfolio-header">
         <h1 style={{ color: "#333B69" }}>Team Member Portfolio</h1>
-        <div className="controls">
-          {/* <label>
-            <b>Metrics in:</b>
-          </label>
-          <select
-            className="restore-arrow"
-            value={metricsUnit}
-            onChange={(e) => setMetricsUnit(e.target.value)}
-          >
-            <option value="Weeks">Weeks</option>
-            <option value="Days">Days</option>
-          </select> */}
-
-          <label>
-            <b>Sort by:</b>
-          </label>
-          <select
-            className="restore-arrow"
-            value={sortBy ?? ""}
-            onChange={(e) => setSortBy(e.target.value)}
-          >
-            <option value="Recently Updated">Recently Updated</option>
-            <option value="Alphabetical">Alphabetical</option>
-          </select>
-        </div>
       </header>
 
-      {/* Main List of Member Cards */}
+      {/* Main List */}
       <main className="member-list">
-        <div className="member-card">
-
+        {/* Table Header */}
+        <div className="member-card header-row">
           <div className="metrics-grid">
-            <div className="metric-item">Incident count</div>
-            <div className="metric-item">Name</div>
-            <div className="metric-item">P1-Critical</div>
-            <div className="metric-item">P2-High</div>
-            <div className="metric-item">P3-Moderate</div>
-            <div className="metric-item">P4-Low</div>
-            <div className="metric-item">Avg Resolution time</div>
-
+            {columns.map((col) => (
+              <div
+                key={col.key}
+                className="metric-item sortable"
+                onClick={() => handleSort(col.key)}
+                style={{
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  // justifyContent: "center",
+                  gap: "4px",
+                  fontWeight: "600",
+                  color: "#333B69",
+                  flexDirection:"row"
+                }}
+              >
+                {col.label}
+                {sortBy === col.key ? (
+                  sortOrder === "ascending" ? (
+                    <GoSortAsc size={16} />
+                  ) : (
+                    <GoSortDesc size={16} />
+                  )
+                ) : (
+                  <GoSortAsc size={16} style={{ opacity: 0.3 }} />
+                )}
+              </div>
+            ))}
           </div>
-          {/* hhhhh */}
         </div>
 
+        {/* Data Rows */}
         {memberDetailsSummary?.memberDetails?.length ? (
           memberDetailsSummary.memberDetails.map((member, index) => (
-
-
             <TeamMemberCard key={index} member={member} />
           ))
         ) : (
@@ -207,12 +200,12 @@ export default function MemberPortfolio() {
         )}
       </main>
 
-      {/* Footer with Paging Info */}
+      {/* Footer Pagination */}
       <footer className="portfolio-footer">
         <span>
           Page {pageNumber} of {totalPages} ({totalRecords} records)
         </span>
-        <div className="pagination">
+        <div className="member-portpolio-pagination">
           {/* First Page */}
           <button
             style={{
@@ -227,7 +220,7 @@ export default function MemberPortfolio() {
             <img src={forward} />
           </button>
 
-          {/* Previous Page */}
+          {/* Previous */}
           <button
             style={{ border: " 1px solid #33303111" }}
             className="page-control"
@@ -237,7 +230,7 @@ export default function MemberPortfolio() {
             <img src={forward} />
           </button>
 
-          {/* Next Page */}
+          {/* Next */}
           <button
             style={{ border: " 1px solid #33303111" }}
             className="page-control"
@@ -247,7 +240,7 @@ export default function MemberPortfolio() {
             <img src={backward} />
           </button>
 
-          {/* Last Page */}
+          {/* Last */}
           <button
             style={{
               borderRadius: "0 6px 6px 0",
