@@ -8,6 +8,8 @@ import { FaSortAmountUp } from "react-icons/fa";
 import backward from "../../../assets/backward.png";
 import forward from "../../../assets/forward.png";
 import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
+import { useAtomValue } from "jotai";
+import { appliedFilter, FilterState } from "../../../store/filterStore";
 
 type Incident = {
   incidentNo: string;
@@ -30,6 +32,7 @@ export default function IncidentTable({
   const [incidents, setIncidents] = useState<Incident[]>([]);
   const [totalElements, settotalElements] = useState(0);
   const [totalPage, setTotalPages] = useState(0);
+  const appliedFilters = useAtomValue(appliedFilter);
 
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 8;
@@ -66,20 +69,50 @@ export default function IncidentTable({
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   useEffect(() => {
-    const url = `http://localhost:5092/api/Incident/detailsbypriority?Priority=${encodeURIComponent(
-      priority
-    )}&Search=${encodeURIComponent(search)}&PageNumber=${currentPage}`;
+    const fetchIncidents = async () => {
+      try {
+        console.log("applied filter : ", appliedFilter);
+        const query = buildFilterQuery(appliedFilters);
 
-    axios
-      .get(url)
-      .then((res) => {
-        console.log("Incidents response :", res.data.incidents);
+        const url = `http://localhost:5092/api/Incident/detailsbypriority?Priority=${encodeURIComponent(
+          priority
+        )}&Search=${encodeURIComponent(
+          search
+        )}&PageNumber=${currentPage}${query}`;
+        const res = await axios.get(url);
+        console.log("Incidents response:", res.data.incidents);
+
         settotalElements(res.data.totalElements);
         setIncidents(res.data.incidents ?? []);
         setTotalPages(res.data.totalPages);
-      })
-      .catch((err) => console.error("Axios Error:", err));
-  }, [priority, search, currentPage]);
+      } catch (err) {
+        console.error("Error:", err);
+      }
+    };
+    fetchIncidents();
+  }, [priority, search, currentPage, appliedFilters]);
+
+  const buildFilterQuery = (appliedFilters: FilterState) => {
+    let query = "";
+
+    if (appliedFilters.Category?.length > 0) {
+      query += `&Category=${appliedFilters.Category.join(",")}`;
+    }
+    if (appliedFilters.Priority?.length > 0) {
+      query += `&Priority=${appliedFilters.Priority.join(",")}`;
+    }
+    if (appliedFilters.State?.length > 0) {
+      query += `&State=${appliedFilters.State.join(",")}`;
+    }
+    if (appliedFilters.AssignedToName?.length > 0) {
+      query += `&AssignedTo=${appliedFilters.AssignedToName.join(",")}`;
+    }
+    if (appliedFilters.FromDate)
+      query += `&FromDate=${appliedFilters.FromDate}`;
+    if (appliedFilters.ToDate) query += `&ToDate=${appliedFilters.ToDate}`;
+
+    return query;
+  };
 
   // sorting function
   const handleSort = (field: keyof Incident) => {

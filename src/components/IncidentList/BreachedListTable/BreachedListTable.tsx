@@ -7,6 +7,8 @@ import backward from "../../../assets/backward.png";
 import forward from "../../../assets/forward.png";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useAtomValue } from "jotai";
+import { appliedFilter, FilterState } from "../../../store/filterStore";
 
 type BreachedIncidents = {
   incidentNumber: string;
@@ -29,6 +31,7 @@ export default function BreachedListTable({ priority }: { priority: string }) {
 
   const startRange = (currentPage - 1) * pageSize + 1;
   const endRange = Math.min(currentPage * pageSize, totalElements);
+  const appliedFilters = useAtomValue(appliedFilter);
 
   const nextPage = () => {
     if (currentPage < totalPage) {
@@ -55,20 +58,53 @@ export default function BreachedListTable({ priority }: { priority: string }) {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   useEffect(() => {
-    const url = `http://localhost:5092/api/Incident/breachlistbypriority?Priority=${encodeURIComponent(
-      priority
-    )}&PageNumber=${currentPage}`;
+    const fetchBreachedList = async () => {
+      try {
+        const query = buildFilterQuery(appliedFilters);
 
-    axios
-      .get(url)
-      .then((res) => {
-        console.log("Breached response :", res.data.items);
+        const url = `http://localhost:5092/api/Incident/breachlistbypriority?Priority=${encodeURIComponent(
+          priority
+        )}&PageNumber=${currentPage}${query}`;
+
+        const res = await axios.get(url);
+
+        console.log("Breached response:", res.data.items);
+
         settotalElements(res.data.totalElements);
         setBreachedIncidents(res.data.items ?? []);
         setTotalPages(res.data.totalPages);
-      })
-      .catch((err) => console.error("Axios Error:", err));
-  }, [priority, currentPage]);
+      } catch (err) {
+        console.error("Axios Error:", err);
+      }
+    };
+
+    fetchBreachedList();
+  }, [priority, currentPage, appliedFilters]);
+
+  const buildFilterQuery = (appliedFilters: FilterState) => {
+    const params = new URLSearchParams();
+
+    if (appliedFilters.AssignmentGroup?.length > 0) {
+      params.append(
+        "AssignmentGroup",
+        appliedFilters.AssignmentGroup.join(",")
+      );
+    }
+    if (appliedFilters.Category?.length > 0) {
+      params.append("Category", appliedFilters.Category.join(","));
+    }
+    if (appliedFilters.Priority?.length > 0) {
+      params.append("Priority", appliedFilters.Priority.join(","));
+    }
+    if (appliedFilters.State?.length > 0) {
+      params.append("State", appliedFilters.State.join(","));
+    }
+    if (appliedFilters.AssignedToName?.length > 0) {
+      params.append("AssignedToName", appliedFilters.AssignedToName.join(","));
+    }
+    const queryString = params.toString();
+    return queryString ? `&${queryString}` : "";
+  };
 
   // sorting function
   const handleSort = (field: keyof BreachedIncidents) => {

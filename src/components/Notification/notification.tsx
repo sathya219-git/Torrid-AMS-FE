@@ -17,25 +17,18 @@ export default function Notification() {
         <Popover.Dropdown className="popover-dropdown">
           <div className="notification-header">
             <Text fw={700}>Your Notification</Text>
-            <div>
-              {/* <DoneAllIcon fontSize="small" /> */}
+            <div
+              className="notification-close-btn"
+              style={{ cursor: "pointer" }}
+              onClick={(e) => {
+                e.stopPropagation();
+                const event = new Event("mousedown", { bubbles: true });
+                document.body.dispatchEvent(event);
+              }}
+            >
               <CloseIcon fontSize="small" />
             </div>
           </div>
-          {/* <Button.Group className="button-group">
-            <Button variant="filled" color=" #60aaeb">
-              View all
-              <Badge className="count-badge"> 370</Badge>
-            </Button>
-            <Button variant="light" color=" #60aaeb">
-              Unread
-              <Badge className="count-badge"> 02</Badge>
-            </Button>
-            <Button variant="light" className="buttons">
-              Read
-              <Badge className="count-badge"> 350</Badge>
-            </Button>
-          </Button.Group> */}
           <div className="notification">
             <>
               <div className="popover-msgs">

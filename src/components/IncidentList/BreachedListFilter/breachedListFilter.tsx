@@ -1,11 +1,7 @@
-import { useAtom } from "jotai";
 import "./breachedListFilter.css";
 import { Accordion, Checkbox, Text } from "@mantine/core";
-import { appliedFilter } from "../../../store/filterStore";
 
 export default function BreachedListFilter() {
-  const [filters] = useAtom(appliedFilter);
-
   const incidentIds = [
     { id: "INC0019008" },
     { id: "INC0027899" },
@@ -47,38 +43,6 @@ export default function BreachedListFilter() {
                 {incidentIds.map((item) => (
                   <div className="incident-checkbox" key={item.id}>
                     <Checkbox label={`${item.id}`} />
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div>
-              <Text fw={400}> Assigned To </Text>
-              <div className="incident-scroll">
-                {filters.AssignedToName.length === 0 && (
-                  <Text size="sm" c="dimmed">
-                    No Assignee Selected
-                  </Text>
-                )}
-
-                {filters.AssignedToName.map((name) => (
-                  <div className="assigned-item" key={name}>
-                    <Checkbox label={name} />
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div>
-              <Text fw={400}> Category </Text>
-              <div className="incident-scroll">
-                {filters.Category.length === 0 && (
-                  <Text size="sm" c="dimmed">
-                    No Category Selected
-                  </Text>
-                )}
-
-                {filters.Category.map((name) => (
-                  <div className="category-item" key={name}>
-                    <Checkbox label={name} />
                   </div>
                 ))}
               </div>
