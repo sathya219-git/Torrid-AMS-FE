@@ -16,7 +16,7 @@ type BreachedIncidents = {
   shortDescription: string;
   category: string;
   actualResolvedTime: string;
-  breachSLA: string;
+  breachSLA: string
 };
 
 export default function BreachedListTable({ priority }: { priority: string }) {

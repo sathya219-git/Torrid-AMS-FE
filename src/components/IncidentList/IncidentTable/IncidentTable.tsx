@@ -93,25 +93,22 @@ export default function IncidentTable({
   }, [priority, search, currentPage, appliedFilters]);
 
   const buildFilterQuery = (appliedFilters: FilterState) => {
-    let query = "";
+    const params = new URLSearchParams();
 
     if (appliedFilters.Category?.length > 0) {
-      query += `&Category=${appliedFilters.Category.join(",")}`;
+      params.append("Category", appliedFilters.Category.join(","));
     }
     if (appliedFilters.Priority?.length > 0) {
-      query += `&Priority=${appliedFilters.Priority.join(",")}`;
+      params.append("Priority", appliedFilters.Priority.join(","));
     }
     if (appliedFilters.State?.length > 0) {
-      query += `&State=${appliedFilters.State.join(",")}`;
+      params.append("State", appliedFilters.State.join(","));
     }
     if (appliedFilters.AssignedToName?.length > 0) {
-      query += `&AssignedTo=${appliedFilters.AssignedToName.join(",")}`;
+      params.append("AssignedToName", appliedFilters.AssignedToName.join(","));
     }
-    if (appliedFilters.FromDate)
-      query += `&FromDate=${appliedFilters.FromDate}`;
-    if (appliedFilters.ToDate) query += `&ToDate=${appliedFilters.ToDate}`;
-
-    return query;
+    const queryString = params.toString();
+    return queryString ? `&${queryString}` : "";
   };
 
   // sorting function
@@ -225,11 +222,7 @@ export default function IncidentTable({
               return (
                 <Table.Tr
                   key={incident.incidentNo}
-                  style={{
-                    backgroundColor: isBreached ? "#f8babaff" : "transparent",
-                    outline: isBreached ? "2px solid #ff4d4d" : "none",
-                    outlineOffset: "-2px",
-                  }}
+                  className={`breached-row ${isBreached ? "breached" : ""}`}
                 >
                   <Table.Td>{incident.incidentNo}</Table.Td>
                   <Table.Td>{incident.assignedTo}</Table.Td>
@@ -239,11 +232,14 @@ export default function IncidentTable({
                   <Table.Td>{incident.actualResolvedTime}</Table.Td>
                   <Table.Td>{incident.resolvedDateTime}</Table.Td>
 
-                  <Table.Td className="hightlight-downarrow">
-                    {incident.breachSLA}
-                    {isBreached && (
-                      <ArrowDropDownCircleIcon className="arrow" />
-                    )}
+                  <Table.Td className="highlight-downarrow">
+                    <div className="breach-cell">
+                      <span>{incident.breachSLA}</span>
+
+                      {isBreached && (
+                        <ArrowDropDownCircleIcon className="arrow" />
+                      )}
+                    </div>
                   </Table.Td>
                 </Table.Tr>
               );
