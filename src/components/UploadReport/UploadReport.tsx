@@ -3,7 +3,8 @@ import "./UploadReport.css";
 import { GrDocumentUpload } from "react-icons/gr";
 import { Input } from "@mantine/core";
 import { GoSortAsc, GoSortDesc } from "react-icons/go";
-
+import backward from "../../assets/backward.png";
+import forward from "../../assets/forward.png";
 interface FileDetail {
     filename: string | null;
     fileSize: number;
@@ -85,11 +86,29 @@ const UploadReport = () => {
 
     // ✅ File handling
     const handleBrowseFiles = () => fileInputRef.current?.click();
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
-        if (file) console.log("Selected file:", file.name);
-    };
+        if (!file) return;
 
+        console.log("📄 File Details:");
+        console.log("Name:", file.name);
+        console.log("Size:", `${(file.size / 1024).toFixed(2)} KB`);
+        console.log("Type:", file.type);
+
+        // ✅ Read file content (for Excel we’ll read as binary text)
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+            const fileContent = e.target?.result;
+            console.log("📘 File Content (Raw Data):", fileContent);
+        };
+
+        reader.onerror = (error) => {
+            console.error("❌ Error reading file:", error);
+        };
+
+        reader.readAsBinaryString(file); // For Excel files (.xls, .xlsx)
+    };
     // ✅ Helper: Always show arrow indicators
     const getSortIcon = (column: string) => {
         if (sortBy === column)
@@ -222,9 +241,9 @@ const UploadReport = () => {
                         </button>
                     </div> */}
 
-                    {/* <footer className="portfolio-footer">
+                    <footer className="portfolio-footer">
                         <span>
-                            Page {pageNumber} of {totalPages} ({totalRecords} records)
+                            Page 2 of 111 ( 23 records)
                         </span>
                         <div className="pagination">
                             <button
@@ -233,8 +252,8 @@ const UploadReport = () => {
                                     border: " 1px solid #33303111",
                                 }}
                                 className="page-control"
-                                onClick={goToFirstPage}
-                                disabled={pageNumber === 1}
+
+
                             >
                                 <img src={forward} />
                                 <img src={forward} />
@@ -243,18 +262,16 @@ const UploadReport = () => {
                             <button
                                 style={{ border: " 1px solid #33303111" }}
                                 className="page-control"
-                                onClick={goToPreviousPage}
-                                disabled={pageNumber === 1}
+
                             >
                                 <img src={forward} />
                             </button>
 
-                            
+
                             <button
                                 style={{ border: " 1px solid #33303111" }}
                                 className="page-control"
-                                onClick={goToNextPage}
-                                disabled={pageNumber === totalPages}
+
                             >
                                 <img src={backward} />
                             </button>
@@ -265,14 +282,13 @@ const UploadReport = () => {
                                     border: " 1px solid #33303111",
                                 }}
                                 className="page-control"
-                                onClick={goToLastPage}
-                                disabled={pageNumber === totalPages}
+
                             >
                                 <img src={backward} />
                                 <img src={backward} />
                             </button>
                         </div>
-                    </footer> */}
+                    </footer>
 
                 </div>
             </div>

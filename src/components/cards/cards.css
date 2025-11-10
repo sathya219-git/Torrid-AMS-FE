@@ -9,23 +9,21 @@
 
 /* Basic Card Container Styling */
 .summary-card {
-    background-color: #F5F6FA;
-    border-radius: 8px;
-    /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); */
-    padding: 20px;
-    max-width: 100%; /* Limit max width for desktop view */
-    /* margin: 20px auto;  */
-    font-family: Arial, sans-serif;
+  background-color: #f5f6fa;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 100%;
+  font-family: Arial, sans-serif;
 }
 
 /* Header Section (Priority Tag & Metrics) */
 .header-section {
-    display: flex;
-    align-items: center;
-    gap: 30px; /* Space between priority tag and metrics */
-    padding-bottom: 20px;
-    border-bottom: 1px solid #eee;
-    /* flex-wrap: wrap;  */
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  /* flex-wrap: wrap; */
 }
 
 /* Priority Tag Styling (P1 - Critical 450) */
@@ -90,14 +88,13 @@
 /* Status Section (Open, In Progress, etc.) */
 .status-section {
   border-radius: 10px;
-    display: grid;
-    background-color: white;
-    /* 6 equal columns for the 6 status items */
-    grid-template-columns: repeat(6, 1fr);
-    gap: 15px;
-    padding: 10px;
-    margin-top: 20px;
-    text-align: center;
+  display: grid;
+  background-color: white;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 15px;
+  padding: 10px;
+  margin-top: 20px;
+  text-align: center;
 }
 
 .status-item {
@@ -119,39 +116,73 @@
 
 
 /* --- Responsiveness: Adjust layout for smaller screens (e.g., mobile) --- */
-@media (max-width: 650px) {
-    .header-section {
-        flex-direction: column; /* Stack priority tag and metrics */
-        align-items: flex-start; /* Align everything to the left */
-        gap: 20px;
-    }
 
-    .priority-tag {
-        min-width: 100%; /* Make the priority tag full width */
-        flex-direction: row; /* Layout label and count side-by-side */
-        justify-content: space-between;
-        padding: 15px;
-    }
 
-    .metric-group {
-        width: 100%;
-        justify-content: space-between; /* Space out the two metrics */
-        gap: 20px;
-    }
+@media (max-width: 1024px) {
+  .priority-item {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
 
-    /* On very small screens, the status items may need fewer columns */
-    .status-section {
-        /* Switch to 3 columns per row */
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px 5px; /* Adjust spacing */
-    }
+  .header-section {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .metric-group {
+    justify-content: space-between;
+    gap: 25px;
+  }
+
+  .status-section {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
+/* Small Screens (Mobile) */
+@media (max-width: 650px) {
+  .header-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .priority-tag {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 15px;
+  }
+
+  .metric-group {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .status-section {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px 5px;
+  }
+}
+
+/* Very Small Screens */
 @media (max-width: 400px) {
-    /* For tiny phones, maybe 2 columns for status */
-    .status-section {
-        grid-template-columns: repeat(2, 1fr);
-    }
+  .status-section {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .priority-tag {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .metric-group {
+    text-align: center;
+    align-items: center;
+  }
 }
 body {
   font-family: "Inter";
@@ -387,7 +418,6 @@ body {
   font-weight: 600;
   margin: 0;
 }
-
 .metrics-dropdown {
   display: flex;
   align-items: center;
@@ -414,60 +444,20 @@ body {
 }
 
 .priority-summary {
-  /* background-color: violet; */
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  /* allow wrapping */
   gap: 20px;
-  /* spacing between items */
-  /* margin-bottom: 30px; */
 }
-
 
 
 .priority-item {
-
-  background-color: #007bff;
-  flex-basis: 50%;
-  flex-wrap: wrap;
-  max-width:48%;
+  flex-basis: 48%;
+  max-width: 48%;
   border-radius: 12px;
-  /* padding: 20px; */
-  /* margin-left: 23px; */
+  background-color: #fff;
+  transition: all 0.3s ease;
 }
-
-.priority-item h3 {
-  font-size: 0.9em;
-  color: #777;
-  margin-bottom: 5px;
-  font-weight: 500;
-}
-
-.priority-item p {
-  font-size: 1.3em;
-  font-weight: 600;
-  margin: 0;
-  color: #333;
-}
-
-.priority-item p small {
-  font-size: 0.7em;
-  font-weight: 400;
-  color: #777;
-  margin-left: 5px;
-}
-
-.priority-item.avg-resolved {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.priority-item.avg-resolved .card-status-dot {
-  margin-left: 0;
-}
-
 /* --- Charts Grid --- */
 .charts-grid {
   display: grid;
