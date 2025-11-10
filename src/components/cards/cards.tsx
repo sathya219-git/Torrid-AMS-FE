@@ -192,6 +192,10 @@ export default function Cards() {
                         </div>
                       </div>
                       <div className="status-section">
+                         {/* <div className="status-item">
+                          <span className="status-label">New</span>
+                          <span className="status-count">{stats?.open ?? 0}</span>
+                        </div> */}
                         <div className="status-item">
                           <span className="status-label">Open</span>
                           <span className="status-count">{stats?.open ?? 0}</span>
