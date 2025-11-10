@@ -86,29 +86,32 @@ const UploadReport = () => {
 
     // ✅ File handling
     const handleBrowseFiles = () => fileInputRef.current?.click();
-    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (!file) return;
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const files = event.target.files;
+  if (!files || files.length === 0) return;
 
-        console.log("📄 File Details:");
-        console.log("Name:", file.name);
-        console.log("Size:", `${(file.size / 1024).toFixed(2)} KB`);
-        console.log("Type:", file.type);
+  // Get existing files from localStorage (if any)
+  const existing = JSON.parse(localStorage.getItem("uploadedFiles") || "[]");
 
-        // ✅ Read file content (for Excel we’ll read as binary text)
-        const reader = new FileReader();
+  // Map new files
+  const newFiles = Array.from(files).map((file) => ({
+    name: file.name,
+    size: `${(file.size / 1024).toFixed(2)} KB`,
+    type: file.type,
+    uploadedAt: new Date().toISOString(),
+  }));
 
-        reader.onload = (e) => {
-            const fileContent = e.target?.result;
-            console.log("📘 File Content (Raw Data):", fileContent);
-        };
+  // Put new files first (latest on top)
+  const updatedFiles = [...newFiles, ...existing];
 
-        reader.onerror = (error) => {
-            console.error("❌ Error reading file:", error);
-        };
+  // Store in localStorage
+  localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles));
 
-        reader.readAsBinaryString(file); // For Excel files (.xls, .xlsx)
-    };
+  // Trigger custom event to update notification component
+  window.dispatchEvent(new Event("uploadedFilesUpdated"));
+
+  console.log("Files uploaded:", updatedFiles);
+};
     // ✅ Helper: Always show arrow indicators
     const getSortIcon = (column: string) => {
         if (sortBy === column)
