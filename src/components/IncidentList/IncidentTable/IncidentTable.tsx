@@ -71,7 +71,6 @@ export default function IncidentTable({
   useEffect(() => {
     const fetchIncidents = async () => {
       try {
-        console.log("applied filter : ", appliedFilter);
         const query = buildFilterQuery(appliedFilters);
 
         const url = `http://localhost:5092/api/Incident/detailsbypriority?Priority=${encodeURIComponent(
