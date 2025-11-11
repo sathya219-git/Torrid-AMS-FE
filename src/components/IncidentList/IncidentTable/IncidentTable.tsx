@@ -221,11 +221,7 @@ export default function IncidentTable({
               return (
                 <Table.Tr
                   key={incident.incidentNo}
-                  style={{
-                    backgroundColor: isBreached ? "#f8babaff" : "transparent",
-                    outline: isBreached ? "2px solid #ff4d4d" : "none",
-                    outlineOffset: "-2px",
-                  }}
+                  className={`breached-row ${isBreached ? "breached" : ""}`}
                 >
                   <Table.Td>{incident.incidentNo}</Table.Td>
                   <Table.Td>{incident.assignedTo}</Table.Td>
@@ -235,11 +231,14 @@ export default function IncidentTable({
                   <Table.Td>{incident.actualResolvedTime}</Table.Td>
                   <Table.Td>{incident.resolvedDateTime}</Table.Td>
 
-                  <Table.Td className="hightlight-downarrow">
-                    {incident.breachSLA}
-                    {isBreached && (
-                      <ArrowDropDownCircleIcon className="arrow" />
-                    )}
+                  <Table.Td className="highlight-downarrow">
+                    <div className="breach-cell">
+                      <span>{incident.breachSLA}</span>
+
+                      {isBreached && (
+                        <ArrowDropDownCircleIcon className="arrow" />
+                      )}
+                    </div>
                   </Table.Td>
                 </Table.Tr>
               );
