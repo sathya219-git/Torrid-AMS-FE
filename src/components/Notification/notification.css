@@ -6,7 +6,7 @@
   padding: 10px;
   box-sizing: border-box; /* ensures padding doesn’t overflow */
   scrollbar-width: thin; /* for Firefox */
-  scrollbar-color: #60aaeb #f0f0f0; /* custom scrollbar colors */
+  scrollbar-color: #60aaeb60 #f0f0f0; /* custom scrollbar colors */
 }
 
 /* Optional: customize scrollbar for Chrome/Safari */
