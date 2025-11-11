@@ -9,6 +9,8 @@ export default function User() {
 
   const logout = () => {
     navigate("/login");
+    localStorage.removeItem("uploadedFiles");
+
   };
   return (
     <div className="user-dropdown">

@@ -1,22 +1,97 @@
 import "./notification.css";
 import { Badge, Button, Divider, Popover, Text } from "@mantine/core";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import MailOutlineIcon from "@mui/icons-material/MailOutline";
-import DoneAllIcon from "@mui/icons-material/DoneAll";
 import CloseIcon from "@mui/icons-material/Close";
+import { useEffect, useState } from "react";
+import { TiTick } from "react-icons/ti";
+
+interface FileDetails {
+  name: string;
+  size: string;
+  type: string;
+  uploadedAt: string;
+}
 
 export default function Notification() {
+  const styles: Record<string, React.CSSProperties> = {
+    container: {
+      backgroundColor: "#f4f5f9",
+      border: "1px solid #bae6fd",
+      borderRadius: "10px",
+      padding: "15px 20px",
+      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+      maxWidth: "500px",
+    },
+    title: {
+      marginBottom: "10px",
+      color: "#0369a1",
+      fontWeight: 600,
+    },
+    list: {
+      listStyleType: "none",
+      padding: 0,
+    },
+    item: {
+      background: "#ffffff",
+      marginBottom: "10px",
+      padding: "10px",
+      borderRadius: "8px",
+      borderLeft: "5px solid #3b82f6",
+    },
+    filename: { color: "#1e3a8a" },
+    size: { color: "#6b7280", fontSize: "0.9em" },
+    message: { color: "#065f46", fontSize: "0.95em", marginTop: "4px",display:"flex",justifyContent:"center",alignItems:"center",gap:"6 px" },
+  };
+
+  const [files, setFiles] = useState<FileDetails[]>([]);
+
+  const loadFiles = () => {
+    const stored = localStorage.getItem("uploadedFiles");
+    if (stored) setFiles(JSON.parse(stored));
+    else setFiles([]);
+  };
+
+  // ✅ Load once on mount
+  useEffect(() => {
+    loadFiles();
+
+    // ✅ Listen for localStorage updates
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === "uploadedFiles") {
+        loadFiles();
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+
+  // ✅ Also listen for custom event when same tab updates
+  useEffect(() => {
+    const handleCustomUpdate = () => loadFiles();
+    window.addEventListener("uploadedFilesUpdated", handleCustomUpdate);
+    return () => window.removeEventListener("uploadedFilesUpdated", handleCustomUpdate);
+  }, []);
+
+  // if (files.length === 0) return <div>No files uploaded yet.</div>;
+
   return (
     <div className="header-left">
-      <Popover width={550} position="bottom" withArrow shadow="md">
+      <Popover width={550} position="bottom" shadow="md">
         <Popover.Target>
           <Button
-            rightSection={<NotificationsIcon fontSize="small" />}
-          ></Button>
+            // variant="subtle"
+            p={10}
+            style={{ display: "flex", alignItems: "center", justifyContent: "center", }}
+          >
+            <NotificationsIcon fontSize="small" />
+          </Button>
         </Popover.Target>
+
         <Popover.Dropdown className="popover-dropdown">
           <div className="notification-header">
-            <Text fw={700}>Your Notification</Text>
+            <Text fw={700}>Your Notifications</Text>
             <div
               className="notification-close-btn"
               style={{ cursor: "pointer" }}
@@ -29,48 +104,33 @@ export default function Notification() {
               <CloseIcon fontSize="small" />
             </div>
           </div>
+
           <div className="notification">
-            <>
-              <div className="popover-msgs">
-                <Badge size="xl" circle className="badge-mail-tick">
-                  <MailOutlineIcon fontSize="small" />
-                </Badge>
-                <Text>
-                  Great job! This month, the support team closed 210 tickets, a
-                  12% increase from last month's total!
-                </Text>
-              </div>
-              <Divider my="md" />
-              <div className="popover-msgs">
-                <Badge size="xl" circle className="badge-mail-tick">
-                  <MailOutlineIcon fontSize="small" />
-                </Badge>
-                <Text>
-                  Awesome work! The support team resolved 315 tickets this
-                  month, a 15% increase from last month!
-                </Text>
-              </div>
-              <Divider my="md" />
-              <div className="popover-msgs">
-                <Badge size="xl" circle className="badge-mail-tick">
-                  <DoneAllIcon fontSize="small" />
-                </Badge>
-                <Text>
-                  Great job! This month, the support team closed 210 tickets, a
-                  12% increase from last month's total!
-                </Text>
-              </div>
-              <Divider my="md" />
-              <div className="popover-msgs">
-                <Badge size="xl" circle className="badge-mail-tick">
-                  <DoneAllIcon fontSize="small" />
-                </Badge>
-                <Text>
-                  Great job! This month, the support team closed 210 tickets, a
-                  12% increase from last month's total!
-                </Text>
-              </div>
-            </>
+            <div style={styles.container}>
+              <h3 style={styles.title}>Upload Notifications</h3>
+              <ul style={styles.list}>
+                {files.map((file, index) => {
+                  const time = new Date(file.uploadedAt).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  });
+                  const date = new Date(file.uploadedAt).toLocaleDateString();
+
+                  return (
+                    <li key={index} style={styles.item}>
+                      <div>
+                        <strong style={styles.filename}>{file.name}</strong>{" "}
+                        <span style={styles.size}>({file.size})</span>
+                      </div>
+                      <div style={styles.message}>
+                        <TiTick style={{fontSize:"30px"}}/>
+                        Successfully uploaded on <b>{date}</b> at <b>{time}</b>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
           </div>
         </Popover.Dropdown>
       </Popover>
