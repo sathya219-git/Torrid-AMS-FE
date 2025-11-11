@@ -1,12 +1,48 @@
 import { Card, TextInput, Text, PasswordInput, Button } from "@mantine/core";
 import "./forgotPassword.css";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
-  const changePassword = () => {
-    navigate("/login");
+
+  const [emailID, setEmailID] = useState("");
+  const [defaultPassword, setDefaultPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [responseMsg, setResponseMsg] = useState("");
+  useEffect(() => {
+    if (responseMsg === "success") {
+      navigate("/login");
+    }
+  }, [responseMsg, navigate]);
+
+  const changePassword = async () => {
+    const body = {
+      emailID,
+      defaultPassword,
+      newPassword,
+      confirmNewPassword,
+    };
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5092/api/Auth/resetPassword",
+        body
+      );
+
+      if (response.data.success) {
+        alert(response.data.message);
+        setResponseMsg("success");
+      } else {
+        alert(response.data.message || "Failed to update password.");
+      }
+    } catch (err) {
+      alert("Something went wrong. Try again!");
+    }
   };
+
   return (
     <div className="forgot-container">
       <Card
@@ -16,31 +52,46 @@ export default function ForgotPassword() {
         withBorder
         className="forgot-container-card"
       >
-        <div>
-          <Card.Section>
-            <div className="forgot-content">
-              <Text fw={700} ta="center">
-                Forgot/Change Password
-              </Text>
-              <p>This help reset the password, stay password protected!.</p>
-              <TextInput
-                label={<Text>Default Password</Text>}
-                placeholder="#ghdsghd86$"
-              />
-              <PasswordInput
-                label={<Text>New Password</Text>}
-                placeholder="• • • • • • • •"
-              />
-              <PasswordInput
-                label={<Text>Confirm Password</Text>}
-                placeholder="• • • • • • • •"
-              />
-              <Button variant="filled" onClick={changePassword} fullWidth>
-                Change Password
-              </Button>
-            </div>
-          </Card.Section>
-        </div>
+        <Card.Section>
+          <div className="forgot-content">
+            <Text fw={700} ta="center">
+              Forgot/Change Password
+            </Text>
+            <p>This helps reset your password. Stay secure!</p>
+
+            <TextInput
+              label="Email ID"
+              placeholder="user@example.com"
+              value={emailID}
+              onChange={(e) => setEmailID(e.target.value)}
+            />
+
+            <TextInput
+              label="Default Password"
+              placeholder="#ghdsghd86$"
+              value={defaultPassword}
+              onChange={(e) => setDefaultPassword(e.target.value)}
+            />
+
+            <PasswordInput
+              label="New Password"
+              placeholder="••••••••"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+
+            <PasswordInput
+              label="Confirm Password"
+              placeholder="••••••••"
+              value={confirmNewPassword}
+              onChange={(e) => setConfirmNewPassword(e.target.value)}
+            />
+
+            <Button variant="filled" onClick={changePassword} fullWidth>
+              Change Password
+            </Button>
+          </div>
+        </Card.Section>
       </Card>
     </div>
   );
