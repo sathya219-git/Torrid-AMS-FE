@@ -23,9 +23,9 @@ export default function User() {
             <KeyboardArrowDownIcon />
           </div>
         </Menu.Target>
-        <Menu.Dropdown>
-          <Menu.Item>
-            <Text onClick={logout}>Sign out</Text>
+        <Menu.Dropdown style={{backgroundColor:"#1f1f1f",borderRadius:"8px"}}>
+          <Menu.Item style={{backgroundColor:"#1f1f1f"}}>
+            <Text onClick={logout} style={{backgroundColor:"#1f1f1f",color:"#fff"}}>Sign out</Text>
           </Menu.Item>
         </Menu.Dropdown>
       </Menu>
