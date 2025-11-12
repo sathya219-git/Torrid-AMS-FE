@@ -8,6 +8,7 @@ import { useAtomValue } from "jotai";
 import { filterState, appliedFilter } from "../../store/filterStore";
 import { buildFilterQuery } from "../../utils/queryBuilder";
 import { incidentsData } from "../data/incidents";
+import { LoadingOverlay } from "@mantine/core";
 
 export default function Cards() {
   interface PriorityStats {
@@ -44,10 +45,15 @@ export default function Cards() {
   const [incidentPrioritySummary, setIncidentPrioritySummary] = useState<IncidentPrioritySummary | null>(null);
 
   const [metrics, setMetrics] = useState<string>("Weeks");
+  const [loading, setLoading] = useState<boolean>(true);
+    const [loadingPriority, setLoadingPriority] = useState<boolean>(true);
+
+
 
   // Fetch KPI summary
   useEffect(() => {
     const fetchIncidentSummary = async () => {
+      setLoading(true)
       try {
         const query = buildFilterQuery(appliedFilters);
         const url = query
@@ -62,6 +68,9 @@ export default function Cards() {
         console.error("Error fetching incident summary:", error);
         setIncidentSummary(null);
       }
+      finally {
+        setLoading(false);
+      }
     };
     fetchIncidentSummary();
   }, [appliedFilters]);
@@ -69,6 +78,7 @@ export default function Cards() {
   // Fetch incident priority summary
   useEffect(() => {
     const fetchIncidentPrioritySummary = async () => {
+      setLoadingPriority(true)
       try {
         const query = buildFilterQuery(appliedFilters);
         const queryWithMetric = query ? `${query}&metrics=${metrics}` : `metrics=${metrics}`;
@@ -82,6 +92,8 @@ export default function Cards() {
       } catch (error) {
         console.error("Error fetching incident priority summary:", error);
         setIncidentPrioritySummary(null);
+      } finally {
+        setLoadingPriority(false)
       }
     };
 
@@ -112,10 +124,17 @@ export default function Cards() {
   ];
 
   return (
+
     <div className="dashboard-container opened">
+
       {/* ---- TOP CARDS ---- */}
       <div className={`first-div ${filterOpened ? "full" : "compact"}`}>
         <div className="summary-cards">
+          <LoadingOverlay
+            visible={loading}
+            zIndex={1000}
+            overlayProps={{ blur: 1 }}
+          />
           <div className="card incident">
             <div className="card-icon incident">
               <img className="icon-property" src={totalincidenticon} alt="Total Incidents" />
@@ -162,8 +181,13 @@ export default function Cards() {
           <div className="incident-priority-header">
             <h2>Incident Priority</h2>
           </div>
-
+          <LoadingOverlay
+            visible={loadingPriority}
+            zIndex={1000}
+            overlayProps={{ blur: 1 }}
+          />
           <div className="priority-container" style={{ borderRadius: "12px" }}>
+
             <div className="priority-summary">
               {priorities.map(({ label, display }) => {
                 const priorityData = incidentPrioritySummary?.priority[label];
@@ -192,7 +216,7 @@ export default function Cards() {
                         </div>
                       </div>
                       <div className="status-section">
-                         {/* <div className="status-item">
+                        {/* <div className="status-item">
                           <span className="status-label">New</span>
                           <span className="status-count">{stats?.open ?? 0}</span>
                         </div> */}

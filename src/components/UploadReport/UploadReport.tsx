@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./UploadReport.css";
 import { GrDocumentUpload } from "react-icons/gr";
-import { Input } from "@mantine/core";
+import { Input, LoadingOverlay } from "@mantine/core";
 import { GoSortAsc, GoSortDesc } from "react-icons/go";
 import backward from "../../assets/backward.png";
 import forward from "../../assets/forward.png";
@@ -43,6 +43,9 @@ const UploadReport = () => {
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const [searchText, setSearchText] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
+    const [refreshPage, setRefreshPage] = useState<boolean>(false);
+
+
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     // ✅ Fetch API data whenever sort, page, or search changes
@@ -77,7 +80,7 @@ const UploadReport = () => {
         };
 
         fetchData();
-    }, [sortBy, sortOrder, pagination.page, searchText]);
+    }, [refreshPage,sortBy, sortOrder, pagination.page, searchText]);
 
     // ✅ Handle column sorting
     const handleSort = (column: string) => {
@@ -122,15 +125,27 @@ const UploadReport = () => {
             const response = await fetch("http://localhost:5092/api/files/upload", {
                 method: "POST",
                 body: formData,
-                
+
             });
 
             // remove loading notification
             notifications.hide(loadingId);
 
             if (response.ok) {
+                if(refreshPage)
+                {
+                    console.log("In if");
+                    
+                    setRefreshPage(false)
+                }
+                else
+                {
+                    console.log("In else");
+                    
+                    setRefreshPage(true )
+                }
                 console.log("SUCCESSFULLY UPLOADED");
-                
+
                 // ✅ Save uploaded files locally (your existing logic)
                 const existing = JSON.parse(localStorage.getItem("uploadedFiles") || "[]");
                 const newFiles = Array.from(files).map((file) => ({
@@ -164,7 +179,7 @@ const UploadReport = () => {
 
                 // ❌ Failure notification
                 notifications.show({
-                    position:"top-right",
+                    position: "top-right",
                     title: "Upload Failed",
                     message: "Something went wrong while uploading the file.",
                     color: "red",
@@ -235,7 +250,11 @@ const UploadReport = () => {
     return (
 
         <div className="upload-report-container">
-
+            <LoadingOverlay
+                visible={loading}
+                zIndex={1000}
+                overlayProps={{ blur: 2 }}
+            />
 
             <div className="report-header">
                 <h2 className="report-title">Upload Report</h2>
