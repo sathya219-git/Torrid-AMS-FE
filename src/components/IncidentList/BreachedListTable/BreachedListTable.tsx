@@ -65,7 +65,6 @@ export default function BreachedListTable({ priority }: { priority: string }) {
         const url = `http://localhost:5092/api/Incident/breachlistbypriority?Priority=${encodeURIComponent(
           priority
         )}&PageNumber=${currentPage}${query}`;
-
         const res = await axios.get(url);
 
         console.log("Breached response:", res.data.items);
