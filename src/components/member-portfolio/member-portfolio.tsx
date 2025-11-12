@@ -1,4 +1,3 @@
-import { Member } from "./member";
 import "./member-portfolio.css";
 import backward from "../../assets/backward.png";
 import forward from "../../assets/forward.png";
@@ -75,11 +74,13 @@ export default function MemberPortfolio() {
   const [pageSize, setPageSize] = useState<number | null>(5);
   const [sortBy, setSortBy] = useState<string>("name");
   const [sortOrder, setSortOrder] = useState<string>("ascending");
-  const [metricsUnit, setMetricsUnit] = useState("Weeks");
+
+  const [loading, setLoading] = useState<boolean>(true);
 
   // 📡 Fetch data from API
   useEffect(() => {
     const fetchMemberSummary = async () => {
+      setLoading(true);
       try {
         const query = buildFilterQuery(appliedFilters);
         let url = `http://localhost:5092/api/Incident/nameandcountbypriority`;
@@ -91,7 +92,6 @@ export default function MemberPortfolio() {
         if (pageSize) params.append("PageSize", pageSize.toString());
         if (sortBy) params.append("SortBy", sortBy);
         if (sortOrder) params.append("SortOrder", sortOrder);
-        if (metricsUnit) params.append("Metrics", metricsUnit);
 
         url += query ? `&${params.toString()}` : `?${params.toString()}`;
         console.log("Final URL:", url);
@@ -107,11 +107,13 @@ export default function MemberPortfolio() {
       } catch (error) {
         console.error("Error fetching member summary:", error);
         setMemberDetailsSummary(null);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchMemberSummary();
-  }, [appliedFilters, pageNumber, pageSize, sortBy, sortOrder, metricsUnit]);
+  }, [appliedFilters, pageNumber, pageSize, sortBy, sortOrder]);
 
   // 🧮 Pagination control handlers
   const goToFirstPage = () => setPageNumber(1);
@@ -158,6 +160,11 @@ export default function MemberPortfolio() {
 
       {/* Main List */}
       <main className="member-list">
+        <LoadingOverlay
+          visible={loading}
+          zIndex={1000}
+          overlayProps={{ blur: 2 }}
+        />
         {/* Table Header */}
         <div className="member-card header-row">
           <div className="metrics-grid">

@@ -164,3 +164,15 @@ export interface PaginatedResponse {
 }
 
 export const incidentAPIResponses = atom<Record<string, PaginatedResponse>>({});
+
+export interface BreachFilters {
+  actualResolvedTime: string[];
+  breachSLA: string[];
+  incidentId: string[];
+}
+
+export const breachFiltersAtom = atom<BreachFilters>({
+  actualResolvedTime: [],
+  breachSLA: [],
+  incidentId: [],
+});
