@@ -57,6 +57,7 @@ export default function Cards() {
   }, [appliedFilters]);
 
   return (
+
     <div className="dashboard-container opened">
       <div className={`first-div ${filterOpened ? "full" : "compact"}`}>
         <div className="summary-cards">
@@ -90,8 +91,13 @@ export default function Cards() {
           <div className="incident-priority-header">
             <h2>Incident Priority</h2>
           </div>
-
+          <LoadingOverlay
+            visible={loadingPriority}
+            zIndex={1000}
+            overlayProps={{ blur: 1 }}
+          />
           <div className="priority-container" style={{ borderRadius: "12px" }}>
+
             <div className="priority-summary">
               {PriorityList.map(({ key, value }) => {
                 const priorityData = incidentPrioritySummary?.priority[key];
