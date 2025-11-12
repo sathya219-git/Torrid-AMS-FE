@@ -10,7 +10,7 @@ body {
 /* Main container */
 .team-portfolio-container {
   font-family: Inter;
-  padding: 20px;
+  padding: 0px 20px 20px 20px;
   font-weight: 600;
   background-color: #fff;
   width: 95%;
@@ -62,27 +62,6 @@ body {
   gap: 10px;
 }
 
-.member-card {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 20px;
-  align-items: center;
-  background-color: #f5f6fa;
-  padding: 10px 20px;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.metrics-grid {
-  display: contents;
-}
-
-.metric-item {
-  text-align: left;
-  font-size: 14px;
-  padding: 5px 0;
-}
-
 .member-list .member-card:first-child {
   background-color: #e3e8f0;
   font-weight: 600;
@@ -112,13 +91,6 @@ body {
 
 .sortable:hover .sort-icon {
   color: #000;
-}
-
-/* Metric values */
-.metric-value {
-  font-size: 16px;
-  font-weight: 500;
-  color: black;
 }
 
 /* Footer */

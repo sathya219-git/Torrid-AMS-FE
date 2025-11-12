@@ -1,0 +1,62 @@
+import { PriorityStats } from "../cards.interface";
+
+export default function IncidentPriorityDetailsCard({
+  label,
+  totalResolvedTime,
+  avgResolvedTime,
+  stats,
+}: {
+  label: string;
+  totalResolvedTime: string;
+  avgResolvedTime: string;
+  stats: PriorityStats | undefined;
+}) {
+  return (
+    <div className="priority-item">
+      <div className="summary-card">
+        <div className="header-section">
+          <div className="priority-tag">
+            <span className="priority-label">{label}</span>
+            <span className="count">{stats?.totalCount ?? "—"}</span>
+          </div>
+          <div className="metric-group">
+            <div className="metric-item">
+              <span className="metric-title">Total Resolved Time</span>
+              <span className="metric-value">{totalResolvedTime ?? "—"}</span>
+            </div>
+            <div className="metric-item">
+              <span className="metric-title">Avg Resolved Time</span>
+              <span className="metric-value">{avgResolvedTime ?? "—"}</span>
+            </div>
+          </div>
+        </div>
+        <div className="status-section">
+          <div className="status-item">
+            <span className="status-label">Open</span>
+            <span className="status-count">{stats?.open ?? "—"}</span>
+          </div>
+          <div className="status-item">
+            <span className="status-label">In Progress</span>
+            <span className="status-count">{stats?.inProgress ?? "—"}</span>
+          </div>
+          <div className="status-item">
+            <span className="status-label">Closed</span>
+            <span className="status-count">{stats?.closed ?? "—"}</span>
+          </div>
+          <div className="status-item">
+            <span className="status-label">Reopen</span>
+            <span className="status-count">{stats?.reopen ?? "—"}</span>
+          </div>
+          <div className="status-item">
+            <span className="status-label">On Hold</span>
+            <span className="status-count">{stats?.onHold ?? "—"}</span>
+          </div>
+          <div className="status-item">
+            <span className="status-label">Resolved</span>
+            <span className="status-count">{stats?.resolved ?? "—"}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

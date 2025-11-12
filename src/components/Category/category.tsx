@@ -4,22 +4,18 @@ import { useAtom } from "jotai";
 import { useCallback, useEffect, useState } from "react";
 import { selectedFilter } from "../../store/filterStore";
 import "./category.css";
+import { CategoryItem } from "./category.interface";
 
 export default function Category() {
-  type Category = {
-    categoryName: string;
-    incidentCount: number;
-  };
-
   const [filters, setFilters] = useAtom(selectedFilter);
   const [selectAll, setSelectAll] = useState(false);
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<CategoryItem[]>([]);
 
   useEffect(() => {
     axios
       .get("http://localhost:5092/api/Incident/categorycountbygroup")
       .then((res) => {
-        const data = Array.isArray(res.data) ? res.data : [];
+        const data: CategoryItem[] = Array.isArray(res.data) ? res.data : [];
         setCategories(data);
       })
       .catch((err) => {
@@ -28,7 +24,7 @@ export default function Category() {
       });
   }, []);
 
-  const categoryChanges = useCallback(
+  const onCheckboxChange = useCallback(
     (value: string) => {
       setFilters((prev) => {
         const updatedCategories = prev.Category.includes(value)
@@ -53,7 +49,7 @@ export default function Category() {
     setSelectAll(false);
   }, []);
 
-  const handleSelectAll = useCallback(() => {
+  const onSelectAll = useCallback(() => {
     if (selectAll) {
       deSelectAllCategories();
     } else {
@@ -82,7 +78,7 @@ export default function Category() {
               <Checkbox
                 label="Select All"
                 checked={selectAll}
-                onChange={handleSelectAll}
+                onChange={onSelectAll}
               />
             </div>
 
@@ -92,7 +88,7 @@ export default function Category() {
                 <div className="category-checkbox" key={category.categoryName}>
                   <Checkbox
                     label={category.categoryName}
-                    onChange={() => categoryChanges(category.categoryName)}
+                    onChange={() => onCheckboxChange(category.categoryName)}
                     checked={filters.Category.includes(category.categoryName)}
                   />
                   <Text c="dimmed">{category.incidentCount}</Text>

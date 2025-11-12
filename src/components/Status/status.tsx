@@ -4,20 +4,17 @@ import { useAtom } from "jotai";
 import { useCallback, useEffect, useState } from "react";
 import { selectedFilter } from "../../store/filterStore";
 import "./status.css";
+import { StatusItem } from "./status.interface";
 
 export default function Status() {
-  type Status = {
-    status: string;
-    incidentCount: number;
-  };
   const [filters, setFilters] = useAtom(selectedFilter);
-  const [statuses, setStatuses] = useState<Status[]>([]);
+  const [statuses, setStatuses] = useState<StatusItem[]>([]);
 
   useEffect(() => {
     axios
       .get("http://localhost:5092/api/Incident/statuscountbypriority")
       .then((res) => {
-        const data = Array.isArray(res.data) ? res.data : [];
+        const data: StatusItem[] = Array.isArray(res.data) ? res.data : [];
         setStatuses(data);
       })
       .catch((err) => {

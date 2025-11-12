@@ -4,14 +4,10 @@ import axios from "axios";
 import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { selectedFilter } from "../../store/filterStore";
+import { TeamMember } from "./team-members.interface";
 import "./teamMembers.css";
 
 export default function TeamMembers() {
-  type TeamMember = {
-    name: string;
-    totalCount: number;
-  };
-
   const [filters, setFilters] = useAtom(selectedFilter);
   const [searchText, setSearchText] = useState("");
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
@@ -20,7 +16,7 @@ export default function TeamMembers() {
     axios
       .get("http://localhost:5092/api/Incident/nameandcountbypriority")
       .then((res) => {
-        setTeamMembers(res.data?.memberDetails);
+        setTeamMembers(res.data?.memberDetails ?? []);
       })
       .catch((err) => {
         console.error("Error fetching team members:", err);
@@ -36,7 +32,7 @@ export default function TeamMembers() {
       : teamMembers;
   }, [teamMembers, searchText]);
 
-  const teamMembersChanges = useCallback((value: string) => {
+  const onCheckboxChange = useCallback((value: string) => {
     setFilters((prev) => ({
       ...prev,
       AssignedToName: prev.AssignedToName.includes(value)
@@ -66,7 +62,7 @@ export default function TeamMembers() {
               <div className="team-member-checkbox" key={teamMember.name}>
                 <Checkbox
                   label={teamMember.name}
-                  onChange={() => teamMembersChanges(teamMember.name)}
+                  onChange={() => onCheckboxChange(teamMember.name)}
                   checked={filters.AssignedToName.includes(teamMember.name)}
                 />
                 <Text c="dimmed">{teamMember.totalCount}</Text>

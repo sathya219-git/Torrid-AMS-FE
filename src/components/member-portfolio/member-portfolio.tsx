@@ -1,147 +1,97 @@
-import "./member-portfolio.css";
+import { LoadingOverlay, Select } from "@mantine/core";
+import { useAtomValue } from "jotai";
+import { useCallback, useEffect, useState } from "react";
+import { GoSortAsc, GoSortDesc } from "react-icons/go";
 import backward from "../../assets/backward.png";
 import forward from "../../assets/forward.png";
-import { useAtomValue } from "jotai";
 import { appliedFilter } from "../../store/filterStore";
-import { useEffect, useState } from "react";
 import { buildFilterQuery } from "../../utils/queryBuilder";
-import { GoSortAsc, GoSortDesc } from "react-icons/go";
-import { Select } from "@mantine/core";
-import { LoadingOverlay } from "@mantine/core";
-// 🧩 Type definitions
-interface MemberDetail {
-  name: string | null;
-  p1: number;
-  p2: number;
-  p3: number;
-  p4: number;
-  totalCount: number;
-  lastUpdated: string;
-  actualResolvedTime: string;
-}
-
-interface Pagination {
-  page: number;
-  pageSize: number;
-  totalRecords: number;
-  totalPages: number;
-  sortBy: string;
-}
-
-interface MemberDetailsResponse {
-  memberDetails: MemberDetail[];
-  pagination: Pagination;
-}
-
-const TeamMemberCard = ({ member }: { member: MemberDetail }) => (
-  <div className="member-card">
-    <div className="metrics-grid">
-      <div className="metric-item">
-        <span className="metric-value">{member.totalCount}</span>
-      </div>
-      <div className="metric-item">
-        <span className="metric-value">{member.name ?? "Null"}</span>
-      </div>
-      <div className="metric-item">
-        <span className="metric-value">{member.p1}</span>
-      </div>
-      <div className="metric-item">
-        <span className="metric-value">{member.p2}</span>
-      </div>
-      <div className="metric-item">
-        <span className="metric-value">{member.p3}</span>
-      </div>
-      <div className="metric-item">
-        <span className="metric-value">{member.p4}</span>
-      </div>
-      <div className="metric-item">
-        <span className="metric-value">{member.actualResolvedTime}</span>
-      </div>
-    </div>
-  </div>
-);
+import "./member-portfolio.css";
+import {
+  MemberDetails,
+  MemberDetailsResponse,
+} from "./member-portfolio.interface";
+import TeamMemberCard from "./team-member-card/team-member-card";
 
 export default function MemberPortfolio() {
   const appliedFilters = useAtomValue(appliedFilter);
 
-  // 🪣 React state
-  const [memberDetailsSummary, setMemberDetailsSummary] =
-    useState<MemberDetailsResponse | null>(null);
-
-  // 🧭 Pagination/sorting/metrics state
-  const [value, setValue] = useState<string | null>("5"); // ✅ allows null
+  const [members, setMembers] = useState<MemberDetails[]>([]);
 
   const [pageNumber, setPageNumber] = useState(1);
-  const [pageSize, setPageSize] = useState<number | null>(5);
-  const [sortBy, setSortBy] = useState<string>("name");
-  const [sortOrder, setSortOrder] = useState<string>("ascending");
+  const [pageSize, setPageSize] = useState("5");
 
-  const [loading, setLoading] = useState<boolean>(true);
+  const [sortBy, setSortBy] = useState("name");
+  const [sortOrder, setSortOrder] = useState("ascending");
 
-  // 📡 Fetch data from API
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    const fetchMemberSummary = async () => {
-      setLoading(true);
-      try {
-        const query = buildFilterQuery(appliedFilters);
-        let url = `http://localhost:5092/api/Incident/nameandcountbypriority`;
+    setLoading(true);
+    const query = buildFilterQuery(appliedFilters);
+    let url = `http://localhost:5092/api/Incident/nameandcountbypriority`;
 
-        const params = new URLSearchParams();
-        if (query) url += `?${query}`;
+    const params = new URLSearchParams();
+    if (query) url += `?${query}`;
 
-        params.append("PageNumber", (pageNumber || 1).toString());
-        if (pageSize) params.append("PageSize", pageSize.toString());
-        if (sortBy) params.append("SortBy", sortBy);
-        if (sortOrder) params.append("SortOrder", sortOrder);
+    params.append("PageNumber", (pageNumber || 1).toString());
+    if (pageSize) params.append("PageSize", pageSize.toString());
+    if (sortBy) params.append("SortBy", sortBy);
+    if (sortOrder) params.append("SortOrder", sortOrder);
 
-        url += query ? `&${params.toString()}` : `?${params.toString()}`;
-        console.log("Final URL:", url);
+    url += query ? `&${params.toString()}` : `?${params.toString()}`;
+    console.log("Final URL:", url);
 
-        const response = await fetch(url);
-        const data: MemberDetailsResponse = await response.json();
-        setMemberDetailsSummary(data);
-
-        if (data.pagination) {
-          setPageNumber(data.pagination.page ?? pageNumber);
-          setPageSize(data.pagination.pageSize ?? pageSize);
-        }
-      } catch (error) {
-        console.error("Error fetching member summary:", error);
-        setMemberDetailsSummary(null);
-      } finally {
+    fetch(url)
+      .then((res) => {
+        res.json().then((data: MemberDetailsResponse) => {
+          setMembers(data.memberDetails);
+          setTotalRecords(data.pagination.totalRecords);
+          setTotalPages(data.pagination.totalPages);
+          setPageNumber(data.pagination.page);
+          setPageSize(data.pagination.pageSize.toString());
+        });
+      })
+      .catch((err) => {
+        console.error("Error fetching member summary:", err);
+        setMembers([]);
+      })
+      .finally(() => {
         setLoading(false);
-      }
-    };
-
-    fetchMemberSummary();
+      });
   }, [appliedFilters, pageNumber, pageSize, sortBy, sortOrder]);
 
-  // 🧮 Pagination control handlers
-  const goToFirstPage = () => setPageNumber(1);
-  const goToLastPage = () =>
-    setPageNumber(memberDetailsSummary?.pagination?.totalPages ?? 1);
-  const goToPreviousPage = () => {
+  const goToFirstPage = useCallback(() => {
+    setPageNumber(1);
+  }, []);
+
+  const goToLastPage = useCallback(() => {
+    setPageNumber(totalPages);
+  }, []);
+
+  const goToPreviousPage = useCallback(() => {
     if (pageNumber > 1) setPageNumber(pageNumber - 1);
-  };
-  const goToNextPage = () => {
-    const totalPages = memberDetailsSummary?.pagination?.totalPages ?? 1;
+  }, [pageNumber]);
+
+  const goToNextPage = useCallback(() => {
     if (pageNumber < totalPages) setPageNumber(pageNumber + 1);
-  };
+  }, [totalPages, pageNumber]);
 
-  const totalRecords = memberDetailsSummary?.pagination?.totalRecords ?? 0;
-  const totalPages = memberDetailsSummary?.pagination?.totalPages ?? 1;
+  const onSort = useCallback(
+    (column: string) => {
+      if (sortBy === column) {
+        setSortOrder(sortOrder === "ascending" ? "descending" : "ascending");
+      } else {
+        setSortBy(column);
+        setSortOrder("ascending");
+      }
+    },
+    [sortOrder, sortBy]
+  );
 
-  // 🔄 Column sort click handler
-  const handleSort = (column: string) => {
-    if (sortBy === column) {
-      setSortOrder(sortOrder === "ascending" ? "descending" : "ascending");
-    } else {
-      setSortBy(column);
-      setSortOrder("ascending");
-    }
-  };
-
-  // 🧱 Column configuration for cleaner rendering
   const columns = [
     { label: "Incident Count", key: "totalCount" },
     { label: "Name", key: "name" },
@@ -173,7 +123,7 @@ export default function MemberPortfolio() {
               <div
                 key={col.key}
                 className="metric-item sortable"
-                onClick={() => handleSort(col.key)}
+                onClick={() => onSort(col.key)}
                 style={{
                   cursor: "pointer",
                   display: "flex",
@@ -201,8 +151,8 @@ export default function MemberPortfolio() {
         </div>
 
         {/* Data Rows */}
-        {memberDetailsSummary?.memberDetails?.length ? (
-          memberDetailsSummary.memberDetails.map((member, index) => (
+        {members.length > 0 ? (
+          members.map((member, index) => (
             <TeamMemberCard key={index} member={member} />
           ))
         ) : (
@@ -228,11 +178,11 @@ export default function MemberPortfolio() {
             style={{ width: "100px" }}
             placeholder="Page size"
             data={["5", "8", "10", "14"]}
-            value={pageSize?.toString() ?? "5"} // keep it in sync with state
+            value={pageSize}
             onChange={(val) => {
               if (val) {
-                setPageSize(Number(val)); // ✅ update page size
-                setPageNumber(1); // ✅ reset to first page
+                setPageSize(val);
+                setPageNumber(1);
               }
             }}
             comboboxProps={{

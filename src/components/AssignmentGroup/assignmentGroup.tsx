@@ -3,26 +3,27 @@ import axios from "axios";
 import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { selectedFilter } from "../../store/filterStore";
+import { AssignmentGroupItem } from "./assignment-group.interface";
 import "./assignmentGroup.css";
 
 export default function AssignmentGroup() {
-  type AssignmentGroup = {
-    assignmentGroupName: string;
-  };
-
   const [filters, setFilters] = useAtom(selectedFilter);
   const [opened, setOpened] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
-  const [assignmentGroups, setAssignmentGroups] = useState<AssignmentGroup[]>(
-    []
-  );
+  const [assignmentGroups, setAssignmentGroups] = useState<string[]>([]);
 
   useEffect(() => {
     axios
       .get("http://localhost:5092/api/Incident/assignmentgroups")
       .then((res) => {
-        const data = Array.isArray(res.data) ? res.data : [];
-        setAssignmentGroups(data);
+        const data: AssignmentGroupItem[] = Array.isArray(res.data)
+          ? res.data
+          : [];
+        setAssignmentGroups(
+          data.map((item) => {
+            return item.assignmentGroupName;
+          })
+        );
       })
       .catch((err) => {
         console.error("Error fetching category counts:", err);
@@ -38,7 +39,7 @@ export default function AssignmentGroup() {
     return assignmentGroups.slice(4);
   }, [assignmentGroups]);
 
-  const AssignmentGroupChanges = useCallback(
+  const onCheckboxChange = useCallback(
     (value: string) => {
       setFilters((prev) => {
         const updatedGroups = prev.AssignmentGroup.includes(value)
@@ -61,8 +62,7 @@ export default function AssignmentGroup() {
   }, [filters]);
 
   const selectAllGroups = useCallback(() => {
-    const allGroupNames = assignmentGroups.map((g) => g.assignmentGroupName);
-    setFilters((prev) => ({ ...prev, AssignmentGroup: allGroupNames }));
+    setFilters((prev) => ({ ...prev, AssignmentGroup: assignmentGroups }));
     setSelectAll(true);
   }, [assignmentGroups]);
 
@@ -71,7 +71,7 @@ export default function AssignmentGroup() {
     setSelectAll(false);
   }, []);
 
-  const handleSelectAll = useCallback(() => {
+  const onSelectAll = useCallback(() => {
     if (selectAll) {
       deselectAllGroups();
     } else {
@@ -90,22 +90,17 @@ export default function AssignmentGroup() {
             <Checkbox
               label="Select All Groups"
               checked={selectAll}
-              onChange={handleSelectAll}
+              onChange={onSelectAll}
             />
           </div>
           <div className="assignment-content">
-            {staticGroups.map((assignmentGroup) => (
-              <div
-                className="group-checkbox"
-                key={assignmentGroup.assignmentGroupName}
-              >
+            {staticGroups.map((assignmentGroupName) => (
+              <div className="group-checkbox" key={assignmentGroupName}>
                 <Checkbox
-                  label={assignmentGroup.assignmentGroupName}
-                  onChange={() =>
-                    AssignmentGroupChanges(assignmentGroup.assignmentGroupName)
-                  }
+                  label={assignmentGroupName}
+                  onChange={() => onCheckboxChange(assignmentGroupName)}
                   checked={filters.AssignmentGroup.includes(
-                    assignmentGroup.assignmentGroupName
+                    assignmentGroupName
                   )}
                 />
               </div>
@@ -120,20 +115,13 @@ export default function AssignmentGroup() {
           >
             <Collapse in={opened}>
               <div className="assignment-content">
-                {expandedGroups.map((assignmentGroup) => (
-                  <div
-                    className="group-checkbox"
-                    key={assignmentGroup.assignmentGroupName}
-                  >
+                {expandedGroups.map((assignmentGroupName) => (
+                  <div className="group-checkbox" key={assignmentGroupName}>
                     <Checkbox
-                      label={assignmentGroup.assignmentGroupName}
-                      onChange={() =>
-                        AssignmentGroupChanges(
-                          assignmentGroup.assignmentGroupName
-                        )
-                      }
+                      label={assignmentGroupName}
+                      onChange={() => onCheckboxChange(assignmentGroupName)}
                       checked={filters.AssignmentGroup.includes(
-                        assignmentGroup.assignmentGroupName
+                        assignmentGroupName
                       )}
                     />
                   </div>
