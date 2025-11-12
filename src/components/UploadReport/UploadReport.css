@@ -1,7 +1,3 @@
-/* ===========================
-   Upload Report Page Styles
-=========================== */
-
 .upload-report-container {
   padding: 20px;
   background-color: #f4f5f9;
@@ -25,6 +21,7 @@
 
 /* Left Upload Section */
 .main-upload-area {
+  /* min-height: 500px; */
   background-color: white;
   padding: 20px;
   border-radius: 10px;
@@ -36,8 +33,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* min-height: 500px; */
-  background: #F5F6FA;
+  height: 100%;
+  background: #f5f6fa;
   border: 2px dashed #ccc;
   border-radius: 10px;
   padding: 40px;
@@ -85,17 +82,24 @@
   background-color: white;
   border-radius: 8px;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .history-content {
   background-color: #f5f6fa;
   border-radius: 8px;
   padding: 20px;
-  /* min-height: 450px; */
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .table-container-file-upload {
-  width: 100%;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .table-header {
@@ -106,27 +110,43 @@
   margin-bottom: 15px;
 }
 
-/* Sortable header styling */
+/* Prevent shaking: fixed height + scroll */
+.table-wrapper {
+  flex-grow: 1;
+  overflow-y: auto;
+  height: 380px; /* Fixed table area height */
+  border-radius: 8px;
+  background: white;
+}
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.custom-table th,
+.custom-table td {
+ 
+  padding: 10px 12px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.custom-table th {
+  background-color: #f8f9fb;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
 .sortable-header {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   cursor: pointer;
-  user-select: none;
-  transition: color 0.2s ease;
-}
-
-.sortable-header span {
-  font-weight: 500;
-  color: #333;
-}
-
-.sortable-header svg {
-  width: 16px;
-  height: 16px;
-  color: #777;
-  vertical-align: middle;
-  transition: color 0.2s ease;
 }
 
 .active-icon {
@@ -137,59 +157,37 @@
   opacity: 0.3;
 }
 
-th:hover .sortable-header span,
-th:hover .sortable-header svg {
-  color: #007bff;
-}
-
-/* Table styling */
-.custom-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-}
-
-.custom-table th,
-.custom-table td {
-  padding: 10px 12px;
-  border-bottom: 1px solid #ddd;
-  text-align: left;
-}
-
-.custom-table th {
-  background-color: #f8f9fb;
-  font-weight: 600;
-}
-
 .no-records {
   text-align: center;
   padding: 20px;
 }
 
-/* Pagination */
+.portfolio-footer {
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .pagination {
   display: flex;
-  justify-content: center;
   align-items: center;
-  /* gap: 10px; */
-  margin-top: 15px;
+  gap: 2px;
 }
 
-.pagination button {
-  padding: 6px 12px;
-  border: none;
-  /* background-color: #007bff; */
-  color: white;
-  border-radius: 4px;
+.page-control {
+  border: 1px solid #33303111;
+  background: white;
+  padding: 6px 10px;
   cursor: pointer;
+  transition: background 0.2s;
 }
 
-.pagination button:disabled {
-  background-color: #ccc;
+.page-control:hover:not(:disabled) {
+  background: #f0f0f0;
+}
+
+.page-control:disabled {
+  opacity: 0.4;
   cursor: not-allowed;
-}
-
-.pagination span {
-  font-size: 14px;
-  color: #333;
 }
