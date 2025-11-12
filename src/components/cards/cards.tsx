@@ -1,133 +1,75 @@
-import "./cards.css";
-import { useMemo, useState, useEffect } from "react";
-import totalincidenticon from "../../assets/total_incident_icon.png";
-import openicon from "../../assets/open_icon.png";
-import inprogress from "../../assets/inprogress_icon.png";
-import closedicon from "../../assets/closed_icon.png";
-import { useAtomValue } from "jotai";
-import { filterState, appliedFilter } from "../../store/filterStore";
-import { buildFilterQuery } from "../../utils/queryBuilder";
-import { incidentsData } from "../data/incidents";
 import { LoadingOverlay } from "@mantine/core";
+import { useAtomValue } from "jotai";
+import { useEffect, useState } from "react";
+import closedicon from "../../assets/closed_icon.png";
+import inprogress from "../../assets/inprogress_icon.png";
+import openicon from "../../assets/open_icon.png";
+import totalincidenticon from "../../assets/total_incident_icon.png";
+import { appliedFilter, filterState } from "../../store/filterStore";
+import { buildFilterQuery } from "../../utils/queryBuilder";
+import { PriorityList } from "./cards.constants";
+import "./cards.css";
+import { IncidentPrioritySummary, IncidentSummary } from "./cards.interface";
+import IncidentCountCard from "./incident-count-card/incident-count-card";
+import IncidentPriorityDetailsCard from "./incident-priority-details-card/incident-priority-details-card";
 
 export default function Cards() {
-  interface PriorityStats {
-    totalCount: number;
-    open: number;
-    inProgress: number;
-    closed: number;
-    onHold: number;
-    reopen: number;
-    resolved: number;
-  }
-
-  interface PriorityDetails {
-    details: PriorityStats[];
-    avgResolvedTime: string;
-    totalResolvedTime: string;
-  }
-
-  interface IncidentPrioritySummary {
-    priority: Record<string, PriorityDetails>;
-  }
-
-  interface IncidentSummary {
-    totalIncidents: number;
-    openIncidents: number;
-    inProgressIncidents: number;
-    closedIncidents: number;
-  }
-
   const filterOpened = useAtomValue(filterState);
   const appliedFilters = useAtomValue(appliedFilter);
 
-  const [incidentSummary, setIncidentSummary] = useState<IncidentSummary | null>(null);
-  const [incidentPrioritySummary, setIncidentPrioritySummary] = useState<IncidentPrioritySummary | null>(null);
+  const [incidentSummary, setIncidentSummary] =
+    useState<IncidentSummary | null>(null);
+  const [incidentPrioritySummary, setIncidentPrioritySummary] =
+    useState<IncidentPrioritySummary | null>(null);
 
-  const [metrics, setMetrics] = useState<string>("Weeks");
   const [loading, setLoading] = useState<boolean>(true);
-    const [loadingPriority, setLoadingPriority] = useState<boolean>(true);
-
-
+  const [loadingPriority, setLoadingPriority] = useState<boolean>(true);
 
   // Fetch KPI summary
   useEffect(() => {
-    const fetchIncidentSummary = async () => {
-      setLoading(true)
-      try {
-        const query = buildFilterQuery(appliedFilters);
-        const url = query
-          ? `http://localhost:5092/api/Incident/kpis?${query}`
-          : `http://localhost:5092/api/Incident/kpis`;
+    setLoading(true);
+    const query = buildFilterQuery(appliedFilters);
+    const url = query
+      ? `http://localhost:5092/api/Incident/kpis?${query}`
+      : `http://localhost:5092/api/Incident/kpis`;
 
-        console.log("KPI URL:", url);
-        const response = await fetch(url);
-        const data: IncidentSummary = await response.json();
-        setIncidentSummary(data);
-      } catch (error) {
-        console.error("Error fetching incident summary:", error);
+    fetch(url)
+      .then((res) => {
+        res.json().then((data: IncidentSummary) => {
+          setIncidentSummary(data);
+        });
+      })
+      .catch((err) => {
+        console.error("Error fetching incident summary:", err);
         setIncidentSummary(null);
-      }
-      finally {
+      })
+      .finally(() => {
         setLoading(false);
-      }
-    };
-    fetchIncidentSummary();
+      });
   }, [appliedFilters]);
 
   // Fetch incident priority summary
   useEffect(() => {
-    const fetchIncidentPrioritySummary = async () => {
-      setLoadingPriority(true)
-      try {
-        const query = buildFilterQuery(appliedFilters);
-        const queryWithMetric = query ? `${query}&metrics=${metrics}` : `metrics=${metrics}`;
-        const url = `http://localhost:5092/api/Incident/countbypriority?${queryWithMetric}`;
-        console.log("Incident priority URL:", url);
-
-        const response = await fetch(url);
-        const data: IncidentPrioritySummary = await response.json();
-
-        setIncidentPrioritySummary(data);
-      } catch (error) {
-        console.error("Error fetching incident priority summary:", error);
+    setLoadingPriority(true);
+    const query = buildFilterQuery(appliedFilters);
+    const url = `http://localhost:5092/api/Incident/countbypriority?${query}`;
+    fetch(url)
+      .then((res) => {
+        res.json().then((data: IncidentPrioritySummary) => {
+          setIncidentPrioritySummary(data);
+        });
+      })
+      .catch((err) => {
+        console.error("Error fetching incident priority summary:", err);
         setIncidentPrioritySummary(null);
-      } finally {
-        setLoadingPriority(false)
-      }
-    };
-
-    fetchIncidentPrioritySummary();
-  }, [appliedFilters, metrics]);
-
-  const summary = useMemo(() => {
-    const result = {
-      total: incidentsData.length,
-      open: 0,
-      inProgress: 0,
-      closed: 0,
-    };
-    incidentsData.forEach((incident) => {
-      const state = incident.state.toLowerCase();
-      if (state === "open") result.open++;
-      if (state === "in progress") result.inProgress++;
-      if (state === "closed") result.closed++;
-    });
-    return result;
-  }, []);
-
-  const priorities = [
-    { label: "1 - Critical", display: "P1 - Critical" },
-    { label: "2 - High", display: "P2 - High" },
-    { label: "3 - Moderate", display: "P3 - Moderate" },
-    { label: "4 - Low", display: "P4 - Low" },
-  ];
+      })
+      .finally(() => {
+        setLoadingPriority(false);
+      });
+  }, [appliedFilters]);
 
   return (
-
     <div className="dashboard-container opened">
-
-      {/* ---- TOP CARDS ---- */}
       <div className={`first-div ${filterOpened ? "full" : "compact"}`}>
         <div className="summary-cards">
           <LoadingOverlay
@@ -135,48 +77,33 @@ export default function Cards() {
             zIndex={1000}
             overlayProps={{ blur: 1 }}
           />
-          <div className="card incident">
-            <div className="card-icon incident">
-              <img className="icon-property" src={totalincidenticon} alt="Total Incidents" />
-            </div>
-            <div className="card-content">
-              <h3>Total Incidents</h3>
-              <p>{incidentSummary?.totalIncidents ?? 0}</p>
-            </div>
-          </div>
 
-          <div className="card open">
-            <div className="card-icon open">
-              <img className="icon-property" src={openicon} alt="Open" />
-            </div>
-            <div className="card-content">
-              <h3>Open</h3>
-              <p>{incidentSummary?.openIncidents ?? 0}</p>
-            </div>
-          </div>
-
-          <div className="card progress">
-            <div className="card-icon progress">
-              <img className="icon-property" src={inprogress} alt="In Progress" />
-            </div>
-            <div className="card-content">
-              <h3>In Progress</h3>
-              <p>{incidentSummary?.inProgressIncidents ?? 0}</p>
-            </div>
-          </div>
-
-          <div className="card closed">
-            <div className="card-icon closed">
-              <img className="icon-property" src={closedicon} alt="Closed" />
-            </div>
-            <div className="card-content">
-              <h3>Closed</h3>
-              <p>{incidentSummary?.closedIncidents ?? 0}</p>
-            </div>
-          </div>
+          <IncidentCountCard
+            cssClass="incident"
+            iconSrc={totalincidenticon}
+            label="Total Incidents"
+            incidentCount={incidentSummary?.totalIncidents ?? 0}
+          />
+          <IncidentCountCard
+            cssClass="open"
+            iconSrc={openicon}
+            label="Open"
+            incidentCount={incidentSummary?.openIncidents ?? 0}
+          />
+          <IncidentCountCard
+            cssClass="progress"
+            iconSrc={inprogress}
+            label="In Progress"
+            incidentCount={incidentSummary?.inProgressIncidents ?? 0}
+          />
+          <IncidentCountCard
+            cssClass="closed"
+            iconSrc={closedicon}
+            label="Closed"
+            incidentCount={incidentSummary?.closedIncidents ?? 0}
+          />
         </div>
 
-        {/* ---- INCIDENT PRIORITY SECTION ---- */}
         <div style={{ backgroundColor: "#fff" }}>
           <div className="incident-priority-header">
             <h2>Incident Priority</h2>
@@ -187,66 +114,18 @@ export default function Cards() {
             overlayProps={{ blur: 1 }}
           />
           <div className="priority-container" style={{ borderRadius: "12px" }}>
-
             <div className="priority-summary">
-              {priorities.map(({ label, display }) => {
-                const priorityData = incidentPrioritySummary?.priority[label];
+              {PriorityList.map(({ key, value }) => {
+                const priorityData = incidentPrioritySummary?.priority[key];
                 const stats = priorityData?.details?.[0];
                 return (
-                  <div className="priority-item" key={label}>
-                    <div className="summary-card">
-                      <div className="header-section">
-                        <div className="priority-tag">
-                          <span className="priority-label">{display}</span>
-                          <span className="count">{stats?.totalCount ?? 0}</span>
-                        </div>
-                        <div className="metric-group">
-                          <div className="metric-item">
-                            <span className="metric-title">Total Resolved Time</span>
-                            <span className="metric-value">
-                              {priorityData?.totalResolvedTime ?? "—"}
-                            </span>
-                          </div>
-                          <div className="metric-item">
-                            <span className="metric-title">Avg Resolved Time</span>
-                            <span className="metric-value">
-                              {priorityData?.avgResolvedTime ?? "—"}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="status-section">
-                        {/* <div className="status-item">
-                          <span className="status-label">New</span>
-                          <span className="status-count">{stats?.open ?? 0}</span>
-                        </div> */}
-                        <div className="status-item">
-                          <span className="status-label">Open</span>
-                          <span className="status-count">{stats?.open ?? 0}</span>
-                        </div>
-                        <div className="status-item">
-                          <span className="status-label">In Progress</span>
-                          <span className="status-count">{stats?.inProgress ?? 0}</span>
-                        </div>
-                        <div className="status-item">
-                          <span className="status-label">Closed</span>
-                          <span className="status-count">{stats?.closed ?? 0}</span>
-                        </div>
-                        <div className="status-item">
-                          <span className="status-label">Reopen</span>
-                          <span className="status-count">{stats?.reopen ?? 0}</span>
-                        </div>
-                        <div className="status-item">
-                          <span className="status-label">On Hold</span>
-                          <span className="status-count">{stats?.onHold ?? 0}</span>
-                        </div>
-                        <div className="status-item">
-                          <span className="status-label">Resolved</span>
-                          <span className="status-count">{stats?.resolved ?? 0}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  <IncidentPriorityDetailsCard
+                    key={key}
+                    label={value}
+                    totalResolvedTime={priorityData?.totalResolvedTime ?? "—"}
+                    avgResolvedTime={priorityData?.avgResolvedTime ?? "—"}
+                    stats={stats}
+                  />
                 );
               })}
             </div>

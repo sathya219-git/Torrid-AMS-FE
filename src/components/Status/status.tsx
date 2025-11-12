@@ -1,51 +1,35 @@
 import { Accordion, Badge, Checkbox, Text } from "@mantine/core";
-import "./status.css";
-import { useEffect, useState } from "react";
-import { useAtom } from "jotai";
-import { selectedFilter } from "../../store/filterStore";
 import axios from "axios";
+import { useAtom } from "jotai";
+import { useCallback, useEffect, useState } from "react";
+import { selectedFilter } from "../../store/filterStore";
+import "./status.css";
+import { StatusItem } from "./status.interface";
 
 export default function Status() {
-  type Status = {
-    status: string;
-    incidentCount: number;
-  };
   const [filters, setFilters] = useAtom(selectedFilter);
-  const [statuses, setStatuses] = useState<Status[]>([]);
+  const [statuses, setStatuses] = useState<StatusItem[]>([]);
 
   useEffect(() => {
     axios
       .get("http://localhost:5092/api/Incident/statuscountbypriority")
       .then((res) => {
-        const data = Array.isArray(res.data) ? res.data : [];
+        const data: StatusItem[] = Array.isArray(res.data) ? res.data : [];
         setStatuses(data);
       })
       .catch((err) => {
-        console.error("Error fetching category counts:", err);
+        console.error("Error fetching status:", err);
         setStatuses([]);
       });
   }, []);
 
-  const statusChanges = (value: string) => {
+  const statusChanges = useCallback((value: string) => {
     setFilters((prev) => ({
       ...prev,
       State: prev.State.includes(value)
         ? prev.State.filter((v) => v !== value)
         : [...prev.State, value],
     }));
-  };
-
-  const [checkedMap, setCheckedMap] = useState<Map<string, boolean>>(new Map());
-
-  useEffect(() => {
-    if (checkedMap.size) {
-      return;
-    }
-    const newMap = new Map();
-    statuses.forEach((status) => {
-      newMap.set(status.status, false);
-    });
-    setCheckedMap(newMap);
   }, []);
 
   return (
@@ -57,7 +41,7 @@ export default function Status() {
         <Accordion.Panel>
           <div className="status-content">
             {statuses.map((status) => {
-              const isSelected = checkedMap.get(status.status) === true;
+              const isSelected = filters.State.includes(status.status);
               return (
                 <div
                   key={status.status}
@@ -66,7 +50,7 @@ export default function Status() {
                   <Checkbox
                     label={status.status}
                     onChange={() => statusChanges(status.status)}
-                    checked={filters.State.includes(status.status)}
+                    checked={isSelected}
                   />
                   <Badge
                     size="lg"
