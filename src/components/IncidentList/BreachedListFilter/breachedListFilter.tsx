@@ -92,7 +92,7 @@ export default function BreachedListFilter() {
 
             <div>
               <Text fw={500} mb="xs">
-                Actual Resolved Time
+                Average Resolved Time
               </Text>
               <div className="incident-scroll">
                 {actualResolvedTimes.map((item) => (
