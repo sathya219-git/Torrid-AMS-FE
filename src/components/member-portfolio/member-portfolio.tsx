@@ -174,11 +174,11 @@ export default function MemberPortfolio() {
           <span>
             Page {pageNumber} of {totalPages} ({totalRecords} records)
           </span>
-          <span> |  Page size:</span>
+          <span> | Page size:</span>
           <Select
             style={{ width: "70px" }}
             placeholder="Page size"
-            data={["5", "8", "10", "14"]}
+            data={["5", "10", "15", "20"]}
             value={pageSize}
             onChange={(val) => {
               if (val) {
