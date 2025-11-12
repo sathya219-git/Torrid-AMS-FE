@@ -8,7 +8,11 @@ import forward from "../../../assets/forward.png";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAtomValue } from "jotai";
-import { appliedFilter, FilterState } from "../../../store/filterStore";
+import {
+  appliedFilter,
+  breachFiltersAtom,
+  FilterState,
+} from "../../../store/filterStore";
 
 type BreachedIncidents = {
   incidentNumber: string;
@@ -16,7 +20,7 @@ type BreachedIncidents = {
   shortDescription: string;
   category: string;
   actualResolvedTime: string;
-  breachSLA: string
+  breachSLA: string;
 };
 
 export default function BreachedListTable({ priority }: { priority: string }) {
@@ -32,6 +36,7 @@ export default function BreachedListTable({ priority }: { priority: string }) {
   const startRange = (currentPage - 1) * pageSize + 1;
   const endRange = Math.min(currentPage * pageSize, totalElements);
   const appliedFilters = useAtomValue(appliedFilter);
+  const breachFilters = useAtomValue(breachFiltersAtom);
 
   const nextPage = () => {
     if (currentPage < totalPage) {
@@ -60,18 +65,19 @@ export default function BreachedListTable({ priority }: { priority: string }) {
   useEffect(() => {
     const fetchBreachedList = async () => {
       try {
+        const pageSize = 8;
         const query = buildFilterQuery(appliedFilters);
 
         const url = `http://localhost:5092/api/Incident/breachlistbypriority?Priority=${encodeURIComponent(
           priority
-        )}&PageNumber=${currentPage}${query}`;
+        )}&PageNumber=${currentPage}&PageSize=${pageSize}${query}`;
 
         const res = await axios.get(url);
+        let items = res.data.items ?? [];
 
-        console.log("Breached response:", res.data.items);
-
-        settotalElements(res.data.totalElements);
-        setBreachedIncidents(res.data.items ?? []);
+        console.log("Filtered Breached response:", items);
+        settotalElements(items.length);
+        setBreachedIncidents(items);
         setTotalPages(res.data.totalPages);
       } catch (err) {
         console.error("Axios Error:", err);
@@ -79,29 +85,53 @@ export default function BreachedListTable({ priority }: { priority: string }) {
     };
 
     fetchBreachedList();
-  }, [priority, currentPage, appliedFilters]);
+  }, [priority, currentPage, appliedFilters, breachFilters]);
 
+  // Build API filters
   const buildFilterQuery = (appliedFilters: FilterState) => {
     const params = new URLSearchParams();
 
-    if (appliedFilters.AssignmentGroup?.length > 0) {
-      params.append(
-        "AssignmentGroup",
-        appliedFilters.AssignmentGroup.join(",")
-      );
-    }
     if (appliedFilters.Category?.length > 0) {
       params.append("Category", appliedFilters.Category.join(","));
     }
+
     if (appliedFilters.Priority?.length > 0) {
       params.append("Priority", appliedFilters.Priority.join(","));
     }
+
     if (appliedFilters.State?.length > 0) {
       params.append("State", appliedFilters.State.join(","));
     }
+
     if (appliedFilters.AssignedToName?.length > 0) {
       params.append("AssignedToName", appliedFilters.AssignedToName.join(","));
     }
+
+    if (appliedFilters.FromDate) {
+      const formatted = new Date(appliedFilters.FromDate).toLocaleString(
+        "en-US"
+      );
+      params.append("FromDate", formatted);
+    }
+
+    if (appliedFilters.ToDate) {
+      const formatted = new Date(appliedFilters.ToDate).toLocaleString("en-US");
+      params.append("ToDate", formatted);
+    }
+
+    if (breachFilters.breachSLA.length > 0) {
+      params.append("BreachSLA", breachFilters.breachSLA.join(","));
+    }
+    if (breachFilters.actualResolvedTime.length > 0) {
+      params.append(
+        "ActualResolvedTime",
+        breachFilters.actualResolvedTime.join(",")
+      );
+    }
+    if (breachFilters.incidentId.length > 0) {
+      params.append("IncidentNumber", breachFilters.incidentId.join(","));
+    }
+
     const queryString = params.toString();
     return queryString ? `&${queryString}` : "";
   };

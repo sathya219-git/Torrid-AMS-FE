@@ -1,68 +1,129 @@
+import { useAtom } from "jotai";
 import "./breachedListFilter.css";
 import { Accordion, Checkbox, Text } from "@mantine/core";
+import { BreachFilters, breachFiltersAtom } from "../../../store/filterStore";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function BreachedListFilter() {
-  const incidentIds = [
-    { id: "INC0019008" },
-    { id: "INC0027899" },
-    { id: "INC0030753" },
-    { id: "INC0046452" },
-    { id: "INC0056737" },
-    { id: "INC0063124" },
-    { id: "INC0076835" },
-    { id: "INC0088732" },
-    { id: "INC0094692" },
-    { id: "INC0101235" },
-  ];
+  const [breachFilters, setBreachFilters] = useAtom(breachFiltersAtom);
+  const [incidentIds, setIncidentIds] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const actualResolvedTimes = [
-    { time: ">=12hrs" },
-    { time: "12<=23hrs" },
-    { time: "More than 24hrs" },
+    { time: ">= 12 hrs", value: "12 hours" },
+    { time: "12–23 hrs", value: "BETWEEN_12_23" },
+    { time: ">= 24 hrs", value: "24 hours" },
   ];
 
   const breachSLAStatus = [
-    { status: "More than 12hrs" },
-    { status: "More than 30hrs" },
-    { status: "More than 1day" },
+    { status: ">= 12 hrs", value: "12 hours" },
+    { status: ">= 30 hrs", value: "30 hours" },
+    { status: ">= 1 day", value: "1 days" },
   ];
+
+  const toggleValue = (key: keyof BreachFilters, value: string) => {
+    setBreachFilters((prev) => {
+      const exists = prev[key].includes(value);
+      const updated = {
+        ...prev,
+        [key]: exists
+          ? prev[key].filter((v) => v !== value) // remove if exists
+          : [...prev[key], value], // add if not
+      };
+
+      console.log("Updated breached filters:", updated);
+      return updated;
+    });
+  };
+  // Fetch incident IDs from backend
+  useEffect(() => {
+    const fetchIncidentIds = async () => {
+      setLoading(true);
+      try {
+        const url = `http://localhost:5092/api/Incident/breachlistbypriority?PageNumber=1&PageSize=1000`;
+        const res = await axios.get(url);
+        const ids = res.data.items?.map((x: any) => x.incidentNumber) ?? [];
+        setIncidentIds(ids);
+      } catch (err) {
+        console.error("Error fetching incident IDs:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchIncidentIds();
+  }, []);
   return (
     <Accordion
       defaultValue="filter"
       classNames={{ item: "accordion-border", content: "accordion-padding" }}
     >
-      <Accordion.Item key="filter" value="filter">
+      <Accordion.Item value="filter">
         <Accordion.Control className="Accordion-title">
-          <Text fw={600}> Filter </Text>
+          <Text fw={600}>Filter</Text>
         </Accordion.Control>
+
         <Accordion.Panel>
           <div className="BL-filter-container">
+            {/* ✅ Incident IDs */}
             <div>
-              <Text fw={400}> Incident Id </Text>
+              <Text fw={500} mb="xs">
+                Incident ID
+              </Text>
+
               <div className="incident-scroll">
-                {incidentIds.map((item) => (
-                  <div className="incident-checkbox" key={item.id}>
-                    <Checkbox label={`${item.id}`} />
-                  </div>
-                ))}
+                {loading ? (
+                  <Text size="sm" c="dimmed">
+                    Loading incidents...
+                  </Text>
+                ) : (
+                  incidentIds.map((id) => (
+                    <div className="incident-checkbox" key={id}>
+                      <Checkbox
+                        label={id}
+                        checked={breachFilters.incidentId.includes(id)}
+                        onChange={() => toggleValue("incidentId", id)}
+                      />
+                    </div>
+                  ))
+                )}
               </div>
             </div>
+
             <div>
-              <Text fw={400}>Actual Resolved Time</Text>
+              <Text fw={500} mb="xs">
+                Actual Resolved Time
+              </Text>
               <div className="incident-scroll">
                 {actualResolvedTimes.map((item) => (
-                  <div className="incident-checkbox" key={item.time}>
-                    <Checkbox label={item.time} />
+                  <div className="incident-checkbox" key={item.value}>
+                    <Checkbox
+                      label={item.time}
+                      checked={breachFilters.actualResolvedTime.includes(
+                        item.value
+                      )}
+                      onChange={() =>
+                        toggleValue("actualResolvedTime", item.value)
+                      }
+                    />
                   </div>
                 ))}
               </div>
             </div>
+
+            {/* ✅ Breach SLA */}
             <div>
-              <Text fw={400}> Breach SLA </Text>
+              <Text fw={500} mb="xs">
+                Breach SLA
+              </Text>
               <div className="incident-scroll">
                 {breachSLAStatus.map((item) => (
-                  <div className="incident-checkbox" key={item.status}>
-                    <Checkbox label={item.status} />
+                  <div className="incident-checkbox" key={item.value}>
+                    <Checkbox
+                      label={item.status}
+                      checked={breachFilters.breachSLA.includes(item.value)}
+                      onChange={() => toggleValue("breachSLA", item.value)}
+                    />
                   </div>
                 ))}
               </div>
