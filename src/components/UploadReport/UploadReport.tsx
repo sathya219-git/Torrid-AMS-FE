@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./UploadReport.css";
 import { GrDocumentUpload } from "react-icons/gr";
-import { Input } from "@mantine/core";
+import { Input, LoadingOverlay } from "@mantine/core";
 import { GoSortAsc, GoSortDesc } from "react-icons/go";
 import backward from "../../assets/backward.png";
 import forward from "../../assets/forward.png";
@@ -235,7 +235,11 @@ const UploadReport = () => {
     return (
 
         <div className="upload-report-container">
-
+            <LoadingOverlay
+          visible={loading}
+          zIndex={1000}
+          overlayProps={{ blur: 2 }}
+        />
 
             <div className="report-header">
                 <h2 className="report-title">Upload Report</h2>
