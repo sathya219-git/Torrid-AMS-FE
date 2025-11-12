@@ -1,9 +1,9 @@
 import { Accordion, Checkbox, Text } from "@mantine/core";
-import "./category.css";
-import { useAtom } from "jotai";
-import { selectedFilter } from "../../store/filterStore";
-import { useEffect, useState } from "react";
 import axios from "axios";
+import { useAtom } from "jotai";
+import { useCallback, useEffect, useState } from "react";
+import { selectedFilter } from "../../store/filterStore";
+import "./category.css";
 
 export default function Category() {
   type Category = {
@@ -12,11 +12,9 @@ export default function Category() {
   };
 
   const [filters, setFilters] = useAtom(selectedFilter);
-  // const [opened, setOpened] = useState(false);
   const [selectAll, setSelectAll] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
 
-  //data from API
   useEffect(() => {
     axios
       .get("http://localhost:5092/api/Incident/categorycountbygroup")
@@ -30,44 +28,38 @@ export default function Category() {
       });
   }, []);
 
-  const staticCategories = categories.slice(0, 5);
+  const categoryChanges = useCallback(
+    (value: string) => {
+      setFilters((prev) => {
+        const updatedCategories = prev.Category.includes(value)
+          ? prev.Category.filter((v) => v !== value)
+          : [...prev.Category, value];
 
-  const expandCategories = categories.slice(5);
+        setSelectAll(updatedCategories.length === categories.length);
+        return { ...prev, Category: updatedCategories };
+      });
+    },
+    [categories]
+  );
 
-  const categoryChanges = (value: string) => {
-    setFilters((prev) => {
-      const updatedCategories = prev.Category.includes(value)
-        ? prev.Category.filter((v) => v !== value)
-        : [...prev.Category, value];
-
-      // Update selectAll
-      setSelectAll(updatedCategories.length === categories.length);
-
-      return { ...prev, Category: updatedCategories };
-    });
-  };
-
-  // Select
-  const selectAllCategories = () => {
+  const selectAllCategories = useCallback(() => {
     const allCategoryNames = categories.map((c) => c.categoryName);
     setFilters((prev) => ({ ...prev, Category: allCategoryNames }));
     setSelectAll(true);
-  };
+  }, [categories]);
 
-  // Deselect
-  const deselectAllCategories = () => {
+  const deSelectAllCategories = useCallback(() => {
     setFilters((prev) => ({ ...prev, Category: [] }));
     setSelectAll(false);
-  };
+  }, []);
 
-  // Handle Select All toggle
-  const handleSelectAll = () => {
+  const handleSelectAll = useCallback(() => {
     if (selectAll) {
-      deselectAllCategories();
+      deSelectAllCategories();
     } else {
       selectAllCategories();
     }
-  };
+  }, [selectAll]);
 
   useEffect(() => {
     if (filters.Category.length === 0) {
@@ -96,7 +88,7 @@ export default function Category() {
 
             {/* Scrollable container for all categories */}
             <div className="category-scroll">
-              {[...staticCategories, ...expandCategories].map((category) => (
+              {categories.map((category) => (
                 <div className="category-checkbox" key={category.categoryName}>
                   <Checkbox
                     label={category.categoryName}
