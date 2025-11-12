@@ -5,11 +5,13 @@ import { Input } from "@mantine/core";
 import { GoSortAsc, GoSortDesc } from "react-icons/go";
 import backward from "../../assets/backward.png";
 import forward from "../../assets/forward.png";
+import { notifications } from "@mantine/notifications";
+
 interface FileDetail {
-    filename: string | null;
-    fileSize: number;
-    updateddateandtime: string | number;
-    otherfield?: string;
+    id: number;
+    fileName: string | null;
+    fileSize: string;
+    uploadedDate: string;
 }
 
 interface Pagination {
@@ -21,8 +23,11 @@ interface Pagination {
 }
 
 interface ApiResponse {
-    fileDetailes: FileDetail[];
-    pagination: Pagination;
+    totalCount: number;
+    pageNumber: number;
+    pageSize: number;
+    totalPages: number;
+    items: FileDetail[];
 }
 
 const UploadReport = () => {
@@ -32,29 +37,38 @@ const UploadReport = () => {
         pageSize: 5,
         totalRecords: 0,
         totalPages: 0,
-        sortBy: "filename",
+        sortBy: "uploadedDate",
     });
-    const [sortBy, setSortBy] = useState<string>("filename");
+    const [sortBy, setSortBy] = useState<string>("uploadedDate");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+    const [searchText, setSearchText] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
-
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-    // ✅ Fetch API data whenever sort or page changes
+    // ✅ Fetch API data whenever sort, page, or search changes
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
-
             try {
-                const apiUrl = `http://localhost:5092/api/Incident/nameandcountbypriority?SortBy=${sortBy}&SortOrder=${sortOrder}&PageNumber=${pagination.page}&PageSize=${pagination.pageSize}`;
+                const apiUrl = `http://localhost:5092/api/files/history?SearchText=${encodeURIComponent(
+                    searchText
+                )}&SortBy=${sortBy}&SortDir=${sortOrder}&PageNumber=${pagination.page}&PageSize=${pagination.pageSize
+                    }`;
+
                 console.log("API URL:", apiUrl);
 
                 const response = await fetch(apiUrl);
                 if (!response.ok) throw new Error("Failed to fetch data");
 
                 const json: ApiResponse = await response.json();
-                setData(json.fileDetailes || []);
-                setPagination(json.pagination);
+
+                setData(json.items || []);
+                setPagination((prev) => ({
+                    ...prev,
+                    totalRecords: json.totalCount,
+                    totalPages: json.totalPages,
+                    page: json.pageNumber,
+                }));
             } catch (error) {
                 console.error("Error fetching data:", error);
             } finally {
@@ -63,7 +77,7 @@ const UploadReport = () => {
         };
 
         fetchData();
-    }, [sortBy, sortOrder, pagination.page]);
+    }, [sortBy, sortOrder, pagination.page, searchText]);
 
     // ✅ Handle column sorting
     const handleSort = (column: string) => {
@@ -86,32 +100,127 @@ const UploadReport = () => {
 
     // ✅ File handling
     const handleBrowseFiles = () => fileInputRef.current?.click();
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  const files = event.target.files;
-  if (!files || files.length === 0) return;
 
-  // Get existing files from localStorage (if any)
-  const existing = JSON.parse(localStorage.getItem("uploadedFiles") || "[]");
+    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        console.log("enter");
+        const files = event.target.files;
+        if (!files || files.length === 0) return;
 
-  // Map new files
-  const newFiles = Array.from(files).map((file) => ({
-    name: file.name,
-    size: `${(file.size / 1024).toFixed(2)} KB`,
-    type: file.type,
-    uploadedAt: new Date().toISOString(),
-  }));
+        const formData = new FormData();
+        Array.from(files).forEach((file) => formData.append("File", file));
 
-  // Put new files first (latest on top)
-  const updatedFiles = [...newFiles, ...existing];
+        // ✅ Show a loading notification first
+        const loadingId = notifications.show({
+            title: "Uploading...",
+            message: "Please wait while the file(s) are being uploaded.",
+            color: "blue",
+            autoClose: false, // stays until manually closed
+            loading: true,
+        });
 
-  // Store in localStorage
-  localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles));
+        try {
+            const response = await fetch("http://localhost:5092/api/files/upload", {
+                method: "POST",
+                body: formData,
+                
+            });
 
-  // Trigger custom event to update notification component
-  window.dispatchEvent(new Event("uploadedFilesUpdated"));
+            // remove loading notification
+            notifications.hide(loadingId);
 
-  console.log("Files uploaded:", updatedFiles);
-};
+            if (response.ok) {
+                console.log("SUCCESSFULLY UPLOADED");
+                
+                // ✅ Save uploaded files locally (your existing logic)
+                const existing = JSON.parse(localStorage.getItem("uploadedFiles") || "[]");
+                const newFiles = Array.from(files).map((file) => ({
+                    name: file.name,
+                    size: `${(file.size / 1024).toFixed(2)} KB`,
+                    type: file.type,
+                    uploadedAt: new Date().toISOString(),
+                }));
+                const updatedFiles = [...newFiles, ...existing];
+                localStorage.setItem("uploadedFiles", JSON.stringify(updatedFiles));
+                window.dispatchEvent(new Event("uploadedFilesUpdated"));
+
+                // ✅ Success notification
+                notifications.show({
+                    title: "✅ Upload Successful",
+                    message: `${newFiles.length} file(s) uploaded successfully!`,
+                    color: "green",
+                    radius: "md",
+                    styles: {
+                        root: {
+                            backgroundColor: "#e6ffed",
+                            border: "1px solid #27ae60",
+                            boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+                        },
+                        title: { fontWeight: 600, color: "#145a32" },
+                        description: { color: "#196f3d" },
+                    },
+                });
+            } else {
+                console.log("FAILED");
+
+                // ❌ Failure notification
+                notifications.show({
+                    position:"top-right",
+                    title: "Upload Failed",
+                    message: "Something went wrong while uploading the file.",
+                    color: "red",
+                    radius: "md",
+                    styles: {
+                        root: {
+                            backgroundColor: "#ffe6e6",
+                            border: "1px solid #e74c3c",
+                            boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+                        },
+                        title: { fontWeight: 600, color: "#922b21" },
+                        description: { color: "#943126" },
+                    },
+                });
+            }
+        } catch (error) {
+            notifications.hide(loadingId);
+
+            // ⚠️ Network or exception notification
+            notifications.show({
+                title: "Network Error",
+                message: "Unable to upload. Please check your connection.",
+                color: "yellow",
+                radius: "md",
+                styles: {
+                    root: {
+                        backgroundColor: "#fff8e1",
+                        border: "1px solid #f1c40f",
+                        boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+                    },
+                    title: { fontWeight: 600, color: "#7d6608" },
+                    description: { color: "#9a7d0a" },
+                },
+            });
+        } finally {
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+        }
+    };
+
+    const positions = [
+        'top-left',
+        'top-right',
+        'bottom-left',
+        'bottom-right',
+        'top-center',
+        'bottom-center',
+    ] as const;
+    // ✅ Search debounce
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setSearchText(value);
+        setPagination((prev) => ({ ...prev, page: 1 })); // reset to first page
+    };
+
     // ✅ Helper: Always show arrow indicators
     const getSortIcon = (column: string) => {
         if (sortBy === column)
@@ -124,7 +233,10 @@ const UploadReport = () => {
     };
 
     return (
+
         <div className="upload-report-container">
+
+
             <div className="report-header">
                 <h2 className="report-title">Upload Report</h2>
             </div>
@@ -150,7 +262,7 @@ const UploadReport = () => {
                             accept=".xls,.xlsx"
                             ref={fileInputRef}
                             style={{ display: "none" }}
-                            onChange={handleFileChange}
+                            onInput={handleFileChange}
                         />
                     </div>
                 </div>
@@ -161,138 +273,119 @@ const UploadReport = () => {
                         <div className="table-container-file-upload">
                             <div className="table-header">
                                 <h2>Uploaded File History</h2>
-                                <Input placeholder="Search here..." />
+                                <Input
+                                    placeholder="Search here..."
+                                    value={searchText}
+                                    onChange={handleSearchChange}
+                                />
                             </div>
 
-                            {loading ? (
-                                <p className="loading-text">Loading...</p>
-                            ) : (
-                                <table className="custom-table">
-                                    <thead>
-                                        <tr>
-                                            <th>S.No</th>
+                            {
 
-                                            <th onClick={() => handleSort("filename")}>
-                                                <div className="sortable-header">
-                                                    <span>File Name</span>
-                                                    {getSortIcon("filename")}
-                                                </div>
-                                            </th>
-
-                                            <th onClick={() => handleSort("fileSize")}>
-                                                <div className="sortable-header">
-                                                    <span>File Size</span>
-                                                    {getSortIcon("fileSize")}
-                                                </div>
-                                            </th>
-
-                                            <th onClick={() => handleSort("updateddateandtime")}>
-                                                <div className="sortable-header">
-                                                    <span>Updated Time & Date</span>
-                                                    {getSortIcon("updateddateandtime")}
-                                                </div>
-                                            </th>
-
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {data.length > 0 ? (
-                                            data.map((item, idx) => (
-                                                <tr key={idx}>
-                                                    <td>
-                                                        {(pagination.page - 1) * pagination.pageSize +
-                                                            idx +
-                                                            1}
-                                                    </td>
-                                                    <td>{item.filename || "-"}</td>
-                                                    <td>{item.fileSize || 0}</td>
-                                                    <td>{item.updateddateandtime || "-"}</td>
-                                                    <td>Show Dashboard</td>
-                                                </tr>
-                                            ))
-                                        ) : (
+                                //   loading ? (
+                                //     <p className="loading-text">Loading...</p>
+                                //   ) : 
+                                (
+                                    <table className="custom-table">
+                                        <thead>
                                             <tr>
-                                                <td colSpan={5} className="no-records">
-                                                    No records found
-                                                </td>
+                                                <th>S.No</th>
+                                                <th onClick={() => handleSort("fileName")}>
+                                                    <div className="sortable-header">
+                                                        <span>File Name</span>
+                                                        {getSortIcon("fileName")}
+                                                    </div>
+                                                </th>
+                                                <th onClick={() => handleSort("fileSize")}>
+                                                    <div className="sortable-header">
+                                                        <span>File Size</span>
+                                                        {getSortIcon("fileSize")}
+                                                    </div>
+                                                </th>
+                                                <th onClick={() => handleSort("uploadedDate")}>
+                                                    <div className="sortable-header">
+                                                        <span>Updated Time & Date</span>
+                                                        {getSortIcon("uploadedDate")}
+                                                    </div>
+                                                </th>
+                                                <th>Action</th>
                                             </tr>
-                                        )}
-                                    </tbody>
-                                </table>
-                            )}
+                                        </thead>
+                                        <tbody>
+                                            {data.length > 0 ? (
+                                                data.map((item, idx) => (
+                                                    <tr key={idx}>
+                                                        <td>
+                                                            {(pagination.page - 1) * pagination.pageSize +
+                                                                idx +
+                                                                1}
+                                                        </td>
+                                                        <td>{item.fileName || "-"}</td>
+                                                        <td>{item.fileSize || 0}</td>
+                                                        <td>
+                                                            {new Date(item.uploadedDate).toLocaleString() ||
+                                                                "-"}
+                                                        </td>
+                                                        <td>Show Dashboard</td>
+                                                    </tr>
+                                                ))
+                                            ) : (
+                                                <tr>
+                                                    <td colSpan={5} className="no-records">
+                                                        No records found
+                                                    </td>
+                                                </tr>
+                                            )}
+                                        </tbody>
+                                    </table>
+                                )}
                         </div>
                     </div>
 
-                    {/* Pagination */}
-                    {/* <div className="pagination">
-                        <button
-                            disabled={pagination.page === 1}
-                            onClick={() => handlePageChange("prev")}
-                        >
-                            ◀ Prev
-                        </button>
-                        <span>
-                            Page {pagination.page} of {pagination.totalPages} | Total Records:{" "}
-                            {pagination.totalRecords}
-                        </span>
-                        <button
-                            disabled={pagination.page === pagination.totalPages}
-                            onClick={() => handlePageChange("next")}
-                        >
-                            Next ▶
-                        </button>
-                    </div> */}
-
+                    {/* Pagination Footer */}
                     <footer className="portfolio-footer">
                         <span>
-                            Page 2 of 111 ( 23 records)
+                            Page {pagination.page} of {pagination.totalPages} ({" "}
+                            {pagination.totalRecords} records)
                         </span>
                         <div className="pagination">
                             <button
-                                style={{
-                                    borderRadius: "6px 0 0 6px",
-                                    border: " 1px solid #33303111",
-                                }}
                                 className="page-control"
-
-
+                                disabled={pagination.page === 1}
+                                onClick={() => setPagination((p) => ({ ...p, page: 1 }))}
                             >
                                 <img src={forward} />
                                 <img src={forward} />
                             </button>
 
                             <button
-                                style={{ border: " 1px solid #33303111" }}
                                 className="page-control"
-
+                                disabled={pagination.page === 1}
+                                onClick={() => handlePageChange("prev")}
                             >
                                 <img src={forward} />
                             </button>
 
-
                             <button
-                                style={{ border: " 1px solid #33303111" }}
                                 className="page-control"
-
+                                disabled={pagination.page === pagination.totalPages}
+                                onClick={() => handlePageChange("next")}
                             >
                                 <img src={backward} />
                             </button>
 
                             <button
-                                style={{
-                                    borderRadius: "0 6px 6px 0",
-                                    border: " 1px solid #33303111",
-                                }}
                                 className="page-control"
-
+                                disabled={pagination.page === pagination.totalPages}
+                                onClick={() =>
+                                    setPagination((p) => ({ ...p, page: p.totalPages }))
+                                }
                             >
                                 <img src={backward} />
                                 <img src={backward} />
                             </button>
                         </div>
                     </footer>
-
                 </div>
             </div>
         </div>

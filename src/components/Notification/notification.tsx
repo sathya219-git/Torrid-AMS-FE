@@ -40,7 +40,7 @@ export default function Notification() {
     },
     filename: { color: "#1e3a8a" },
     size: { color: "#6b7280", fontSize: "0.9em" },
-    message: { color: "#065f46", fontSize: "0.95em", marginTop: "4px",display:"flex",justifyContent:"center",alignItems:"center",gap:"6 px" },
+    message: { color: "#065f46", fontSize: "0.95em", marginTop: "4px",display:"flex",justifyContent:"center",alignItems:"center",gap:"8px" },
   };
 
   const [files, setFiles] = useState<FileDetails[]>([]);
