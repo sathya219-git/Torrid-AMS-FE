@@ -127,12 +127,14 @@
 
 .custom-table th,
 .custom-table td {
- 
   padding: 10px 12px;
   border-bottom: 1px solid #ddd;
   text-align: left;
-  white-space: nowrap;
+  white-space: normal; /* ✅ allow wrapping */
+  word-wrap: break-word; /* ✅ handle long words or file names */
+  overflow-wrap: break-word; /* ✅ modern alternative for word-wrap */
 }
+
 
 .custom-table th {
   background-color: #f8f9fb;

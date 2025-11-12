@@ -34,7 +34,7 @@ const UploadReport = () => {
     const [data, setData] = useState<FileDetail[]>([]);
     const [pagination, setPagination] = useState<Pagination>({
         page: 1,
-        pageSize: 5,
+        pageSize: 6,
         totalRecords: 0,
         totalPages: 0,
         sortBy: "uploadedDate",
