@@ -7,7 +7,7 @@ import { appliedFilter } from "../../store/filterStore";
 import { useEffect, useState } from "react";
 import { buildFilterQuery } from "../../utils/queryBuilder";
 import { GoSortAsc, GoSortDesc } from "react-icons/go";
-
+import { Select } from '@mantine/core';
 // 🧩 Type definitions
 interface MemberDetail {
   name: string | null;
@@ -69,6 +69,8 @@ export default function MemberPortfolio() {
     useState<MemberDetailsResponse | null>(null);
 
   // 🧭 Pagination/sorting/metrics state
+  const [value, setValue] = useState<string | null>("5"); // ✅ allows null
+
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState<number | null>(5);
   const [sortBy, setSortBy] = useState<string>("name");
@@ -172,7 +174,7 @@ export default function MemberPortfolio() {
                   gap: "4px",
                   fontWeight: "600",
                   color: "#333B69",
-                  flexDirection:"row"
+                  flexDirection: "row"
                 }}
               >
                 {col.label}
@@ -202,9 +204,38 @@ export default function MemberPortfolio() {
 
       {/* Footer Pagination */}
       <footer className="portfolio-footer">
-        <span>
-          Page {pageNumber} of {totalPages} ({totalRecords} records)
-        </span>
+        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: '9px' }}>
+          <span>
+            Page {pageNumber} of {totalPages} ({totalRecords} records)
+          </span>
+          <Select
+            style={{ width: "100px" }}
+            placeholder="Page size"
+            data={["5", "8", "10", "14"]}
+            value={pageSize?.toString() ?? "5"} // keep it in sync with state
+            onChange={(val) => {
+              if (val) {
+                setPageSize(Number(val)); // ✅ update page size
+                setPageNumber(1);         // ✅ reset to first page
+              }
+            }}
+            comboboxProps={{
+              position: "bottom",
+              middlewares: { flip: false, shift: false },
+              offset: 0,
+            }}
+            styles={{
+              input: {
+                border: "1px solid #ccc",
+                "&:focus": {
+                  borderColor: "black",
+                },
+              },
+            }}
+          />
+
+        </div>
+
         <div className="member-portpolio-pagination">
           {/* First Page */}
           <button
