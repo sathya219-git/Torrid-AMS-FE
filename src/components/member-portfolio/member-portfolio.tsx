@@ -160,11 +160,7 @@ export default function MemberPortfolio() {
 
       {/* Main List */}
       <main className="member-list">
-        <LoadingOverlay
-          visible={loading}
-          zIndex={1000}
-          overlayProps={{ blur: 2 }}
-        />
+        
         {/* Table Header */}
         <div className="member-card header-row">
           <div className="metrics-grid">
