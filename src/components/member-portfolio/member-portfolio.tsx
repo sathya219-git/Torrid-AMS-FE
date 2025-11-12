@@ -6,7 +6,8 @@ import { appliedFilter } from "../../store/filterStore";
 import { useEffect, useState } from "react";
 import { buildFilterQuery } from "../../utils/queryBuilder";
 import { GoSortAsc, GoSortDesc } from "react-icons/go";
-import { Select } from '@mantine/core';
+import { Select } from "@mantine/core";
+import { LoadingOverlay } from "@mantine/core";
 // 🧩 Type definitions
 interface MemberDetail {
   name: string | null;
@@ -160,7 +161,11 @@ export default function MemberPortfolio() {
 
       {/* Main List */}
       <main className="member-list">
-        
+        <LoadingOverlay
+          visible={loading}
+          zIndex={1000}
+          overlayProps={{ blur: 2 }}
+        />
         {/* Table Header */}
         <div className="member-card header-row">
           <div className="metrics-grid">
@@ -177,7 +182,7 @@ export default function MemberPortfolio() {
                   gap: "4px",
                   fontWeight: "600",
                   color: "#333B69",
-                  flexDirection: "row"
+                  flexDirection: "row",
                 }}
               >
                 {col.label}
@@ -207,7 +212,15 @@ export default function MemberPortfolio() {
 
       {/* Footer Pagination */}
       <footer className="portfolio-footer">
-        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: '9px' }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "9px",
+          }}
+        >
           <span>
             Page {pageNumber} of {totalPages} ({totalRecords} records)
           </span>
@@ -219,7 +232,7 @@ export default function MemberPortfolio() {
             onChange={(val) => {
               if (val) {
                 setPageSize(Number(val)); // ✅ update page size
-                setPageNumber(1);         // ✅ reset to first page
+                setPageNumber(1); // ✅ reset to first page
               }
             }}
             comboboxProps={{
@@ -236,7 +249,6 @@ export default function MemberPortfolio() {
               },
             }}
           />
-
         </div>
 
         <div className="member-portpolio-pagination">
