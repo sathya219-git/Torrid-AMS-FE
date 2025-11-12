@@ -1,9 +1,9 @@
 import { Accordion, Checkbox, Collapse, Text } from "@mantine/core";
-import "./assignmentGroup.css";
-import { useEffect, useState } from "react";
-import { useAtom } from "jotai";
-import { selectedFilter } from "../../store/filterStore";
 import axios from "axios";
+import { useAtom } from "jotai";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { selectedFilter } from "../../store/filterStore";
+import "./assignmentGroup.css";
 
 export default function AssignmentGroup() {
   type AssignmentGroup = {
@@ -17,7 +17,6 @@ export default function AssignmentGroup() {
     []
   );
 
-  //data from API
   useEffect(() => {
     axios
       .get("http://localhost:5092/api/Incident/assignmentgroups")
@@ -31,22 +30,29 @@ export default function AssignmentGroup() {
       });
   }, []);
 
-  const staticGroups = assignmentGroups.slice(0, 4);
+  const staticGroups = useMemo(() => {
+    return assignmentGroups.slice(0, 4);
+  }, [assignmentGroups]);
 
-  const expandGroups = assignmentGroups.slice(4);
+  const expandedGroups = useMemo(() => {
+    return assignmentGroups.slice(4);
+  }, [assignmentGroups]);
 
-  const AssignmentGroupChanges = (value: string) => {
-    setFilters((prev) => {
-      const updatedGroups = prev.AssignmentGroup.includes(value)
-        ? prev.AssignmentGroup.filter((v) => v !== value)
-        : [...prev.AssignmentGroup, value];
+  const AssignmentGroupChanges = useCallback(
+    (value: string) => {
+      setFilters((prev) => {
+        const updatedGroups = prev.AssignmentGroup.includes(value)
+          ? prev.AssignmentGroup.filter((v) => v !== value)
+          : [...prev.AssignmentGroup, value];
 
-      // Update selectAll
-      setSelectAll(updatedGroups.length === assignmentGroups.length);
+        // Update selectAll
+        setSelectAll(updatedGroups.length === assignmentGroups.length);
 
-      return { ...prev, AssignmentGroup: updatedGroups };
-    });
-  };
+        return { ...prev, AssignmentGroup: updatedGroups };
+      });
+    },
+    [assignmentGroups]
+  );
 
   useEffect(() => {
     if (filters.AssignmentGroup.length === 0) {
@@ -54,27 +60,24 @@ export default function AssignmentGroup() {
     }
   }, [filters]);
 
-  // SelectAll
-  const selectAllGroups = () => {
+  const selectAllGroups = useCallback(() => {
     const allGroupNames = assignmentGroups.map((g) => g.assignmentGroupName);
     setFilters((prev) => ({ ...prev, AssignmentGroup: allGroupNames }));
     setSelectAll(true);
-  };
+  }, [assignmentGroups]);
 
-  // Deselect
-  const deselectAllGroups = () => {
+  const deselectAllGroups = useCallback(() => {
     setFilters((prev) => ({ ...prev, AssignmentGroup: [] }));
     setSelectAll(false);
-  };
+  }, []);
 
-  // Handle Select All toggle
-  const handleSelectAll = () => {
+  const handleSelectAll = useCallback(() => {
     if (selectAll) {
       deselectAllGroups();
     } else {
       selectAllGroups();
     }
-  };
+  }, [selectAll]);
 
   return (
     <Accordion defaultValue="group" classNames={{ item: "accordion-border" }}>
@@ -117,7 +120,7 @@ export default function AssignmentGroup() {
           >
             <Collapse in={opened}>
               <div className="assignment-content">
-                {expandGroups.map((assignmentGroup) => (
+                {expandedGroups.map((assignmentGroup) => (
                   <div
                     className="group-checkbox"
                     key={assignmentGroup.assignmentGroupName}
@@ -139,7 +142,9 @@ export default function AssignmentGroup() {
             </Collapse>
           </div>
           <Text className="view" onClick={() => setOpened((prev) => !prev)}>
-            {opened ? "View Less" : "View More (" + expandGroups.length + "+)"}
+            {opened
+              ? "View Less"
+              : "View More (" + expandedGroups.length + "+)"}
           </Text>
         </Accordion.Panel>
       </Accordion.Item>

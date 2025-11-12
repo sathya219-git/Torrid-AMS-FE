@@ -31,6 +31,7 @@
 
 .view {
   color: #228be6;
+  cursor: pointer;
 }
 
 .accordion-border:last-of-type {
