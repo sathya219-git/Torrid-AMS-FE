@@ -1,16 +1,19 @@
 import { Accordion, Badge, Checkbox, Text } from "@mantine/core";
 import axios from "axios";
 import { useAtom } from "jotai";
-import { useCallback, useEffect, useState } from "react";
-import { selectedStatus } from "../../store/filterStore";
+import { useCallback, useEffect } from "react";
+import { selectedStatus, status } from "../../store/filterStore";
 import "./status.css";
 import { StatusItem } from "./status.interface";
 
 export default function Status() {
   const [selectedFilters, setSelectedFilters] = useAtom(selectedStatus);
-  const [statusList, setStatusList] = useState<StatusItem[]>([]);
+  const [statusList, setStatusList] = useAtom(status);
 
   useEffect(() => {
+    if (statusList.length > 0) {
+      return;
+    }
     axios
       .get("http://localhost:5092/api/Incident/statuscountbypriority")
       .then((res) => {

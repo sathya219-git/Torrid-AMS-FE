@@ -1,4 +1,7 @@
 import { atom } from "jotai";
+import { CategoryItem } from "../components/Category/category.interface";
+import { StatusItem } from "../components/Status/status.interface";
+import { TeamMember } from "../components/TeamMembers/team-members.interface";
 import {
   BreachFilters,
   FilterChip,
@@ -9,11 +12,19 @@ import {
 
 export const filterState = atom(true);
 
+export const groups = atom<string[]>([]);
 export const selectedGroups = atom<string[]>([]);
+
 export const selectedFromDate = atom<Date | null>(null);
 export const selectedToDate = atom<Date | null>(null);
+
+export const categories = atom<CategoryItem[]>([]);
 export const selectedCategories = atom<string[]>([]);
+
+export const status = atom<StatusItem[]>([]);
 export const selectedStatus = atom<string[]>([]);
+
+export const teamMembers = atom<TeamMember[]>([]);
 export const selectedTeamMembers = atom<string[]>([]);
 
 export const appliedFilter = atom<FilterState>({

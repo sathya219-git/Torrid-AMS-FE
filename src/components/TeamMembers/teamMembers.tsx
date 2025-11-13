@@ -4,16 +4,19 @@ import axios from "axios";
 import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { List, RowComponentProps } from "react-window";
-import { selectedTeamMembers } from "../../store/filterStore";
+import { selectedTeamMembers, teamMembers } from "../../store/filterStore";
 import { TeamMember } from "./team-members.interface";
 import "./teamMembers.css";
 
 export default function TeamMembers() {
+  const [teamMemberList, setTeamMembers] = useAtom(teamMembers);
   const [selectedFilters, setSelectedFilters] = useAtom(selectedTeamMembers);
   const [searchText, setSearchText] = useState("");
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
 
   useEffect(() => {
+    if (teamMemberList.length > 0) {
+      return;
+    }
     axios
       .get("http://localhost:5092/api/Incident/nameandcountbypriority")
       .then((res) => {
@@ -27,11 +30,11 @@ export default function TeamMembers() {
 
   const filteredMembers = useMemo(() => {
     return searchText
-      ? teamMembers.filter((member) =>
+      ? teamMemberList.filter((member) =>
           member.name.toLowerCase().includes(searchText.toLowerCase())
         )
-      : teamMembers;
-  }, [teamMembers, searchText]);
+      : teamMemberList;
+  }, [teamMemberList, searchText]);
 
   const onCheckboxChange = useCallback((value: string) => {
     setSelectedFilters((prev) => {

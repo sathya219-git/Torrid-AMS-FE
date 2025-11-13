@@ -1,17 +1,20 @@
 import { Accordion, Checkbox, Text } from "@mantine/core";
 import axios from "axios";
 import { useAtom } from "jotai";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { List, RowComponentProps } from "react-window";
-import { selectedCategories } from "../../store/filterStore";
+import { categories, selectedCategories } from "../../store/filterStore";
 import "./category.css";
 import { CategoryItem } from "./category.interface";
 
 export default function Category() {
+  const [categoryList, setCategories] = useAtom(categories);
   const [selectedFilters, setSelectedFilters] = useAtom(selectedCategories);
-  const [categories, setCategories] = useState<CategoryItem[]>([]);
 
   useEffect(() => {
+    if (categoryList.length > 0) {
+      return;
+    }
     axios
       .get("http://localhost:5092/api/Incident/categorycountbygroup")
       .then((res) => {
@@ -25,7 +28,7 @@ export default function Category() {
   }, []);
 
   const selectAll = useMemo(() => {
-    return selectedFilters.length === categories.length;
+    return selectedFilters.length === categoryList.length;
   }, [selectedFilters, categories]);
 
   const onCheckboxChange = useCallback(
@@ -40,7 +43,7 @@ export default function Category() {
   );
 
   const selectAllCategories = useCallback(() => {
-    setSelectedFilters(categories.map((c) => c.categoryName));
+    setSelectedFilters(categoryList.map((c) => c.categoryName));
   }, [categories]);
 
   const deSelectAllCategories = useCallback(() => {
@@ -76,9 +79,9 @@ export default function Category() {
 
             <List
               rowComponent={CategoryComponent}
-              rowCount={categories.length}
+              rowCount={categoryList.length}
               rowHeight={37}
-              rowProps={{ categories, onCheckboxChange, selectedFilters }}
+              rowProps={{ categoryList, onCheckboxChange, selectedFilters }}
               className="category-scroll"
             />
           </div>
@@ -90,27 +93,27 @@ export default function Category() {
 
 function CategoryComponent({
   index,
-  categories,
+  categoryList,
   onCheckboxChange,
   selectedFilters,
   style,
 }: RowComponentProps<{
-  categories: CategoryItem[];
+  categoryList: CategoryItem[];
   onCheckboxChange: (value: string) => void;
   selectedFilters: string[];
 }>) {
   return (
     <div
       className="category-checkbox"
-      key={categories[index].categoryName}
+      key={categoryList[index].categoryName}
       style={style}
     >
       <Checkbox
-        label={categories[index].categoryName}
-        onChange={() => onCheckboxChange(categories[index].categoryName)}
-        checked={selectedFilters.includes(categories[index].categoryName)}
+        label={categoryList[index].categoryName}
+        onChange={() => onCheckboxChange(categoryList[index].categoryName)}
+        checked={selectedFilters.includes(categoryList[index].categoryName)}
       />
-      <Text c="dimmed">{categories[index].incidentCount}</Text>
+      <Text c="dimmed">{categoryList[index].incidentCount}</Text>
     </div>
   );
 }

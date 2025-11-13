@@ -2,16 +2,20 @@ import { Accordion, Checkbox, Collapse, Text } from "@mantine/core";
 import axios from "axios";
 import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { selectedGroups } from "../../store/filterStore";
+import { groups, selectedGroups } from "../../store/filterStore";
 import { AssignmentGroupItem } from "./assignment-group.interface";
 import "./assignmentGroup.css";
 
 export default function AssignmentGroup() {
+  const [assignmentGroups, setAssignmentGroups] = useAtom(groups);
   const [selectedFilters, setSelectedFilters] = useAtom(selectedGroups);
+
   const [opened, setOpened] = useState(false);
-  const [assignmentGroups, setAssignmentGroups] = useState<string[]>([]);
 
   useEffect(() => {
+    if (assignmentGroups.length > 0) {
+      return;
+    }
     axios
       .get("http://localhost:5092/api/Incident/assignmentgroups")
       .then((res) => {
