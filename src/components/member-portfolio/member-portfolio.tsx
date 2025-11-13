@@ -6,6 +6,7 @@ import backward from "../../assets/backward.png";
 import forward from "../../assets/forward.png";
 import { appliedFilter } from "../../store/filterStore";
 import { buildFilterQuery } from "../../utils/queryBuilder";
+import { TeamMembersColumnConfig } from "./member-portfolio.constants";
 import "./member-portfolio.css";
 import {
   MemberDetails,
@@ -92,16 +93,6 @@ export default function MemberPortfolio() {
     [sortOrder, sortBy]
   );
 
-  const columns = [
-    { label: "Incident Count", key: "totalCount" },
-    { label: "Name", key: "name" },
-    { label: "P1-Critical", key: "p1" },
-    { label: "P2-High", key: "p2" },
-    { label: "P3-Moderate", key: "p3" },
-    { label: "P4-Low", key: "p4" },
-    { label: "Actual Resolved Time", key: "actualResolvedTime" },
-  ];
-
   return (
     <div className="team-portfolio-container">
       {/* Header */}
@@ -119,7 +110,7 @@ export default function MemberPortfolio() {
         {/* Table Header */}
         <div className="member-card header-row">
           <div className="metrics-grid">
-            {columns.map((col) => (
+            {TeamMembersColumnConfig.map((col) => (
               <div
                 key={col.key}
                 className="metric-item sortable"
