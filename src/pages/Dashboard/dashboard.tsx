@@ -1,25 +1,31 @@
 import "./dashboard.css";
 import Header from "../../components/Header/header";
-
 import FilterCollapse from "../../components/FilterCollapse/filterCollapse";
 import FilterResult from "../../components/FilterResult/filterResult";
 import MainHeader from "../../components/MainHeader/mainHeader";
-import { useState } from "react";
 import UploadReport from "../../components/UploadReport/UploadReport";
+import { useEffect } from "react";
+import { useAtom } from "jotai";
+import { tabValue } from "../../store/filterStore";
 
 export default function Dashboard() {
-  const [activeTab, setActiveTab] = useState<string>("dashboard");
+  const [tab, setTab] = useAtom(tabValue); // ✅ Jotai atom (true/false)
 
-  // This wrapper handles Mantine's null case safely
-  const handleTabChange = (value: string | null) => {
-    if (value) setActiveTab(value);
+  // 🧠 Map atom (boolean) → tab name
+  const activeTab = tab ? "dashboard" : "Upload-Report";
+
+  // 🧩 Handle tab change from UI
+  const handleTabChange = (value:any) => {
+    if (value) {
+      setTab(value === "dashboard"); // ✅ update atom based on tab
+      console.log("Atom value changed:", value === "dashboard");
+    }
   };
 
   return (
     <div className="main">
       <MainHeader activeTab={activeTab} onTabChange={handleTabChange} />
-
-      {activeTab === "dashboard" && (
+      {tab ? (
         <>
           <div className="page-header">
             <Header />
@@ -29,9 +35,9 @@ export default function Dashboard() {
             <FilterResult />
           </div>
         </>
+      ) : (
+        <UploadReport />
       )}
-
-      {activeTab === "Upload-Report" && <UploadReport />}
     </div>
   );
 }

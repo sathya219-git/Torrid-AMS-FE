@@ -11,15 +11,15 @@ export default function BreachedListFilter() {
   const [loading, setLoading] = useState(false);
 
   const actualResolvedTimes = [
-    { time: ">= 12 hrs", value: "12 hours" },
-    { time: "12–23 hrs", value: "BETWEEN_12_23" },
-    { time: ">= 24 hrs", value: "24 hours" },
+    { time: ">= 12 hrs", value: ">=12h" },
+    { time: ">= 24 hrs", value: ">=24h" },
+    { time: ">=36 hrs", value: ">=36h" },
   ];
-
+ 
   const breachSLAStatus = [
-    { status: ">= 12 hrs", value: "12 hours" },
-    { status: ">= 30 hrs", value: "30 hours" },
-    { status: ">= 1 day", value: "1 days" },
+    { status: ">= 12 hrs", value: ">=12h" },
+    { status: ">= 30 hrs", value: ">=30h" },
+    { status: ">= 1 day", value: ">=1d" },
   ];
 
   const toggleValue = (key: keyof BreachFilters, value: string) => {

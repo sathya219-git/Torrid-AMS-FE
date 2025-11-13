@@ -45,6 +45,10 @@ body {
   color: black;
   white-space: nowrap;
 }
+.m_38a85659
+{
+  min-height:auto !important;
+}
 
 .controls select {
   padding: 8px 12px;

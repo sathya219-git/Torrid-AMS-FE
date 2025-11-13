@@ -228,6 +228,10 @@ body {
   /* background-color: red; */
   flex-direction: row;
 }
+.dashboard-container.breach{
+  /* background-color: red; */
+  flex-direction: row;
+}
 
 .first-div.full {
   /* background-color: red; */
@@ -350,9 +354,13 @@ body {
 .card.closed {
   background-color: #d7f7fd;
 }
+.card.breach
+{
+  background-color: #f15f6175;
+}
 
 .card-icon {
-  width: 60px;
+  width: 69px;
   height: 60px;
   border-radius: 30px;
   padding: 3px 5px 3px 5px;
@@ -379,7 +387,9 @@ body {
 .card-icon.closed {
   background-color: white;
 }
-
+.card-icon.breach {
+  background-color: white;
+}
 .card-content {
   width: 70%;
   display: flex;

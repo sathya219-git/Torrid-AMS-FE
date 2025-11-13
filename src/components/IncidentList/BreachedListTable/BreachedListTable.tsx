@@ -206,6 +206,7 @@ export default function BreachedListTable({ priority }: { priority: string }) {
                 <span> {renderSortIcon("category")} </span>
               </div>
             </Table.Th>
+            
 
             <Table.Th>
               <div

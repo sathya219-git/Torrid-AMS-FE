@@ -2,6 +2,9 @@ import { atom } from "jotai";
 
 export const filterState = atom(true);
 
+export const tabValue = atom(true);
+
+
 export interface PaginatedRequest {
   PageNumber: number;
   PageSize: number;

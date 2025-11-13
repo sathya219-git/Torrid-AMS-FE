@@ -12,12 +12,12 @@ export default function P3Moderate() {
         </Accordion.Control>
         <Accordion.Panel>
           <div className="p3-search">
-            <Input
+            {/* <Input
               className=""
               placeholder="Search incidents..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-            />
+            /> */}
           </div>
           <IncidentTable priority="3 - Moderate" search={search} />
         </Accordion.Panel>

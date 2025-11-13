@@ -12,12 +12,12 @@ export default function P4Low() {
       </Accordion.Control>
       <Accordion.Panel>
         <div className="p4-search">
-          <Input
+          {/* <Input
             className=""
             placeholder="Search incidents..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-          />
+          /> */}
         </div>
         <IncidentTable priority="4 - Low" search={search} />
       </Accordion.Panel>
