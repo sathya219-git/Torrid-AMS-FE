@@ -3,16 +3,20 @@ import SearchIcon from "@mui/icons-material/Search";
 import axios from "axios";
 import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { selectedFilter } from "../../store/filterStore";
+import { List, RowComponentProps } from "react-window";
+import { selectedTeamMembers, teamMembers } from "../../store/filterStore";
 import { TeamMember } from "./team-members.interface";
 import "./teamMembers.css";
 
 export default function TeamMembers() {
-  const [filters, setFilters] = useAtom(selectedFilter);
+  const [teamMemberList, setTeamMembers] = useAtom(teamMembers);
+  const [selectedFilters, setSelectedFilters] = useAtom(selectedTeamMembers);
   const [searchText, setSearchText] = useState("");
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
 
   useEffect(() => {
+    if (teamMemberList.length > 0) {
+      return;
+    }
     axios
       .get("http://localhost:5092/api/Incident/nameandcountbypriority")
       .then((res) => {
@@ -26,19 +30,18 @@ export default function TeamMembers() {
 
   const filteredMembers = useMemo(() => {
     return searchText
-      ? teamMembers.filter((member) =>
-          member.name?.toLowerCase().includes(searchText.toLowerCase())
+      ? teamMemberList.filter((member) =>
+          member.name.toLowerCase().includes(searchText.toLowerCase())
         )
-      : teamMembers;
-  }, [teamMembers, searchText]);
+      : teamMemberList;
+  }, [teamMemberList, searchText]);
 
   const onCheckboxChange = useCallback((value: string) => {
-    setFilters((prev) => ({
-      ...prev,
-      AssignedToName: prev.AssignedToName.includes(value)
-        ? prev.AssignedToName.filter((v) => v !== value)
-        : [...prev.AssignedToName, value],
-    }));
+    setSelectedFilters((prev) => {
+      return prev.includes(value)
+        ? prev.filter((v) => v !== value)
+        : [...prev, value];
+    });
   }, []);
 
   return (
@@ -57,18 +60,13 @@ export default function TeamMembers() {
             />
           </div>
 
-          <div className="team-member-scroll">
-            {filteredMembers.map((teamMember) => (
-              <div className="team-member-checkbox" key={teamMember.name}>
-                <Checkbox
-                  label={teamMember.name}
-                  onChange={() => onCheckboxChange(teamMember.name)}
-                  checked={filters.AssignedToName.includes(teamMember.name)}
-                />
-                <Text c="dimmed">{teamMember.totalCount}</Text>
-              </div>
-            ))}
-          </div>
+          <List
+            rowComponent={AssignedTeamMember}
+            rowCount={filteredMembers.length}
+            rowHeight={37}
+            rowProps={{ filteredMembers, onCheckboxChange, selectedFilters }}
+            className="team-member-scroll"
+          />
 
           {searchText && filteredMembers.length === 0 && (
             <Text c="dimmed" size="sm">
@@ -78,5 +76,32 @@ export default function TeamMembers() {
         </Accordion.Panel>
       </Accordion.Item>
     </Accordion>
+  );
+}
+
+function AssignedTeamMember({
+  index,
+  filteredMembers,
+  onCheckboxChange,
+  selectedFilters,
+  style,
+}: RowComponentProps<{
+  filteredMembers: TeamMember[];
+  onCheckboxChange: (value: string) => void;
+  selectedFilters: string[];
+}>) {
+  return (
+    <div
+      className="team-member-checkbox"
+      key={filteredMembers[index].name}
+      style={style}
+    >
+      <Checkbox
+        label={filteredMembers[index].name}
+        onChange={() => onCheckboxChange(filteredMembers[index].name)}
+        checked={selectedFilters.includes(filteredMembers[index].name)}
+      />
+      <Text c="dimmed">{filteredMembers[index].totalCount}</Text>
+    </div>
   );
 }

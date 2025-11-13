@@ -1,63 +1,123 @@
-import { useAtomValue, useSetAtom } from "jotai";
-import "./filterCategory.css";
 import { Card } from "@mantine/core";
+import { useAtomValue, useSetAtom } from "jotai";
+import { useCallback } from "react";
+import { FilterChip, FilterState } from "../../store/filter-store.interface";
 import {
   appliedFilter,
-  FilterChip,
   filterChips,
   filterState,
-  FilterState,
   resetEnabled,
-  selectedFilter,
+  selectedCategories,
+  selectedFromDate,
+  selectedGroups,
+  selectedStatus,
+  selectedTeamMembers,
+  selectedToDate,
 } from "../../store/filterStore";
-import { colors } from "@mui/material";
+import "./filterCategory.css";
 
 export default function FilterCategory() {
-  const appliedFilterChips = useAtomValue(filterChips);
+  const setSelectedGroups = useSetAtom(selectedGroups);
+  const setSelectedFromDate = useSetAtom(selectedFromDate);
+  const setSelectedToDate = useSetAtom(selectedToDate);
+  const setSelectedCategories = useSetAtom(selectedCategories);
+  const setSelectedStatus = useSetAtom(selectedStatus);
+  const setSelectedTeamMembers = useSetAtom(selectedTeamMembers);
+
   const setAppliedFilters = useSetAtom(appliedFilter);
-  const setSelectedFilters = useSetAtom(selectedFilter);
-  const activeFilters = useAtomValue(resetEnabled);
+  const appliedFilterChips = useAtomValue(filterChips);
+  const hasActiveFilters = useAtomValue(resetEnabled);
   const filterOpened = useAtomValue(filterState);
 
-  const clearAll = () => {
+  const clearAll = useCallback(() => {
     const clearedState: FilterState = {
       AssignmentGroup: [],
       FromDate: null,
       ToDate: null,
       Category: [],
-      Priority: [],
       State: [],
       AssignedToName: [],
     };
     setAppliedFilters(clearedState);
-    setSelectedFilters(clearedState);
-  };
 
-  const handleRemoveFilter = (chip: FilterChip) => {
+    setSelectedGroups([]);
+    setSelectedFromDate(null);
+    setSelectedToDate(null);
+    setSelectedCategories([]);
+    setSelectedStatus([]);
+    setSelectedTeamMembers([]);
+  }, []);
+
+  const handleRemoveFilter = useCallback((chip: FilterChip) => {
     setAppliedFilters((prev) => getUpdatedFilterState(prev, chip));
-    setSelectedFilters((prev) => getUpdatedFilterState(prev, chip));
-  };
+    updateFilterState(chip);
+  }, []);
 
-  const getUpdatedFilterState = (prev: FilterState, chip: FilterChip) => {
+  const updateFilterState = useCallback((chip: FilterChip) => {
     switch (chip.key) {
       case "AssignmentGroup":
-        return { ...prev, AssignmentGroup: prev.AssignmentGroup.filter(v => v !== chip.value) };
+        setSelectedGroups((prev) => {
+          return prev.filter((v) => v !== chip.value);
+        });
+        break;
       case "Category":
-        return { ...prev, Category: prev.Category.filter(v => v !== chip.value) };
+        setSelectedCategories((prev) => {
+          return prev.filter((v) => v !== chip.value);
+        });
+        break;
       case "FromDate":
-        return { ...prev, FromDate: null };
+        setSelectedFromDate(null);
+        break;
       case "ToDate":
-        return { ...prev, ToDate: null };
-      case "Priority":
-        return { ...prev, Priority: prev.Priority.filter(v => v !== chip.value) };
+        setSelectedToDate(null);
+        break;
       case "State":
-        return { ...prev, State: prev.State.filter(v => v !== chip.value) };
+        setSelectedStatus((prev) => {
+          return prev.filter((v) => v !== chip.value);
+        });
+        break;
       case "AssignedToName":
-        return { ...prev, AssignedToName: prev.AssignedToName.filter(v => v !== chip.value) };
+        setSelectedTeamMembers((prev) => {
+          return prev.filter((v) => v !== chip.value);
+        });
+        break;
       default:
-        return prev;
+        break;
     }
-  };
+  }, []);
+
+  const getUpdatedFilterState = useCallback(
+    (prev: FilterState, chip: FilterChip) => {
+      switch (chip.key) {
+        case "AssignmentGroup":
+          return {
+            ...prev,
+            AssignmentGroup: prev.AssignmentGroup.filter(
+              (v) => v !== chip.value
+            ),
+          };
+        case "Category":
+          return {
+            ...prev,
+            Category: prev.Category.filter((v) => v !== chip.value),
+          };
+        case "FromDate":
+          return { ...prev, FromDate: null };
+        case "ToDate":
+          return { ...prev, ToDate: null };
+        case "State":
+          return { ...prev, State: prev.State.filter((v) => v !== chip.value) };
+        case "AssignedToName":
+          return {
+            ...prev,
+            AssignedToName: prev.AssignedToName.filter((v) => v !== chip.value),
+          };
+        default:
+          return prev;
+      }
+    },
+    []
+  );
 
   return (
     <Card
@@ -67,7 +127,9 @@ export default function FilterCategory() {
       <Card.Section inheritPadding>
         <div className="selected-filter">
           <div className="filtered-results">
-            <h1 style={{color:"#333B69",paddingLeft:"10px"}}>Filtered Results</h1>
+            <h1 style={{ color: "#333B69", paddingLeft: "10px" }}>
+              Filtered Results
+            </h1>
             <div className="filter-tags">
               {appliedFilterChips.map((chip) => (
                 <div className="tag" key={chip.value}>
@@ -80,7 +142,7 @@ export default function FilterCategory() {
                   </button>
                 </div>
               ))}
-              {activeFilters && (
+              {hasActiveFilters && (
                 <span className="clear-all" onClick={clearAll}>
                   Clear All
                 </span>

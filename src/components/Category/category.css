@@ -10,7 +10,7 @@
   row-gap: 12px;
 }
 .category-scroll {
-  max-height: 200px; /* adjust height as you need */
+  max-height: 200px !important;
   overflow-y: auto;
   margin-top: 8px;
   padding-right: 8px;

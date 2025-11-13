@@ -1,17 +1,20 @@
 import { Accordion, Checkbox, Text } from "@mantine/core";
 import axios from "axios";
 import { useAtom } from "jotai";
-import { useCallback, useEffect, useState } from "react";
-import { selectedFilter } from "../../store/filterStore";
+import { useCallback, useEffect, useMemo } from "react";
+import { List, RowComponentProps } from "react-window";
+import { categories, selectedCategories } from "../../store/filterStore";
 import "./category.css";
 import { CategoryItem } from "./category.interface";
 
 export default function Category() {
-  const [filters, setFilters] = useAtom(selectedFilter);
-  const [selectAll, setSelectAll] = useState(false);
-  const [categories, setCategories] = useState<CategoryItem[]>([]);
+  const [categoryList, setCategories] = useAtom(categories);
+  const [selectedFilters, setSelectedFilters] = useAtom(selectedCategories);
 
   useEffect(() => {
+    if (categoryList.length > 0) {
+      return;
+    }
     axios
       .get("http://localhost:5092/api/Incident/categorycountbygroup")
       .then((res) => {
@@ -24,29 +27,27 @@ export default function Category() {
       });
   }, []);
 
+  const selectAll = useMemo(() => {
+    return selectedFilters.length === categoryList.length;
+  }, [selectedFilters, categories]);
+
   const onCheckboxChange = useCallback(
     (value: string) => {
-      setFilters((prev) => {
-        const updatedCategories = prev.Category.includes(value)
-          ? prev.Category.filter((v) => v !== value)
-          : [...prev.Category, value];
-
-        setSelectAll(updatedCategories.length === categories.length);
-        return { ...prev, Category: updatedCategories };
+      setSelectedFilters((prev) => {
+        return prev.includes(value)
+          ? prev.filter((v) => v !== value)
+          : [...prev, value];
       });
     },
     [categories]
   );
 
   const selectAllCategories = useCallback(() => {
-    const allCategoryNames = categories.map((c) => c.categoryName);
-    setFilters((prev) => ({ ...prev, Category: allCategoryNames }));
-    setSelectAll(true);
+    setSelectedFilters(categoryList.map((c) => c.categoryName));
   }, [categories]);
 
   const deSelectAllCategories = useCallback(() => {
-    setFilters((prev) => ({ ...prev, Category: [] }));
-    setSelectAll(false);
+    setSelectedFilters([]);
   }, []);
 
   const onSelectAll = useCallback(() => {
@@ -56,12 +57,6 @@ export default function Category() {
       selectAllCategories();
     }
   }, [selectAll]);
-
-  useEffect(() => {
-    if (filters.Category.length === 0) {
-      setSelectAll(false);
-    }
-  }, [filters]);
 
   return (
     <Accordion
@@ -82,22 +77,43 @@ export default function Category() {
               />
             </div>
 
-            {/* Scrollable container for all categories */}
-            <div className="category-scroll">
-              {categories.map((category) => (
-                <div className="category-checkbox" key={category.categoryName}>
-                  <Checkbox
-                    label={category.categoryName}
-                    onChange={() => onCheckboxChange(category.categoryName)}
-                    checked={filters.Category.includes(category.categoryName)}
-                  />
-                  <Text c="dimmed">{category.incidentCount}</Text>
-                </div>
-              ))}
-            </div>
+            <List
+              rowComponent={CategoryComponent}
+              rowCount={categoryList.length}
+              rowHeight={37}
+              rowProps={{ categoryList, onCheckboxChange, selectedFilters }}
+              className="category-scroll"
+            />
           </div>
         </Accordion.Panel>
       </Accordion.Item>
     </Accordion>
+  );
+}
+
+function CategoryComponent({
+  index,
+  categoryList,
+  onCheckboxChange,
+  selectedFilters,
+  style,
+}: RowComponentProps<{
+  categoryList: CategoryItem[];
+  onCheckboxChange: (value: string) => void;
+  selectedFilters: string[];
+}>) {
+  return (
+    <div
+      className="category-checkbox"
+      key={categoryList[index].categoryName}
+      style={style}
+    >
+      <Checkbox
+        label={categoryList[index].categoryName}
+        onChange={() => onCheckboxChange(categoryList[index].categoryName)}
+        checked={selectedFilters.includes(categoryList[index].categoryName)}
+      />
+      <Text c="dimmed">{categoryList[index].incidentCount}</Text>
+    </div>
   );
 }
