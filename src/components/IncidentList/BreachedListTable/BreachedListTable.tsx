@@ -1,18 +1,17 @@
 import { Table } from "@mantine/core";
-import "./BreachedListTable.css";
-import { BsList } from "react-icons/bs";
-import { FaSortAmountDownAlt } from "react-icons/fa";
-import { FaSortAmountUp } from "react-icons/fa";
-import backward from "../../../assets/backward.png";
-import forward from "../../../assets/forward.png";
-import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAtomValue } from "jotai";
+import { useEffect, useState } from "react";
+import { BsList } from "react-icons/bs";
+import { FaSortAmountDownAlt, FaSortAmountUp } from "react-icons/fa";
+import backward from "../../../assets/backward.png";
+import forward from "../../../assets/forward.png";
 import {
   appliedFilter,
   breachFiltersAtom,
   FilterState,
 } from "../../../store/filterStore";
+import "./BreachedListTable.css";
 
 type BreachedIncidents = {
   incidentNumber: string;
@@ -212,7 +211,7 @@ export default function BreachedListTable({ priority }: { priority: string }) {
                 className="bl-table-headers"
                 onClick={() => handleSort("actualResolvedTime")}
               >
-                <span> Avg Resolution Time </span>
+                <span> Actual Resolved Time </span>
                 <span> {renderSortIcon("actualResolvedTime")} </span>
               </div>
             </Table.Th>

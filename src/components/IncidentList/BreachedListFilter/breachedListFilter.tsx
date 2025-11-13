@@ -1,9 +1,9 @@
-import { useAtom } from "jotai";
-import "./breachedListFilter.css";
 import { Accordion, Checkbox, Text } from "@mantine/core";
-import { BreachFilters, breachFiltersAtom } from "../../../store/filterStore";
-import { useEffect, useState } from "react";
 import axios from "axios";
+import { useAtom } from "jotai";
+import { useEffect, useState } from "react";
+import { BreachFilters, breachFiltersAtom } from "../../../store/filterStore";
+import "./breachedListFilter.css";
 
 export default function BreachedListFilter() {
   const [breachFilters, setBreachFilters] = useAtom(breachFiltersAtom);
@@ -11,15 +11,15 @@ export default function BreachedListFilter() {
   const [loading, setLoading] = useState(false);
 
   const actualResolvedTimes = [
-    { time: ">= 12 hrs", value: "12 hours" },
-    { time: "12–23 hrs", value: "BETWEEN_12_23" },
-    { time: ">= 24 hrs", value: "24 hours" },
+    { time: ">= 12 hrs", value: ">=12h" },
+    { time: ">= 24 hrs", value: ">=24h" },
+    { time: ">=36 hrs", value: ">=36h" },
   ];
 
   const breachSLAStatus = [
-    { status: ">= 12 hrs", value: "12 hours" },
-    { status: ">= 30 hrs", value: "30 hours" },
-    { status: ">= 1 day", value: "1 days" },
+    { status: ">= 12 hrs", value: ">=12h" },
+    { status: ">= 30 hrs", value: ">=30h" },
+    { status: ">= 1 day", value: ">=1d" },
   ];
 
   const toggleValue = (key: keyof BreachFilters, value: string) => {
@@ -92,7 +92,7 @@ export default function BreachedListFilter() {
 
             <div>
               <Text fw={500} mb="xs">
-                Average Resolved Time
+                Actual Resolved Time
               </Text>
               <div className="incident-scroll">
                 {actualResolvedTimes.map((item) => (
