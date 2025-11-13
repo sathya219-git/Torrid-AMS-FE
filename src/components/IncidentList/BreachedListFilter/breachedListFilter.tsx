@@ -13,7 +13,7 @@ export default function BreachedListFilter() {
   const actualResolvedTimes = [
     { time: ">= 12 hrs", value: ">=12h" },
     { time: ">= 24 hrs", value: ">=24h" },
-    { time: ">=36 hrs", value: ">=36h" },
+    { time: ">= 36 hrs", value: ">=36h" },
   ];
 
   const breachSLAStatus = [

@@ -3,7 +3,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import axios from "axios";
 import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { selectedFilter } from "../../store/filterStore";
+import { List, RowComponentProps } from "react-window";
+import { FilterState, selectedFilter } from "../../store/filterStore";
 import { TeamMember } from "./team-members.interface";
 import "./teamMembers.css";
 
@@ -57,18 +58,13 @@ export default function TeamMembers() {
             />
           </div>
 
-          <div className="team-member-scroll">
-            {filteredMembers.map((teamMember) => (
-              <div className="team-member-checkbox" key={teamMember.name}>
-                <Checkbox
-                  label={teamMember.name}
-                  onChange={() => onCheckboxChange(teamMember.name)}
-                  checked={filters.AssignedToName.includes(teamMember.name)}
-                />
-                <Text c="dimmed">{teamMember.totalCount}</Text>
-              </div>
-            ))}
-          </div>
+          <List
+            rowComponent={AssignedTeamMember}
+            rowCount={teamMembers.length}
+            rowHeight={37}
+            rowProps={{ teamMembers, onCheckboxChange, filters }}
+            className="team-member-scroll"
+          />
 
           {searchText && filteredMembers.length === 0 && (
             <Text c="dimmed" size="sm">
@@ -78,5 +74,32 @@ export default function TeamMembers() {
         </Accordion.Panel>
       </Accordion.Item>
     </Accordion>
+  );
+}
+
+function AssignedTeamMember({
+  index,
+  teamMembers,
+  onCheckboxChange,
+  filters,
+  style,
+}: RowComponentProps<{
+  teamMembers: TeamMember[];
+  onCheckboxChange: (value: string) => void;
+  filters: FilterState;
+}>) {
+  return (
+    <div
+      className="team-member-checkbox"
+      key={teamMembers[index].name}
+      style={style}
+    >
+      <Checkbox
+        label={teamMembers[index].name}
+        onChange={() => onCheckboxChange(teamMembers[index].name)}
+        checked={filters.AssignedToName.includes(teamMembers[index].name)}
+      />
+      <Text c="dimmed">{teamMembers[index].totalCount}</Text>
+    </div>
   );
 }
