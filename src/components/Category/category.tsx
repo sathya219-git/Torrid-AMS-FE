@@ -1,15 +1,14 @@
 import { Accordion, Checkbox, Text } from "@mantine/core";
 import axios from "axios";
 import { useAtom } from "jotai";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { List, RowComponentProps } from "react-window";
-import { FilterState, selectedFilter } from "../../store/filterStore";
+import { selectedCategories } from "../../store/filterStore";
 import "./category.css";
 import { CategoryItem } from "./category.interface";
 
 export default function Category() {
-  const [filters, setFilters] = useAtom(selectedFilter);
-  const [selectAll, setSelectAll] = useState(false);
+  const [selectedFilters, setSelectedFilters] = useAtom(selectedCategories);
   const [categories, setCategories] = useState<CategoryItem[]>([]);
 
   useEffect(() => {
@@ -25,29 +24,27 @@ export default function Category() {
       });
   }, []);
 
+  const selectAll = useMemo(() => {
+    return selectedFilters.length === categories.length;
+  }, [selectedFilters, categories]);
+
   const onCheckboxChange = useCallback(
     (value: string) => {
-      setFilters((prev) => {
-        const updatedCategories = prev.Category.includes(value)
-          ? prev.Category.filter((v) => v !== value)
-          : [...prev.Category, value];
-
-        setSelectAll(updatedCategories.length === categories.length);
-        return { ...prev, Category: updatedCategories };
+      setSelectedFilters((prev) => {
+        return prev.includes(value)
+          ? prev.filter((v) => v !== value)
+          : [...prev, value];
       });
     },
     [categories]
   );
 
   const selectAllCategories = useCallback(() => {
-    const allCategoryNames = categories.map((c) => c.categoryName);
-    setFilters((prev) => ({ ...prev, Category: allCategoryNames }));
-    setSelectAll(true);
+    setSelectedFilters(categories.map((c) => c.categoryName));
   }, [categories]);
 
   const deSelectAllCategories = useCallback(() => {
-    setFilters((prev) => ({ ...prev, Category: [] }));
-    setSelectAll(false);
+    setSelectedFilters([]);
   }, []);
 
   const onSelectAll = useCallback(() => {
@@ -57,12 +54,6 @@ export default function Category() {
       selectAllCategories();
     }
   }, [selectAll]);
-
-  useEffect(() => {
-    if (filters.Category.length === 0) {
-      setSelectAll(false);
-    }
-  }, [filters]);
 
   return (
     <Accordion
@@ -87,7 +78,7 @@ export default function Category() {
               rowComponent={CategoryComponent}
               rowCount={categories.length}
               rowHeight={37}
-              rowProps={{ categories, onCheckboxChange, filters }}
+              rowProps={{ categories, onCheckboxChange, selectedFilters }}
               className="category-scroll"
             />
           </div>
@@ -101,12 +92,12 @@ function CategoryComponent({
   index,
   categories,
   onCheckboxChange,
-  filters,
+  selectedFilters,
   style,
 }: RowComponentProps<{
   categories: CategoryItem[];
   onCheckboxChange: (value: string) => void;
-  filters: FilterState;
+  selectedFilters: string[];
 }>) {
   return (
     <div
@@ -117,7 +108,7 @@ function CategoryComponent({
       <Checkbox
         label={categories[index].categoryName}
         onChange={() => onCheckboxChange(categories[index].categoryName)}
-        checked={filters.Category.includes(categories[index].categoryName)}
+        checked={selectedFilters.includes(categories[index].categoryName)}
       />
       <Text c="dimmed">{categories[index].incidentCount}</Text>
     </div>

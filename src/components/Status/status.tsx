@@ -2,34 +2,33 @@ import { Accordion, Badge, Checkbox, Text } from "@mantine/core";
 import axios from "axios";
 import { useAtom } from "jotai";
 import { useCallback, useEffect, useState } from "react";
-import { selectedFilter } from "../../store/filterStore";
+import { selectedStatus } from "../../store/filterStore";
 import "./status.css";
 import { StatusItem } from "./status.interface";
 
 export default function Status() {
-  const [filters, setFilters] = useAtom(selectedFilter);
-  const [statuses, setStatuses] = useState<StatusItem[]>([]);
+  const [selectedFilters, setSelectedFilters] = useAtom(selectedStatus);
+  const [statusList, setStatusList] = useState<StatusItem[]>([]);
 
   useEffect(() => {
     axios
       .get("http://localhost:5092/api/Incident/statuscountbypriority")
       .then((res) => {
         const data: StatusItem[] = Array.isArray(res.data) ? res.data : [];
-        setStatuses(data);
+        setStatusList(data);
       })
       .catch((err) => {
         console.error("Error fetching status:", err);
-        setStatuses([]);
+        setStatusList([]);
       });
   }, []);
 
   const statusChanges = useCallback((value: string) => {
-    setFilters((prev) => ({
-      ...prev,
-      State: prev.State.includes(value)
-        ? prev.State.filter((v) => v !== value)
-        : [...prev.State, value],
-    }));
+    setSelectedFilters((prev) => {
+      return prev.includes(value)
+        ? prev.filter((v) => v !== value)
+        : [...prev, value];
+    });
   }, []);
 
   return (
@@ -40,8 +39,8 @@ export default function Status() {
         </Accordion.Control>
         <Accordion.Panel>
           <div className="status-content">
-            {statuses.map((status) => {
-              const isSelected = filters.State.includes(status.status);
+            {statusList.map((status) => {
+              const isSelected = selectedFilters.includes(status.status);
               return (
                 <div
                   key={status.status}

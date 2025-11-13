@@ -2,24 +2,19 @@ import { Text } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import TodayIcon from "@mui/icons-material/Today";
 import { useAtom } from "jotai";
-import { selectedFilter } from "../../store/filterStore";
+import { selectedFromDate, selectedToDate } from "../../store/filterStore";
 import "./duration.css";
 
 export default function Duration() {
-  const [filters, setFilters] = useAtom(selectedFilter);
+  const [fromDate, setSelectedFromDate] = useAtom(selectedFromDate);
+  const [toDate, setSelectedToDate] = useAtom(selectedToDate);
 
   const onFromDateChange = (value: string | null) => {
-    setFilters((prev) => ({
-      ...prev,
-      FromDate: value ? new Date(value) : null,
-    }));
+    setSelectedFromDate(value ? new Date(value) : null);
   };
 
   const onToDateChange = (value: string | null) => {
-    setFilters((prev) => ({
-      ...prev,
-      ToDate: value ? new Date(value) : null,
-    }));
+    setSelectedToDate(value ? new Date(value) : null);
   };
 
   return (
@@ -31,7 +26,7 @@ export default function Duration() {
           rightSection={<TodayIcon fontSize="medium" />}
           label="Period from date"
           placeholder="dd/mm/yyyy"
-          value={filters.FromDate}
+          value={fromDate}
           onChange={onFromDateChange}
           classNames={{ input: "date-input", root: "date-icon" }}
         ></DatePickerInput>
@@ -43,7 +38,7 @@ export default function Duration() {
           rightSection={<TodayIcon fontSize="medium" />}
           label="to date"
           placeholder="dd/mm/yyyy"
-          value={filters.ToDate}
+          value={toDate}
           onChange={onToDateChange}
           classNames={{ input: "date-input", root: "date-icon" }}
         ></DatePickerInput>
