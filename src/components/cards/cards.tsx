@@ -3,6 +3,8 @@ import { useAtomValue } from "jotai";
 import { useEffect, useState } from "react";
 import closedicon from "../../assets/closed_icon.png";
 import inprogress from "../../assets/inprogress_icon.png";
+import warning from "../../assets/warning.png";
+
 import openicon from "../../assets/open_icon.png";
 import totalincidenticon from "../../assets/total_incident_icon.png";
 import { appliedFilter, filterState } from "../../store/filterStore";
@@ -91,6 +93,7 @@ export default function Cards() {
             incidentCount={incidentSummary?.openIncidents ?? 0}
           />
           <IncidentCountCard
+          
             cssClass="progress"
             iconSrc={inprogress}
             label="In Progress"
@@ -101,6 +104,13 @@ export default function Cards() {
             iconSrc={closedicon}
             label="Closed"
             incidentCount={incidentSummary?.closedIncidents ?? 0}
+          />
+          <IncidentCountCard
+            
+            cssClass="breach"
+            iconSrc={warning}
+            label="Breach List"
+            incidentCount={incidentSummary?.inProgressIncidents ?? 0}
           />
         </div>
 

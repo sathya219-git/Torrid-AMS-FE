@@ -12,12 +12,12 @@ export default function P2High() {
       </Accordion.Control>
       <Accordion.Panel>
         <div className="p2-search">
-          <Input
+          {/* <Input
             className=""
             placeholder="Search incidents..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-          />
+          /> */}
         </div>
         <IncidentTable priority="2 - High" search={search} />
       </Accordion.Panel>

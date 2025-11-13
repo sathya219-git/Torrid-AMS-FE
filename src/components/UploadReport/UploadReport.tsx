@@ -6,6 +6,8 @@ import { GoSortAsc, GoSortDesc } from "react-icons/go";
 import backward from "../../assets/backward.png";
 import forward from "../../assets/forward.png";
 import { notifications } from "@mantine/notifications";
+import { useAtom, useAtomValue } from "jotai";
+import { tabValue } from "../../store/filterStore";
 
 interface FileDetail {
     id: number;
@@ -32,6 +34,8 @@ interface ApiResponse {
 
 const UploadReport = () => {
     const [data, setData] = useState<FileDetail[]>([]);
+    const [, setTab] = useAtom(tabValue);
+
     const [pagination, setPagination] = useState<Pagination>({
         page: 1,
         pageSize: 6,
@@ -80,7 +84,7 @@ const UploadReport = () => {
         };
 
         fetchData();
-    }, [refreshPage,sortBy, sortOrder, pagination.page, searchText]);
+    }, [refreshPage, sortBy, sortOrder, pagination.page, searchText]);
 
     // ✅ Handle column sorting
     const handleSort = (column: string) => {
@@ -132,17 +136,15 @@ const UploadReport = () => {
             notifications.hide(loadingId);
 
             if (response.ok) {
-                if(refreshPage)
-                {
+                if (refreshPage) {
                     console.log("In if");
-                    
+
                     setRefreshPage(false)
                 }
-                else
-                {
+                else {
                     console.log("In else");
-                    
-                    setRefreshPage(true )
+
+                    setRefreshPage(true)
                 }
                 console.log("SUCCESSFULLY UPLOADED");
 
@@ -246,6 +248,28 @@ const UploadReport = () => {
             );
         return <GoSortAsc className="inactive-icon" />;
     };
+    const pushToDashboard = async (id: any) => {
+        console.log("called pushhhhh");
+        try {
+            const apiUrl = `http://localhost:5092/api/files/import?uploadHistoryId=${id}`;
+            const response = await fetch(apiUrl, {
+                method: "POST",
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log("API Response:", data);
+
+            // ✅ If response is fine, set atom to true
+            setTab(true);
+            console.log("tabValue atom updated to TRUE (Dashboard view)");
+        } catch (error) {
+            console.error("Error calling API:", error);
+        }
+    };
 
     return (
 
@@ -345,7 +369,19 @@ const UploadReport = () => {
                                                             {new Date(item.uploadedDate).toLocaleString() ||
                                                                 "-"}
                                                         </td>
-                                                        <td>Show Dashboard</td>
+                                                        <td>
+                                                            <span onClick={() => pushToDashboard(item.id)}
+                                                                style={{
+                                                                    padding: "8px 16px",
+                                                                    borderRadius: "9px",
+                                                                    backgroundColor: "#abcbeeff",
+                                                                    color: "black",
+                                                                    fontWeight: "500",
+                                                                    cursor: "pointer",
+                                                                    boxShadow: "0 2px 2px rgba(0, 0, 0, 0.2)", // ✨ soft shado2
+                                                                    transition: "all 0.3s ease",
+                                                                }}>Show Dashboard</span>
+                                                        </td>
                                                     </tr>
                                                 ))
                                             ) : (

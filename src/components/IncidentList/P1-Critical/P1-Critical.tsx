@@ -12,12 +12,12 @@ export default function P1Critical() {
       </Accordion.Control>
       <Accordion.Panel>
         <div className="p1-search">
-          <Input
+          {/* <Input
             className=""
             placeholder="Search incidents..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-          />
+          /> */}
         </div>
         <IncidentTable priority="1 - Critical" search={search} />
       </Accordion.Panel>

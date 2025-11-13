@@ -11,10 +11,10 @@ import {
 } from "../../utils/queryBuilder";
 import {
   appliedFilter,
-  Incident,
   incidentAPIRequests,
   incidentAPIResponses,
 } from "../../store/filterStore";
+import { Incident } from "../../store/filter-store.interface";
 
 const CriticalIncidentsList: React.FC = () => {
   const appliedFilters = useAtomValue(appliedFilter);
@@ -31,27 +31,8 @@ const CriticalIncidentsList: React.FC = () => {
       (entry) => entry[0] === activeTab
     );
     if (entry) {
-      if (
-        entry[0] !== "All Incidents" &&
-        appliedFilters.Priority.length > 0 &&
-        !appliedFilters.Priority.includes(entry[0])
-      ) {
-        setIncidentAPIResList((prev) => {
-          const curr = { ...prev };
-          curr[activeTab] = {
-            ...curr[activeTab],
-            incidents: [],
-          };
-          return curr;
-        });
-        return;
-      }
       const params = buildIncidentsQuery(
-        {
-          ...appliedFilters,
-          Priority:
-            entry[0] === "All Incidents" ? appliedFilters.Priority : [entry[0]],
-        },
+        appliedFilters,
         entry[1]
       );
       fetch(
@@ -70,22 +51,8 @@ const CriticalIncidentsList: React.FC = () => {
 
   useEffect(() => {
     Object.keys(incidentAPIReqs).forEach((key) => {
-      if (
-        key !== "All Incidents" &&
-        appliedFilters.Priority.length > 0 &&
-        !appliedFilters.Priority.includes(key)
-      ) {
-        setTabCounts((prev) => {
-          const curr = { ...prev };
-          curr[key] = 0;
-          return curr;
-        });
-        return;
-      }
-      const filters = buildFilterQuery({
-        ...appliedFilters,
-        Priority: key === "All Incidents" ? appliedFilters.Priority : [],
-      });
+      
+      const filters = buildFilterQuery(appliedFilters);
       const priority = encodeURIComponent(key);
       const url =
         key === "All Incidents"

@@ -29,7 +29,7 @@ export default function Category() {
 
   const selectAll = useMemo(() => {
     return selectedFilters.length === categoryList.length;
-  }, [selectedFilters, categories]);
+  }, [selectedFilters, categoryList]);
 
   const onCheckboxChange = useCallback(
     (value: string) => {
@@ -39,12 +39,12 @@ export default function Category() {
           : [...prev, value];
       });
     },
-    [categories]
+    [categoryList]
   );
 
   const selectAllCategories = useCallback(() => {
     setSelectedFilters(categoryList.map((c) => c.categoryName));
-  }, [categories]);
+  }, [categoryList]);
 
   const deSelectAllCategories = useCallback(() => {
     setSelectedFilters([]);

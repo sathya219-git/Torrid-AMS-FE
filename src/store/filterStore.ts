@@ -12,6 +12,8 @@ import {
 
 export const filterState = atom(true);
 
+export const tabValue = atom(true);
+
 export const groups = atom<string[]>([]);
 export const selectedGroups = atom<string[]>([]);
 

@@ -2,8 +2,9 @@ import { Accordion, Checkbox, Text } from "@mantine/core";
 import axios from "axios";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
-import { BreachFilters, breachFiltersAtom } from "../../../store/filterStore";
+import { breachFiltersAtom } from "../../../store/filterStore";
 import "./breachedListFilter.css";
+import { BreachFilters } from "../../../store/filter-store.interface";
 
 export default function BreachedListFilter() {
   const [breachFilters, setBreachFilters] = useAtom(breachFiltersAtom);
@@ -15,7 +16,7 @@ export default function BreachedListFilter() {
     { time: ">= 24 hrs", value: ">=24h" },
     { time: ">= 36 hrs", value: ">=36h" },
   ];
-
+ 
   const breachSLAStatus = [
     { status: ">= 12 hrs", value: ">=12h" },
     { status: ">= 30 hrs", value: ">=30h" },
