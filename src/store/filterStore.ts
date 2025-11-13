@@ -1,53 +1,37 @@
 import { atom } from "jotai";
+import { CategoryItem } from "../components/Category/category.interface";
+import { StatusItem } from "../components/Status/status.interface";
+import { TeamMember } from "../components/TeamMembers/team-members.interface";
+import {
+  BreachFilters,
+  FilterChip,
+  FilterState,
+  PaginatedRequest,
+  PaginatedResponse,
+} from "./filter-store.interface";
 
 export const filterState = atom(true);
 
-export interface PaginatedRequest {
-  PageNumber: number;
-  PageSize: number;
-  SortOrder: string;
-  SortBy: string;
-  Search: string;
-}
+export const groups = atom<string[]>([]);
+export const selectedGroups = atom<string[]>([]);
 
-export interface FilterChip {
-  key:
-    | "AssignmentGroup"
-    | "FromDate"
-    | "ToDate"
-    | "Category"
-    | "Priority"
-    | "State"
-    | "AssignedToName";
-  value: string;
-}
+export const selectedFromDate = atom<Date | null>(null);
+export const selectedToDate = atom<Date | null>(null);
 
-export interface FilterState {
-  AssignmentGroup: string[];
-  FromDate: Date | null;
-  ToDate: Date | null;
-  Category: string[];
-  Priority: string[];
-  State: string[];
-  AssignedToName: string[];
-}
+export const categories = atom<CategoryItem[]>([]);
+export const selectedCategories = atom<string[]>([]);
 
-export const selectedFilter = atom<FilterState>({
-  AssignmentGroup: [],
-  FromDate: null,
-  ToDate: null,
-  Category: [],
-  Priority: [],
-  State: [],
-  AssignedToName: [],
-});
+export const status = atom<StatusItem[]>([]);
+export const selectedStatus = atom<string[]>([]);
+
+export const teamMembers = atom<TeamMember[]>([]);
+export const selectedTeamMembers = atom<string[]>([]);
 
 export const appliedFilter = atom<FilterState>({
   AssignmentGroup: [],
   FromDate: null,
   ToDate: null,
   Category: [],
-  Priority: [],
   State: [],
   AssignedToName: [],
 });
@@ -57,7 +41,6 @@ export const resetEnabled = atom((get) => {
   return (
     filter.AssignmentGroup.length > 0 ||
     filter.Category.length > 0 ||
-    filter.Priority.length > 0 ||
     filter.State.length > 0 ||
     filter.AssignedToName.length > 0 ||
     filter.FromDate !== null ||
@@ -66,15 +49,19 @@ export const resetEnabled = atom((get) => {
 });
 
 export const filterEnabled = atom((get) => {
-  const filter = get(selectedFilter);
+  const Groups = get(selectedGroups);
+  const FromDate = get(selectedFromDate);
+  const ToDate = get(selectedToDate);
+  const Categories = get(selectedCategories);
+  const Status = get(selectedStatus);
+  const TeamMembers = get(selectedTeamMembers);
   return (
-    filter.AssignmentGroup.length > 0 ||
-    filter.Category.length > 0 ||
-    filter.Priority.length > 0 ||
-    filter.State.length > 0 ||
-    filter.AssignedToName.length > 0 ||
-    filter.FromDate !== null ||
-    filter.ToDate !== null
+    Groups.length > 0 ||
+    Categories.length > 0 ||
+    Status.length > 0 ||
+    TeamMembers.length > 0 ||
+    FromDate !== null ||
+    ToDate !== null
   );
 });
 
@@ -110,14 +97,6 @@ export const filterChips = atom((get) => {
     })
   );
   chips.push(
-    ...filters.Priority.map((value) => {
-      return {
-        key: "Priority",
-        value: value,
-      } as FilterChip;
-    })
-  );
-  chips.push(
     ...filters.State.map((value) => {
       return {
         key: "State",
@@ -146,30 +125,7 @@ export const incidentAPIRequests = atom<Record<string, PaginatedRequest>>({
   },
 });
 
-export interface Incident {
-  incidentNo: string;
-  description: string;
-  category: string;
-  resolutionNotes: string;
-  state: string;
-  resolvedDateTime: string;
-}
-
-export interface PaginatedResponse {
-  pageNumber: number;
-  pageSize: number;
-  totalPages: number;
-  totalElements: number;
-  incidents: Incident[];
-}
-
 export const incidentAPIResponses = atom<Record<string, PaginatedResponse>>({});
-
-export interface BreachFilters {
-  actualResolvedTime: string[];
-  breachSLA: string[];
-  incidentId: string[];
-}
 
 export const breachFiltersAtom = atom<BreachFilters>({
   actualResolvedTime: [],

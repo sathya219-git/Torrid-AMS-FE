@@ -1,44 +1,75 @@
 import { Button, Card } from "@mantine/core";
-// import Priority from "../Priority/priority";
-import "./filter.css";
-import Category from "../Category/category";
-import AssignmentGroup from "../AssignmentGroup/assignmentGroup";
-import Status from "../Status/status";
-import TeamMembers from "../TeamMembers/teamMembers";
-import Duration from "../Duration/duration";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useCallback } from "react";
+import { FilterState } from "../../store/filter-store.interface";
 import {
   appliedFilter,
   filterEnabled,
-  FilterState,
   resetEnabled,
-  selectedFilter,
+  selectedCategories,
+  selectedFromDate,
+  selectedGroups,
+  selectedStatus,
+  selectedTeamMembers,
+  selectedToDate,
 } from "../../store/filterStore";
+import AssignmentGroup from "../AssignmentGroup/assignmentGroup";
+import Category from "../Category/category";
+import Duration from "../Duration/duration";
+import Status from "../Status/status";
+import TeamMembers from "../TeamMembers/teamMembers";
+import "./filter.css";
 
 export default function Filter() {
-  const [selectedGroups, setSelectedGroups] = useAtom(selectedFilter);
+  const [selGroups, setSelectedGroups] = useAtom(selectedGroups);
+  const [selFromDate, setSelectedFromDate] = useAtom(selectedFromDate);
+  const [selToDate, setSelectedToDate] = useAtom(selectedToDate);
+  const [selCategories, setSelectedCategories] = useAtom(selectedCategories);
+  const [selStatus, setSelectedStatus] = useAtom(selectedStatus);
+  const [selTeamMembers, setSelectedTeamMembers] = useAtom(selectedTeamMembers);
+
   const setAppliedGroups = useSetAtom(appliedFilter);
+
   const isResetEnabled = useAtomValue(resetEnabled);
   const isFilterEnabled = useAtomValue(filterEnabled);
 
-  const applyFilters = () => {
-    setAppliedGroups({ ...selectedGroups });
-  };
+  const applyFilters = useCallback(() => {
+    setAppliedGroups({
+      AssignmentGroup: selGroups,
+      FromDate: selFromDate,
+      ToDate: selToDate,
+      Category: selCategories,
+      State: selStatus,
+      AssignedToName: selTeamMembers,
+    });
+  }, [
+    selGroups,
+    selFromDate,
+    selToDate,
+    selCategories,
+    selStatus,
+    selTeamMembers,
+  ]);
 
-  const resetFilters = () => {
+  const resetFilters = useCallback(() => {
     const clearedState: FilterState = {
       AssignmentGroup: [],
       FromDate: null,
       ToDate: null,
       Category: [],
-      Priority: [],
       State: [],
       AssignedToName: [],
     };
 
-    setSelectedGroups(clearedState);
+    setSelectedGroups([]);
+    setSelectedFromDate(null);
+    setSelectedToDate(null);
+    setSelectedCategories([]);
+    setSelectedStatus([]);
+    setSelectedTeamMembers([]);
+
     setAppliedGroups(clearedState);
-  };
+  }, []);
 
   return (
     <Card padding="lg" radius="md">
@@ -53,10 +84,6 @@ export default function Filter() {
       <Card.Section pb="lg">
         <Category />
       </Card.Section>
-
-      {/* <Card.Section inheritPadding pb="lg">
-        <Priority />
-      </Card.Section> */}
 
       <Card.Section pb="lg">
         <Status />
