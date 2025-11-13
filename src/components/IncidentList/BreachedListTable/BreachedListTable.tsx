@@ -9,9 +9,9 @@ import forward from "../../../assets/forward.png";
 import {
   appliedFilter,
   breachFiltersAtom,
-  FilterState,
 } from "../../../store/filterStore";
 import "./BreachedListTable.css";
+import { FilterState } from "../../../store/filter-store.interface";
 
 type BreachedIncidents = {
   incidentNumber: string;
@@ -94,9 +94,7 @@ export default function BreachedListTable({ priority }: { priority: string }) {
       params.append("Category", appliedFilters.Category.join(","));
     }
 
-    if (appliedFilters.Priority?.length > 0) {
-      params.append("Priority", appliedFilters.Priority.join(","));
-    }
+    
 
     if (appliedFilters.State?.length > 0) {
       params.append("State", appliedFilters.State.join(","));
