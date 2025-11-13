@@ -2,7 +2,8 @@ import { Accordion, Checkbox, Text } from "@mantine/core";
 import axios from "axios";
 import { useAtom } from "jotai";
 import { useCallback, useEffect, useState } from "react";
-import { selectedFilter } from "../../store/filterStore";
+import { List, RowComponentProps } from "react-window";
+import { FilterState, selectedFilter } from "../../store/filterStore";
 import "./category.css";
 import { CategoryItem } from "./category.interface";
 
@@ -82,22 +83,43 @@ export default function Category() {
               />
             </div>
 
-            {/* Scrollable container for all categories */}
-            <div className="category-scroll">
-              {categories.map((category) => (
-                <div className="category-checkbox" key={category.categoryName}>
-                  <Checkbox
-                    label={category.categoryName}
-                    onChange={() => onCheckboxChange(category.categoryName)}
-                    checked={filters.Category.includes(category.categoryName)}
-                  />
-                  <Text c="dimmed">{category.incidentCount}</Text>
-                </div>
-              ))}
-            </div>
+            <List
+              rowComponent={CategoryComponent}
+              rowCount={categories.length}
+              rowHeight={37}
+              rowProps={{ categories, onCheckboxChange, filters }}
+              className="category-scroll"
+            />
           </div>
         </Accordion.Panel>
       </Accordion.Item>
     </Accordion>
+  );
+}
+
+function CategoryComponent({
+  index,
+  categories,
+  onCheckboxChange,
+  filters,
+  style,
+}: RowComponentProps<{
+  categories: CategoryItem[];
+  onCheckboxChange: (value: string) => void;
+  filters: FilterState;
+}>) {
+  return (
+    <div
+      className="category-checkbox"
+      key={categories[index].categoryName}
+      style={style}
+    >
+      <Checkbox
+        label={categories[index].categoryName}
+        onChange={() => onCheckboxChange(categories[index].categoryName)}
+        checked={filters.Category.includes(categories[index].categoryName)}
+      />
+      <Text c="dimmed">{categories[index].incidentCount}</Text>
+    </div>
   );
 }
