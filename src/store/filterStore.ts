@@ -6,14 +6,13 @@ import {
   BreachFilters,
   FilterChip,
   FilterState,
-  PaginatedRequest,
-  PaginatedResponse,
 } from "./filter-store.interface";
 
 export const filterState = atom(false);
 
 export const tabValue = atom(true);
 
+// Left side filters
 export const groups = atom<string[]>([]);
 export const selectedGroups = atom<string[]>([]);
 
@@ -67,6 +66,7 @@ export const filterEnabled = atom((get) => {
   );
 });
 
+// Top Filter Chips
 export const filterChips = atom((get) => {
   const filters = get(appliedFilter);
   const chips: FilterChip[] = [];
@@ -117,20 +117,30 @@ export const filterChips = atom((get) => {
   return chips;
 });
 
-export const incidentAPIRequests = atom<Record<string, PaginatedRequest>>({
-  "All Incidents": {
-    PageNumber: 1,
-    PageSize: 8,
-    SortOrder: "",
-    SortBy: "",
-    Search: "",
-  },
+export const P1BreachFilters = atom<BreachFilters>({
+  actualResolvedTime: undefined,
+  breachSLA: undefined,
+  categories: undefined,
+  assignedTo: undefined,
 });
 
-export const incidentAPIResponses = atom<Record<string, PaginatedResponse>>({});
+export const P2BreachFilters = atom<BreachFilters>({
+  actualResolvedTime: undefined,
+  breachSLA: undefined,
+  categories: undefined,
+  assignedTo: undefined,
+});
 
-export const breachFiltersAtom = atom<BreachFilters>({
-  actualResolvedTime: [],
-  breachSLA: [],
-  incidentId: [],
+export const P3BreachFilters = atom<BreachFilters>({
+  actualResolvedTime: undefined,
+  breachSLA: undefined,
+  categories: undefined,
+  assignedTo: undefined,
+});
+
+export const P4BreachFilters = atom<BreachFilters>({
+  actualResolvedTime: undefined,
+  breachSLA: undefined,
+  categories: undefined,
+  assignedTo: undefined,
 });

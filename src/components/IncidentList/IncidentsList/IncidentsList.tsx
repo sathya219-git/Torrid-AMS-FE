@@ -1,17 +1,19 @@
 import { Accordion, Tabs, Text } from "@mantine/core";
 import "./IncidentsList.css";
 import P1Critical from "../P1-Critical/P1-Critical";
-import BreachedListTable from "../BreachedListTable/BreachedListTable";
 import P2High from "../P2-High/P2-High";
 import P3Moderate from "../P3-Moderate/P3-Moderate";
 import P4Low from "../P4-Low/P4-Low";
-import BreachedListFilter from "../BreachedListFilter/breachedListFilter";
+import P1CriticalBreach from "../p1-critical-breach/p1-critical-breach";
+import P2HighBreach from "../p2-high-breach/p2-high-breach";
+import P3ModerateBreach from "../p3-moderate-breach/p3-moderate-breach";
+import P4LowBreach from "../p4-low-breach/p4-low-breach";
 
 export default function IncidentsList() {
   return (
     <div>
       <div className="inc-list-header">
-          <h1>Critical Incident List</h1>
+        <h1>Critical Incident List</h1>
       </div>
 
       <Tabs defaultValue={"P1-Critical"}>
@@ -40,17 +42,7 @@ export default function IncidentsList() {
               content: "accordion-padding",
             }}
           >
-            <Accordion.Item value={"1 - Critical"}>
-              <Accordion.Control>
-                <Text fw={700}>P1 - Critical Breach List </Text>
-              </Accordion.Control>
-              <Accordion.Panel>
-                <div>
-                  <BreachedListFilter />
-                </div>
-                <BreachedListTable priority="1 - Critical" />
-              </Accordion.Panel>
-            </Accordion.Item>
+            <P1CriticalBreach />
           </Accordion>
         </Tabs.Panel>
 
@@ -64,17 +56,7 @@ export default function IncidentsList() {
               content: "accordion-padding",
             }}
           >
-            <Accordion.Item value={"2 - High"}>
-              <Accordion.Control>
-                <Text fw={700}>P2 - High Breach List </Text>
-              </Accordion.Control>
-              <Accordion.Panel>
-                <div>
-                  <BreachedListFilter />
-                </div>
-                <BreachedListTable priority="2 - High" />
-              </Accordion.Panel>
-            </Accordion.Item>
+            <P2HighBreach />
           </Accordion>
         </Tabs.Panel>
 
@@ -88,17 +70,7 @@ export default function IncidentsList() {
               content: "accordion-padding",
             }}
           >
-            <Accordion.Item value={"3 - Moderate"}>
-              <Accordion.Control>
-                <Text fw={700}>P3 - Moderate Breach List </Text>
-              </Accordion.Control>
-              <Accordion.Panel>
-                <div>
-                  <BreachedListFilter />
-                </div>
-                <BreachedListTable priority="3 - Moderate" />
-              </Accordion.Panel>
-            </Accordion.Item>
+            <P3ModerateBreach />
           </Accordion>
         </Tabs.Panel>
 
@@ -112,17 +84,7 @@ export default function IncidentsList() {
               content: "accordion-padding",
             }}
           >
-            <Accordion.Item value={"4 - Low"}>
-              <Accordion.Control>
-                <Text fw={700}>P4 - Low Breach List </Text>
-              </Accordion.Control>
-              <Accordion.Panel>
-                <div>
-                  <BreachedListFilter />
-                </div>
-                <BreachedListTable priority="4 - Low" />
-              </Accordion.Panel>
-            </Accordion.Item>
+            <P4LowBreach />
           </Accordion>
         </Tabs.Panel>
       </Tabs>
