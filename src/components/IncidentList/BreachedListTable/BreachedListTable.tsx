@@ -108,7 +108,7 @@ export default function BreachedListTable({
     }
     const queryString = params.toString();
     return queryString ? `&${queryString}` : "";
-  }, [appliedFilters, sortField, sortOrder]);
+  }, [appliedFilters, breachFilters, sortField, sortOrder]);
 
   const handleSort = useCallback(
     (field: keyof BreachedIncidents) => {
