@@ -8,6 +8,8 @@ import {
   FilterState,
 } from "./filter-store.interface";
 
+export const ShowLoader = atom(false);
+
 export const filterState = atom(false);
 
 export const tabValue = atom(true);
