@@ -58,9 +58,6 @@ export default function IncidentTable({ priority }: { priority: string }) {
   }, []);
 
   useEffect(() => {
-    console.log(priority);
-    console.log(activeIncidentTab);
-    console.log(activeCriticalAccordion);
     if (
       activeIncidentTab !== priority ||
       activeCriticalAccordion !== priority
