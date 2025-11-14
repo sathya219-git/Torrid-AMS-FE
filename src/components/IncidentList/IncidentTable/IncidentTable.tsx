@@ -95,7 +95,7 @@ export default function IncidentTable({
   }, [appliedFilters, sortField, sortOrder]);
 
   const handleSort = useCallback((field: keyof Incident) => {
-    let order: SortOrder = "";
+    let order: SortOrder = "ASC";
     let sortBy: keyof Incident | "" = field;
 
     if (sortField === field) {

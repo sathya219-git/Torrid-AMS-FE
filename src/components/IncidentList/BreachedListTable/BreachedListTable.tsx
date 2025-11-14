@@ -106,13 +106,17 @@ export default function BreachedListTable({
     if (breachFilters.actualResolvedTime !== undefined) {
       params.append("ActualResolvedTime", breachFilters.actualResolvedTime);
     }
+    if (sortField !== "") {
+      params.append("SortBy", sortField);
+      params.append("SortOrder", sortOrder);
+    }
     const queryString = params.toString();
     return queryString ? `&${queryString}` : "";
   }, [appliedFilters, breachFilters, sortField, sortOrder]);
 
   const handleSort = useCallback(
     (field: keyof BreachedIncidents) => {
-      let order: SortOrder = "";
+      let order: SortOrder = "ASC";
       let sortBy: keyof BreachedIncidents | "" = field;
       if (sortField === field) {
         if (sortOrder === "DESC") {
