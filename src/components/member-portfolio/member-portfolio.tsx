@@ -1,4 +1,4 @@
-import { LoadingOverlay, ScrollAreaAutosize, Select } from "@mantine/core";
+import { ScrollAreaAutosize, Select } from "@mantine/core";
 import { useAtomValue } from "jotai";
 import { useCallback, useEffect, useState } from "react";
 import { GoSortAsc, GoSortDesc } from "react-icons/go";
@@ -28,10 +28,7 @@ export default function MemberPortfolio() {
   const [totalRecords, setTotalRecords] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
 
-  const [loading, setLoading] = useState(true);
-
   useEffect(() => {
-    setLoading(true);
     const query = buildFilterQuery(appliedFilters);
     let url = `http://localhost:5092/api/Incident/nameandcountbypriority`;
 
@@ -58,9 +55,6 @@ export default function MemberPortfolio() {
       .catch((err) => {
         console.error("Error fetching member summary:", err);
         setMembers([]);
-      })
-      .finally(() => {
-        setLoading(false);
       });
   }, [appliedFilters, pageNumber, pageSize, sortBy, sortOrder]);
 
@@ -101,11 +95,6 @@ export default function MemberPortfolio() {
 
       {/* Main List */}
       <main className="member-list">
-        <LoadingOverlay
-          visible={loading}
-          zIndex={1000}
-          overlayProps={{ blur: 2 }}
-        />
         {/* Table Header */}
         <ScrollAreaAutosize scrollbars="x">
           <div className="member-card header-row">
@@ -124,7 +113,7 @@ export default function MemberPortfolio() {
                     fontWeight: "600",
                     color: "#333B69",
                     flexDirection: "row",
-                    minWidth: "130px"
+                    minWidth: "130px",
                   }}
                 >
                   {col.label}
