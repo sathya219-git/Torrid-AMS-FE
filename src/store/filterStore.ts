@@ -144,3 +144,7 @@ export const P4BreachFilters = atom<BreachFilters>({
   categories: undefined,
   assignedTo: undefined,
 });
+
+export const ActiveIncidentTab = atom<string | null>("1 - Critical");
+export const ActiveCriticalAccordion = atom<string | null>(null);
+export const ActiveBreachAccordion = atom<string | null>(null);

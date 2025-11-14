@@ -9,14 +9,14 @@ import backward from "../../../assets/backward.png";
 import forward from "../../../assets/forward.png";
 import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 import { useAtomValue } from "jotai";
-import { appliedFilter } from "../../../store/filterStore";
+import {
+  ActiveCriticalAccordion,
+  ActiveIncidentTab,
+  appliedFilter,
+} from "../../../store/filterStore";
 import { Incident, SortOrder } from "./incident-table.interface";
 
-export default function IncidentTable({
-  priority,
-}: {
-  priority: string;
-}) {
+export default function IncidentTable({ priority }: { priority: string }) {
   const [incidents, setIncidents] = useState<Incident[]>([]);
   const [totalElements, settotalElements] = useState(0);
   const [totalPage, setTotalPages] = useState(0);
@@ -26,6 +26,8 @@ export default function IncidentTable({
   const [sortOrder, setSortOrder] = useState<SortOrder>("");
 
   const appliedFilters = useAtomValue(appliedFilter);
+  const activeIncidentTab = useAtomValue(ActiveIncidentTab);
+  const activeCriticalAccordion = useAtomValue(ActiveCriticalAccordion);
 
   const startRange = useMemo(() => {
     return (currentPage - 1) * 8 + 1;
@@ -56,6 +58,15 @@ export default function IncidentTable({
   }, []);
 
   useEffect(() => {
+    console.log(priority);
+    console.log(activeIncidentTab);
+    console.log(activeCriticalAccordion);
+    if (
+      activeIncidentTab !== priority ||
+      activeCriticalAccordion !== priority
+    ) {
+      return;
+    }
     const query = buildFilterQuery();
     const encodedPriority = encodeURIComponent(priority);
     const url = `http://localhost:5092/api/Incident/detailsbypriority?Priority=${encodedPriority}&PageNumber=${currentPage}${query}`;
@@ -72,7 +83,15 @@ export default function IncidentTable({
         settotalElements(0);
         setTotalPages(0);
       });
-  }, [currentPage, appliedFilters, sortField, sortOrder]);
+  }, [
+    priority,
+    currentPage,
+    appliedFilters,
+    sortField,
+    sortOrder,
+    activeIncidentTab,
+    activeCriticalAccordion,
+  ]);
 
   const buildFilterQuery = useCallback(() => {
     const params = new URLSearchParams();
@@ -94,32 +113,38 @@ export default function IncidentTable({
     return queryString ? `&${queryString}` : "";
   }, [appliedFilters, sortField, sortOrder]);
 
-  const handleSort = useCallback((field: keyof Incident) => {
-    let order: SortOrder = "ASC";
-    let sortBy: keyof Incident | "" = field;
+  const handleSort = useCallback(
+    (field: keyof Incident) => {
+      let order: SortOrder = "ASC";
+      let sortBy: keyof Incident | "" = field;
 
-    if (sortField === field) {
-      if (sortOrder === "DESC") {
-        order = "ASC";
-        sortBy = "";
-      } else {
-        order = sortOrder === "ASC" ? "DESC" : "ASC";
+      if (sortField === field) {
+        if (sortOrder === "DESC") {
+          order = "ASC";
+          sortBy = "";
+        } else {
+          order = sortOrder === "ASC" ? "DESC" : "ASC";
+        }
       }
-    }
 
-    setSortField(sortBy);
-    setSortOrder(order);
-  }, [sortField, sortOrder]);
+      setSortField(sortBy);
+      setSortOrder(order);
+    },
+    [sortField, sortOrder]
+  );
 
-  const renderSortIcon = useCallback((field: keyof Incident) => {
-    if (sortField !== field) return <BsList fontSize="small" />;
+  const renderSortIcon = useCallback(
+    (field: keyof Incident) => {
+      if (sortField !== field) return <BsList fontSize="small" />;
 
-    return sortOrder === "ASC" ? (
-      <FaSortAmountUp fontSize="small" />
-    ) : (
-      <FaSortAmountDownAlt fontSize="small" />
-    );
-  }, [sortField, sortOrder]);
+      return sortOrder === "ASC" ? (
+        <FaSortAmountUp fontSize="small" />
+      ) : (
+        <FaSortAmountDownAlt fontSize="small" />
+      );
+    },
+    [sortField, sortOrder]
+  );
 
   return (
     <div className="table-container">

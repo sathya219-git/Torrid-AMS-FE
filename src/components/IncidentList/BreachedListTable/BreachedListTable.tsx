@@ -6,7 +6,11 @@ import { BsList } from "react-icons/bs";
 import { FaSortAmountDownAlt, FaSortAmountUp } from "react-icons/fa";
 import backward from "../../../assets/backward.png";
 import forward from "../../../assets/forward.png";
-import { appliedFilter } from "../../../store/filterStore";
+import {
+  ActiveBreachAccordion,
+  ActiveIncidentTab,
+  appliedFilter,
+} from "../../../store/filterStore";
 import "./BreachedListTable.css";
 import { BreachedIncidents, SortOrder } from "./breached-list-table.interface";
 import { BreachFilters } from "../../../store/filter-store.interface";
@@ -38,6 +42,8 @@ export default function BreachedListTable({
   }, [currentPage, totalElements]);
 
   const appliedFilters = useAtomValue(appliedFilter);
+  const activeIncidentTab = useAtomValue(ActiveIncidentTab);
+  const activeBreachAccordion = useAtomValue(ActiveBreachAccordion);
 
   const nextPage = useCallback(() => {
     if (currentPage < totalPage) {
@@ -60,6 +66,12 @@ export default function BreachedListTable({
   }, [totalPage]);
 
   useEffect(() => {
+    if (
+      activeIncidentTab !== priority ||
+      activeBreachAccordion !== priority
+    ) {
+      return;
+    }
     const query = buildFilterQuery();
     const url = `http://localhost:5092/api/Incident/breachlistbypriority?Priority=${encodeURIComponent(
       priority
@@ -77,7 +89,16 @@ export default function BreachedListTable({
         settotalElements(0);
         setTotalPages(0);
       });
-  }, [currentPage, appliedFilters, breachFilters, sortField, sortOrder]);
+  }, [
+    priority,
+    currentPage,
+    appliedFilters,
+    breachFilters,
+    sortField,
+    sortOrder,
+    activeIncidentTab,
+    activeBreachAccordion,
+  ]);
 
   const buildFilterQuery = useCallback(() => {
     const params = new URLSearchParams();
