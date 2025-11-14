@@ -3,14 +3,19 @@ import { CategoryItem } from "../components/Category/category.interface";
 import { StatusItem } from "../components/Status/status.interface";
 import { TeamMember } from "../components/TeamMembers/team-members.interface";
 import {
+  ApiRequest,
   BreachFilters,
   FilterChip,
   FilterState,
 } from "./filter-store.interface";
 
-export const ShowLoader = atom(false);
+export const InitiateAPI = atom<ApiRequest>({
+  url:"",
+  method:"",
+  body:null
+});
 
-export const filterState = atom(false);
+export const filterState = atom(true);
 
 export const tabValue = atom(true);
 
