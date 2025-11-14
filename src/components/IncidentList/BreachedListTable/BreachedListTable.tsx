@@ -74,7 +74,6 @@ export default function BreachedListTable({ priority }: { priority: string }) {
         const res = await axios.get(url);
         let items = res.data.items ?? [];
 
-        console.log("Filtered Breached response:", items);
         settotalElements(items.length);
         setBreachedIncidents(items);
         setTotalPages(res.data.totalPages);

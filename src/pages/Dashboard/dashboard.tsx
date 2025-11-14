@@ -18,7 +18,6 @@ export default function Dashboard() {
   const handleTabChange = (value:any) => {
     if (value) {
       setTab(value === "dashboard"); // ✅ update atom based on tab
-      console.log("Atom value changed:", value === "dashboard");
     }
   };
 

@@ -63,7 +63,7 @@ body {
 .member-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 2px;
 }
 
 .member-list .member-card:first-child {

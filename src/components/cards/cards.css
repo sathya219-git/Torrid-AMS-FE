@@ -90,6 +90,7 @@
 
 /* Status Section (Open, In Progress, etc.) */
 .status-section {
+  flex: 1;
   border-radius: 10px;
   display: grid;
   background-color: white;
@@ -103,17 +104,23 @@
 .status-item {
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 .status-label {
-  font-size: 14px;
+  font-weight: 500;
+  font-size: 12px;
   color: #666;
   margin-bottom: 4px;
+    font-family: "Inter", sans-serif;
+
 }
 
 .status-count {
-  font-size: 20px;
-  font-weight: bold;
+  font-size: 14px;
+  font-weight: 400;
+  font-family: "Inter", sans-serif;
+line-height: 100%;
   color: #333;
 }
 
@@ -219,7 +226,8 @@ body {
   /* background-color: red; */
   flex-direction: row;
 }
-.dashboard-container.breach{
+
+.dashboard-container.breach {
   /* background-color: red; */
   flex-direction: row;
 }
@@ -308,7 +316,7 @@ body {
   margin-bottom: 30px;
 }
 
-.summary-cards > * {
+.summary-cards>* {
   flex: 1 1 200px;
   /* grow, shrink, basis */
   min-width: 200px;
@@ -335,7 +343,7 @@ body {
 }
 
 .card.open {
-  background-color: #ffe2e2;
+  background-color: #c5e5ebd0;
 }
 
 .card.progress {
@@ -345,9 +353,9 @@ body {
 .card.closed {
   background-color: #d7f7fd;
 }
-.card.breach
-{
-  background-color: #f15f6175;
+
+.card.breach {
+  background-color: #f15f6149;
 }
 
 .card-icon {
@@ -378,9 +386,11 @@ body {
 .card-icon.closed {
   background-color: white;
 }
+
 .card-icon.breach {
   background-color: white;
 }
+
 .card-content {
   width: 70%;
   display: flex;

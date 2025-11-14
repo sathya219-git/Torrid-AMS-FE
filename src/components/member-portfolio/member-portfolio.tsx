@@ -44,7 +44,6 @@ export default function MemberPortfolio() {
     if (sortOrder) params.append("SortOrder", sortOrder);
 
     url += query ? `&${params.toString()}` : `?${params.toString()}`;
-    console.log("Final URL:", url);
 
     fetch(url)
       .then((res) => {

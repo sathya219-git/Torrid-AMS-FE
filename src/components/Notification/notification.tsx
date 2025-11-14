@@ -18,9 +18,9 @@ export default function Notification() {
       backgroundColor: "#f4f5f9",
       border: "1px solid #bae6fd",
       borderRadius: "10px",
-      padding: "15px 20px",
+      padding: "10px 15px",  
       boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-      maxWidth: "500px",
+      maxWidth: "100%",
     },
     title: {
       marginBottom: "10px",
@@ -40,7 +40,7 @@ export default function Notification() {
     },
     filename: { color: "#1e3a8a" },
     size: { color: "#6b7280", fontSize: "0.9em" },
-    message: { color: "#065f46", fontSize: "0.95em", marginTop: "4px",display:"flex",justifyContent:"center",alignItems:"center",gap:"8px" },
+    message: { color: "#065f46", fontSize: "0.95em", marginTop: "4px", display: "flex", justifyContent: "center", alignItems: "center", gap: "8px" },
   };
 
   const [files, setFiles] = useState<FileDetails[]>([]);
@@ -78,7 +78,7 @@ export default function Notification() {
 
   return (
     <div className="header-left">
-      <Popover width={550} position="bottom" shadow="md">
+      <Popover width={650} position="bottom" shadow="md">
         <Popover.Target>
           <Button
             // variant="subtle"
@@ -105,7 +105,7 @@ export default function Notification() {
             </div>
           </div>
 
-          <div className="notification">
+          <div className="upload-notification">
             <div style={styles.container}>
               <h3 style={styles.title}>Upload Notifications</h3>
               <ul style={styles.list}>
@@ -117,13 +117,14 @@ export default function Notification() {
                   const date = new Date(file.uploadedAt).toLocaleDateString();
 
                   return (
-                    <li key={index} style={styles.item}>
-                      <div>
-                        <strong style={styles.filename}>{file.name}</strong>{" "}
-                        <span style={styles.size}>({file.size})</span>
+                    <li key={index} style={styles.item} className="notification-item">
+                      <div className="notification-file">
+                        <span>{file.name}</span>
+                        <span style={{ color: "#6b7280", fontSize: "0.9em" }}>({file.size})</span>
                       </div>
-                      <div style={styles.message}>
-                        <TiTick style={{fontSize:"30px"}}/>
+
+                      <div className="notification-success">
+                        <TiTick style={{ fontSize: "22px" }} />
                         Successfully uploaded on <b>{date}</b> at <b>{time}</b>
                       </div>
                     </li>

@@ -30,32 +30,40 @@ export default function IncidentPriorityDetailsCard({
             </div>
           </div>
         </div>
-        <div className="status-section">
-          <div className="status-item">
-            <span className="status-label">Open</span>
-            <span className="status-count">{stats?.open ?? "—"}</span>
+        <div style={{display:"flex",flexDirection:"row",gap:"10px"}}>
+          <div className="status-section">
+            <div className="status-item">
+              <span className="status-label">Open</span>
+              <span className="status-count">{stats?.open ?? "—"}</span>
+            </div>
+            <div className="status-item">
+              <span className="status-label">In Progress</span>
+              <span className="status-count">{stats?.inProgress ?? "—"}</span>
+            </div>
+            <div className="status-item">
+              <span className="status-label">Closed</span>
+              <span className="status-count">{stats?.closed ?? "—"}</span>
+            </div>
+            <div className="status-item">
+              <span className="status-label">Reopen</span>
+              <span className="status-count">{stats?.reopen ?? "—"}</span>
+            </div>
+            <div className="status-item">
+              <span className="status-label">On Hold</span>
+              <span className="status-count">{stats?.onHold ?? "—"}</span>
+            </div>
+            <div className="status-item">
+              <span className="status-label">Resolved</span>
+              <span className="status-count">{stats?.resolved ?? "—"}</span>
+            </div>
           </div>
-          <div className="status-item">
-            <span className="status-label">In Progress</span>
-            <span className="status-count">{stats?.inProgress ?? "—"}</span>
-          </div>
-          <div className="status-item">
-            <span className="status-label">Closed</span>
-            <span className="status-count">{stats?.closed ?? "—"}</span>
-          </div>
-          <div className="status-item">
-            <span className="status-label">Reopen</span>
-            <span className="status-count">{stats?.reopen ?? "—"}</span>
-          </div>
-          <div className="status-item">
-            <span className="status-label">On Hold</span>
-            <span className="status-count">{stats?.onHold ?? "—"}</span>
-          </div>
-          <div className="status-item">
-            <span className="status-label">Resolved</span>
-            <span className="status-count">{stats?.resolved ?? "—"}</span>
+
+          <div style={{backgroundColor:"#f15f6149",marginTop:"20px",padding:"10px",borderRadius:"10px",display:"flex",alignItems:"center",flexDirection:"column",width:"150px"}}>
+            <span className="status-label">Breached</span>
+            <span className="status-count">34</span>
           </div>
         </div>
+
       </div>
     </div>
   );

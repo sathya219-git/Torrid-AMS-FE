@@ -33,7 +33,6 @@ export default function BreachedListFilter() {
           : [...prev[key], value], // add if not
       };
 
-      console.log("Updated breached filters:", updated);
       return updated;
     });
   };

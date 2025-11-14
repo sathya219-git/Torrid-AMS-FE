@@ -10,7 +10,7 @@ import {
   PaginatedResponse,
 } from "./filter-store.interface";
 
-export const filterState = atom(true);
+export const filterState = atom(false);
 
 export const tabValue = atom(true);
 

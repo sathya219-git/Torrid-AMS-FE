@@ -62,7 +62,6 @@ const UploadReport = () => {
                 )}&SortBy=${sortBy}&SortDir=${sortOrder}&PageNumber=${pagination.page}&PageSize=${pagination.pageSize
                     }`;
 
-                console.log("API URL:", apiUrl);
 
                 const response = await fetch(apiUrl);
                 if (!response.ok) throw new Error("Failed to fetch data");
@@ -109,7 +108,6 @@ const UploadReport = () => {
     const handleBrowseFiles = () => fileInputRef.current?.click();
 
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log("enter");
         const files = event.target.files;
         if (!files || files.length === 0) return;
 
@@ -137,16 +135,13 @@ const UploadReport = () => {
 
             if (response.ok) {
                 if (refreshPage) {
-                    console.log("In if");
 
                     setRefreshPage(false)
                 }
                 else {
-                    console.log("In else");
 
                     setRefreshPage(true)
                 }
-                console.log("SUCCESSFULLY UPLOADED");
 
                 // ✅ Save uploaded files locally (your existing logic)
                 const existing = JSON.parse(localStorage.getItem("uploadedFiles") || "[]");
@@ -177,7 +172,6 @@ const UploadReport = () => {
                     },
                 });
             } else {
-                console.log("FAILED");
 
                 // ❌ Failure notification
                 notifications.show({
@@ -249,7 +243,6 @@ const UploadReport = () => {
         return <GoSortAsc className="inactive-icon" />;
     };
     const pushToDashboard = async (id: any) => {
-        console.log("called pushhhhh");
         try {
             const apiUrl = `http://localhost:5092/api/files/import?uploadHistoryId=${id}`;
             const response = await fetch(apiUrl, {
@@ -261,11 +254,9 @@ const UploadReport = () => {
             }
 
             const data = await response.json();
-            console.log("API Response:", data);
 
             // ✅ If response is fine, set atom to true
             setTab(true);
-            console.log("tabValue atom updated to TRUE (Dashboard view)");
         } catch (error) {
             console.error("Error calling API:", error);
         }

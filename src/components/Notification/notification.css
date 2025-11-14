@@ -1,75 +1,66 @@
-.notification {
-  width: 100%;
-  max-height: 400px; /* fixed height for scrollable area */
-  overflow-y: auto;  /* adds scrollbar when content exceeds height */
-  /* border: 1px solid #007bff; */
-  padding: 10px;
-  box-sizing: border-box; /* ensures padding doesn’t overflow */
-  scrollbar-width: thin; /* for Firefox */
-  scrollbar-color: #60aaeb60 #f0f0f0; /* custom scrollbar colors */
-}
-
-/* Optional: customize scrollbar for Chrome/Safari */
-.notification::-webkit-scrollbar {
-  width: 6px;
-}
-
-.notification::-webkit-scrollbar-track {
-  background: #f0f0f0;
-  border-radius: 8px;
-}
-
-.notification::-webkit-scrollbar-thumb {
-  background-color: #60aaeb;
-  border-radius: 8px;
-}
-
-
-.notification-header {
-  display: flex;
-  flex-direction: row;
-  column-gap: 330px;
-  padding-bottom: 15px;
-}
-
-.button-group {
-  display: flex;
-  justify-content: center;
-  padding-bottom: 15px;
-}
-.buttons {
-  color: #60aaeb;
+/* Better layout for each notification item */
+.notification-item {
   display: flex;
   flex-direction: column;
-  row-gap: 12px;
+  gap: 6px;
+  word-break: break-word; /* Prevents filename overflow */
 }
 
-.count-badge {
+/* Filename + size style */
+.notification-file {
   display: flex;
-  flex-direction: column;
-  color: #60aaeb;
-  background-color: white;
-  width: 20px;
-  height: 20px;
-  border-radius: 30%;
-  margin-left: 10px;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-weight: 600;
+  color: #1e3a8a;
 }
 
-.popover-msgs {
+/* Success message container */
+.notification-success {
   display: flex;
-  flex-direction: row;
-  column-gap: 20px;
-}
-
-.badge-mail-tick {
-  background-color: #d6dfe7;
-  color: #60aaeb;
-  width: 85px;
-  height: 50px;
-  border-radius: 50%;
   align-items: center;
+  gap: 8px;
+  color: #065f46;
+  font-size: 0.95em;
+  flex-wrap: wrap; /* Ensures perfect wrapping */
 }
 
-.popover-dropdown {
-  border-radius: 12px;
+/* Fix scroll area padding & spacing */
+.upload-notification {
+  padding: 5px 0px;
+}
+.upload-notification {
+  width: 100%;
+  max-height: 380px; /* Fixed height */
+  overflow-y: auto;
+  padding-right: 8px;
+  box-sizing: border-box;
+}
+
+/* Make list inside scroll smoothly */
+.upload-notification ul {
+  margin: 0;
+  padding: 0;
+}
+
+/* Improve scroll look */
+.upload-notification::-webkit-scrollbar {
+  width: 8px;
+}
+
+.upload-notification::-webkit-scrollbar-track {
+  background: #eef2f5;
+  border-radius: 10px;
+}
+
+.upload-notification::-webkit-scrollbar-thumb {
+  background: #60aaebb7;
+  border-radius: 10px;
+}
+.notification-header
+{
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }

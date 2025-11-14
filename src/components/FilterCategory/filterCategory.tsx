@@ -38,8 +38,8 @@ export default function FilterCategory() {
       State: [],
       AssignedToName: [],
     };
-    setAppliedFilters(clearedState);
 
+    setAppliedFilters(clearedState);
     setSelectedGroups([]);
     setSelectedFromDate(null);
     setSelectedToDate(null);
@@ -56,14 +56,10 @@ export default function FilterCategory() {
   const updateFilterState = useCallback((chip: FilterChip) => {
     switch (chip.key) {
       case "AssignmentGroup":
-        setSelectedGroups((prev) => {
-          return prev.filter((v) => v !== chip.value);
-        });
+        setSelectedGroups((prev) => prev.filter((v) => v !== chip.value));
         break;
       case "Category":
-        setSelectedCategories((prev) => {
-          return prev.filter((v) => v !== chip.value);
-        });
+        setSelectedCategories((prev) => prev.filter((v) => v !== chip.value));
         break;
       case "FromDate":
         setSelectedFromDate(null);
@@ -72,16 +68,10 @@ export default function FilterCategory() {
         setSelectedToDate(null);
         break;
       case "State":
-        setSelectedStatus((prev) => {
-          return prev.filter((v) => v !== chip.value);
-        });
+        setSelectedStatus((prev) => prev.filter((v) => v !== chip.value));
         break;
       case "AssignedToName":
-        setSelectedTeamMembers((prev) => {
-          return prev.filter((v) => v !== chip.value);
-        });
-        break;
-      default:
+        setSelectedTeamMembers((prev) => prev.filter((v) => v !== chip.value));
         break;
     }
   }, []);
@@ -106,17 +96,27 @@ export default function FilterCategory() {
         case "ToDate":
           return { ...prev, ToDate: null };
         case "State":
-          return { ...prev, State: prev.State.filter((v) => v !== chip.value) };
+          return {
+            ...prev,
+            State: prev.State.filter((v) => v !== chip.value),
+          };
         case "AssignedToName":
           return {
             ...prev,
-            AssignedToName: prev.AssignedToName.filter((v) => v !== chip.value),
+            AssignedToName: prev.AssignedToName.filter(
+              (v) => v !== chip.value
+            ),
           };
         default:
           return prev;
       }
     },
     []
+  );
+
+  // ✅ Show header only if we have non-null filters
+  const hasValidFilters = appliedFilterChips?.some(
+    (item) => item?.value !== null && item?.value !== "" && item?.value !== undefined
   );
 
   return (
@@ -127,21 +127,31 @@ export default function FilterCategory() {
       <Card.Section inheritPadding>
         <div className="selected-filter">
           <div className="filtered-results">
-            <h1 style={{ color: "#333B69", paddingLeft: "10px" }}>
-              Filtered Results
-            </h1>
+
+            {/* ✅ Conditional Header */}
+            {hasValidFilters && (
+              <h1 style={{ color: "#333B69", paddingLeft: "10px" }}>
+                Filtered Results
+              </h1>
+            )}
+
             <div className="filter-tags">
+
+              {/* ✅ Render only non-null chips */}
               {appliedFilterChips.map((chip) => (
-                <div className="tag" key={chip.value}>
-                  <span>{chip.value}</span>
-                  <button
-                    className="close-btn"
-                    onClick={() => handleRemoveFilter(chip)}
-                  >
-                    &times;
-                  </button>
-                </div>
+                chip.value ? (
+                  <div className="tag" key={chip.value}>
+                    <span>{chip.value}</span>
+                    <button
+                      className="close-btn"
+                      onClick={() => handleRemoveFilter(chip)}
+                    >
+                      &times;
+                    </button>
+                  </div>
+                ) : null
               ))}
+
               {hasActiveFilters && (
                 <span className="clear-all" onClick={clearAll}>
                   Clear All

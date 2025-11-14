@@ -49,7 +49,6 @@ export default function Header() {
     link.click();
     document.body.removeChild(link);
 
-    console.log("Excel file downloaded successfully!");
   } catch (error) {
     console.error("Error exporting filtered result:", error);
     alert("Failed to export filtered result. Please try again.");
