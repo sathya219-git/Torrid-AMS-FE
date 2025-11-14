@@ -1,4 +1,4 @@
-import { LoadingOverlay, Select } from "@mantine/core";
+import { LoadingOverlay, ScrollAreaAutosize, Select } from "@mantine/core";
 import { useAtomValue } from "jotai";
 import { useCallback, useEffect, useState } from "react";
 import { GoSortAsc, GoSortDesc } from "react-icons/go";
@@ -96,7 +96,7 @@ export default function MemberPortfolio() {
     <div className="team-portfolio-container">
       {/* Header */}
       <header className="portfolio-header">
-        <h1 style={{ color: "#333B69" }}>Team Member Portfolio</h1>
+        <h1>Team Member Portfolio</h1>
       </header>
 
       {/* Main List */}
@@ -107,47 +107,50 @@ export default function MemberPortfolio() {
           overlayProps={{ blur: 2 }}
         />
         {/* Table Header */}
-        <div className="member-card header-row">
-          <div className="metrics-grid">
-            {TeamMembersColumnConfig.map((col) => (
-              <div
-                key={col.key}
-                className="metric-item sortable"
-                onClick={() => onSort(col.key)}
-                style={{
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  // justifyContent: "center",
-                  gap: "4px",
-                  fontWeight: "600",
-                  color: "#333B69",
-                  flexDirection: "row",
-                }}
-              >
-                {col.label}
-                {sortBy === col.key ? (
-                  sortOrder === "ascending" ? (
-                    <GoSortAsc size={16} />
+        <ScrollAreaAutosize scrollbars="x">
+          <div className="member-card header-row">
+            <div className="metrics-grid">
+              {TeamMembersColumnConfig.map((col) => (
+                <div
+                  key={col.key}
+                  className="metric-item sortable"
+                  onClick={() => onSort(col.key)}
+                  style={{
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    // justifyContent: "center",
+                    gap: "4px",
+                    fontWeight: "600",
+                    color: "#333B69",
+                    flexDirection: "row",
+                    minWidth: "130px"
+                  }}
+                >
+                  {col.label}
+                  {sortBy === col.key ? (
+                    sortOrder === "ascending" ? (
+                      <GoSortAsc size={16} />
+                    ) : (
+                      <GoSortDesc size={16} />
+                    )
                   ) : (
-                    <GoSortDesc size={16} />
-                  )
-                ) : (
-                  <GoSortAsc size={16} style={{ opacity: 0.3 }} />
-                )}
-              </div>
-            ))}
+                    <GoSortAsc size={16} style={{ opacity: 0.3 }} />
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
 
-        {/* Data Rows */}
-        {members.length > 0 ? (
-          members.map((member, index) => (
-            <TeamMemberCard key={index} member={member} />
-          ))
-        ) : (
-          <p>No data available.</p>
-        )}
+          {/* Data Rows */}
+          {members.length > 0 ? (
+            members.map((member, index) => (
+              <TeamMemberCard key={index} member={member} />
+            ))
+          ) : (
+            <p>No data available.</p>
+          )}
+        </ScrollAreaAutosize>
       </main>
 
       {/* Footer Pagination */}

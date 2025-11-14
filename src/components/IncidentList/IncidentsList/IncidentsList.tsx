@@ -10,10 +10,8 @@ import BreachedListFilter from "../BreachedListFilter/breachedListFilter";
 export default function IncidentsList() {
   return (
     <div>
-      <div>
-        <Text fw={700} size="xl">
-          Critical Incident List
-        </Text>
+      <div className="inc-list-header">
+          <h1>Critical Incident List</h1>
       </div>
 
       <Tabs defaultValue={"P1-Critical"}>

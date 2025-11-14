@@ -12,3 +12,10 @@
 .accordion-padding {
   padding: 0%;
 }
+
+.inc-list-header h1 {
+  color: #333B69;
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0 0 10px 0;
+}

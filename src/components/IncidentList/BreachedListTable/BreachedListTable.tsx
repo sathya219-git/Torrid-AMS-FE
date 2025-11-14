@@ -93,7 +93,7 @@ export default function BreachedListTable({ priority }: { priority: string }) {
       params.append("Category", appliedFilters.Category.join(","));
     }
 
-    
+
 
     if (appliedFilters.State?.length > 0) {
       params.append("State", appliedFilters.State.join(","));
@@ -166,90 +166,92 @@ export default function BreachedListTable({ priority }: { priority: string }) {
 
   return (
     <div className="bl-table-container">
-      <Table>
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th onClick={() => handleSort("incidentNumber")}>
-              <div className="bl-table-headers">
-                <span> Incident_No </span>
-                <span> {renderSortIcon("incidentNumber")} </span>
-              </div>
-            </Table.Th>
-
-            <Table.Th>
-              <div
-                className="bl-table-headers"
-                onClick={() => handleSort("assignedTo")}
-              >
-                <span> Assigned To </span>
-                <span> {renderSortIcon("assignedTo")} </span>
-              </div>
-            </Table.Th>
-
-            <Table.Th>
-              <div
-                className="bl-table-headers"
-                onClick={() => handleSort("shortDescription")}
-              >
-                <span> Description </span>
-                <span> {renderSortIcon("shortDescription")} </span>
-              </div>
-            </Table.Th>
-
-            <Table.Th onClick={() => handleSort("category")}>
-              <div className="bl-table-headers">
-                <span> Category </span>
-                <span> {renderSortIcon("category")} </span>
-              </div>
-            </Table.Th>
-            
-
-            <Table.Th>
-              <div
-                className="bl-table-headers"
-                onClick={() => handleSort("actualResolvedTime")}
-              >
-                <span> Actual Resolved Time </span>
-                <span> {renderSortIcon("actualResolvedTime")} </span>
-              </div>
-            </Table.Th>
-
-            <Table.Th>
-              <div
-                className="bl-table-headers"
-                onClick={() => handleSort("breachSLA")}
-              >
-                <span> Breach SLA </span>
-                <span> {renderSortIcon("breachSLA")} </span>
-              </div>
-            </Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-
-        <Table.Tbody>
-          {totalElements === 0 ? (
+      <Table.ScrollContainer minWidth={600}>
+        <Table>
+          <Table.Thead>
             <Table.Tr>
-              <Table.Td
-                colSpan={6}
-                style={{ textAlign: "center", padding: 20 }}
-              >
-                No incidents found
-              </Table.Td>
+              <Table.Th onClick={() => handleSort("incidentNumber")}>
+                <div className="bl-table-headers">
+                  <span> Incident_No </span>
+                  <span> {renderSortIcon("incidentNumber")} </span>
+                </div>
+              </Table.Th>
+
+              <Table.Th>
+                <div
+                  className="bl-table-headers"
+                  onClick={() => handleSort("assignedTo")}
+                >
+                  <span> Assigned To </span>
+                  <span> {renderSortIcon("assignedTo")} </span>
+                </div>
+              </Table.Th>
+
+              <Table.Th>
+                <div
+                  className="bl-table-headers"
+                  onClick={() => handleSort("shortDescription")}
+                >
+                  <span> Description </span>
+                  <span> {renderSortIcon("shortDescription")} </span>
+                </div>
+              </Table.Th>
+
+              <Table.Th onClick={() => handleSort("category")}>
+                <div className="bl-table-headers">
+                  <span> Category </span>
+                  <span> {renderSortIcon("category")} </span>
+                </div>
+              </Table.Th>
+
+
+              <Table.Th>
+                <div
+                  className="bl-table-headers"
+                  onClick={() => handleSort("actualResolvedTime")}
+                >
+                  <span> Actual Resolved Time </span>
+                  <span> {renderSortIcon("actualResolvedTime")} </span>
+                </div>
+              </Table.Th>
+
+              <Table.Th>
+                <div
+                  className="bl-table-headers"
+                  onClick={() => handleSort("breachSLA")}
+                >
+                  <span> Breach SLA </span>
+                  <span> {renderSortIcon("breachSLA")} </span>
+                </div>
+              </Table.Th>
             </Table.Tr>
-          ) : (
-            breachedIncidents.map((breachedIncident) => (
-              <Table.Tr key={breachedIncident.incidentNumber}>
-                <Table.Td>{breachedIncident.incidentNumber}</Table.Td>
-                <Table.Td>{breachedIncident.assignedTo}</Table.Td>
-                <Table.Td>{breachedIncident.shortDescription}</Table.Td>
-                <Table.Td>{breachedIncident.category}</Table.Td>
-                <Table.Td>{breachedIncident.actualResolvedTime}</Table.Td>
-                <Table.Td>{breachedIncident.breachSLA}</Table.Td>
+          </Table.Thead>
+
+          <Table.Tbody>
+            {totalElements === 0 ? (
+              <Table.Tr>
+                <Table.Td
+                  colSpan={6}
+                  style={{ textAlign: "center", padding: 20 }}
+                >
+                  No incidents found
+                </Table.Td>
               </Table.Tr>
-            ))
-          )}
-        </Table.Tbody>
-      </Table>
+            ) : (
+              breachedIncidents.map((breachedIncident) => (
+                <Table.Tr key={breachedIncident.incidentNumber}>
+                  <Table.Td>{breachedIncident.incidentNumber}</Table.Td>
+                  <Table.Td>{breachedIncident.assignedTo}</Table.Td>
+                  <Table.Td>{breachedIncident.shortDescription}</Table.Td>
+                  <Table.Td>{breachedIncident.category}</Table.Td>
+                  <Table.Td>{breachedIncident.actualResolvedTime}</Table.Td>
+                  <Table.Td>{breachedIncident.breachSLA}</Table.Td>
+                </Table.Tr>
+              ))
+            )}
+          </Table.Tbody>
+        </Table>
+      </Table.ScrollContainer>
 
       {/* pagination */}
       <div className="bl-pagination-footer">

@@ -9,7 +9,8 @@ import backward from "../../../assets/backward.png";
 import forward from "../../../assets/forward.png";
 import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 import { useAtomValue } from "jotai";
-import { appliedFilter, FilterState } from "../../../store/filterStore";
+import { appliedFilter } from "../../../store/filterStore";
+import { FilterState } from "../../../store/filter-store.interface";
 
 type Incident = {
   incidentNo: string;
@@ -95,9 +96,6 @@ export default function IncidentTable({
     if (appliedFilters.Category?.length > 0) {
       params.append("Category", appliedFilters.Category.join(","));
     }
-    if (appliedFilters.Priority?.length > 0) {
-      params.append("Priority", appliedFilters.Priority.join(","));
-    }
     if (appliedFilters.State?.length > 0) {
       params.append("State", appliedFilters.State.join(","));
     }
@@ -141,109 +139,111 @@ export default function IncidentTable({
   };
   return (
     <div className="table-container">
-      <Table>
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th onClick={() => handleSort("incidentNo")}>
-              <div className="table-headers">
-                <span> Incident_No </span>
-                <span> {renderSortIcon("incidentNo")} </span>
-              </div>
-            </Table.Th>
-
-            <Table.Th onClick={() => handleSort("assignedTo")}>
-              <div className="table-headers">
-                <span> Assigned Toooo </span>
-                <span> {renderSortIcon("assignedTo")} </span>
-              </div>
-            </Table.Th>
-
-            <Table.Th onClick={() => handleSort("shortDescription")}>
-              <div className="table-headers">
-                <span> Description </span>
-                <span> {renderSortIcon("shortDescription")} </span>
-              </div>
-            </Table.Th>
-
-            <Table.Th onClick={() => handleSort("category")}>
-              <div className="table-headers">
-                <span> Category </span>
-                <span> {renderSortIcon("category")} </span>
-              </div>
-            </Table.Th>
-
-            <Table.Th onClick={() => handleSort("state")}>
-              <div className="table-headers">
-                <span> State </span>
-                <span> {renderSortIcon("state")} </span>
-              </div>
-            </Table.Th>
-
-            <Table.Th onClick={() => handleSort("actualResolvedTime")}>
-              <div className="table-headers">
-                <span> Actual Resolved Time </span>
-                <span> {renderSortIcon("actualResolvedTime")} </span>
-              </div>
-            </Table.Th>
-
-            <Table.Th onClick={() => handleSort("resolvedDateTime")}>
-              <div className="table-headers">
-                <span> Resolved Date & Time </span>
-                <span> {renderSortIcon("resolvedDateTime")} </span>
-              </div>
-            </Table.Th>
-
-            <Table.Th onClick={() => handleSort("breachSLA")}>
-              <div className="table-headers">
-                <span> Breach SLA </span>
-                <span> {renderSortIcon("breachSLA")} </span>
-              </div>
-            </Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-
-        <Table.Tbody>
-          {totalElements === 0 ? (
+      <Table.ScrollContainer minWidth={600}>
+        <Table>
+          <Table.Thead>
             <Table.Tr>
-              <Table.Td
-                colSpan={8}
-                style={{ textAlign: "center", padding: 20 }}
-              >
-                No incidents found
-              </Table.Td>
+              <Table.Th onClick={() => handleSort("incidentNo")}>
+                <div className="table-headers">
+                  <span> Incident_No </span>
+                  <span> {renderSortIcon("incidentNo")} </span>
+                </div>
+              </Table.Th>
+
+              <Table.Th onClick={() => handleSort("assignedTo")}>
+                <div className="table-headers">
+                  <span> Assigned Toooo </span>
+                  <span> {renderSortIcon("assignedTo")} </span>
+                </div>
+              </Table.Th>
+
+              <Table.Th onClick={() => handleSort("shortDescription")}>
+                <div className="table-headers">
+                  <span> Description </span>
+                  <span> {renderSortIcon("shortDescription")} </span>
+                </div>
+              </Table.Th>
+
+              <Table.Th onClick={() => handleSort("category")}>
+                <div className="table-headers">
+                  <span> Category </span>
+                  <span> {renderSortIcon("category")} </span>
+                </div>
+              </Table.Th>
+
+              <Table.Th onClick={() => handleSort("state")}>
+                <div className="table-headers">
+                  <span> State </span>
+                  <span> {renderSortIcon("state")} </span>
+                </div>
+              </Table.Th>
+
+              <Table.Th onClick={() => handleSort("actualResolvedTime")}>
+                <div className="table-headers">
+                  <span> Actual Resolved Time </span>
+                  <span> {renderSortIcon("actualResolvedTime")} </span>
+                </div>
+              </Table.Th>
+
+              <Table.Th onClick={() => handleSort("resolvedDateTime")}>
+                <div className="table-headers">
+                  <span> Resolved Date & Time </span>
+                  <span> {renderSortIcon("resolvedDateTime")} </span>
+                </div>
+              </Table.Th>
+
+              <Table.Th onClick={() => handleSort("breachSLA")}>
+                <div className="table-headers">
+                  <span> Breach SLA </span>
+                  <span> {renderSortIcon("breachSLA")} </span>
+                </div>
+              </Table.Th>
             </Table.Tr>
-          ) : (
-            incidents.map((incident) => {
-              const isBreached = incident.breachSLA !== "No Breach";
+          </Table.Thead>
 
-              return (
-                <Table.Tr
-                  key={incident.incidentNo}
-                  className={`breached-row ${isBreached ? "breached" : ""}`}
+          <Table.Tbody>
+            {totalElements === 0 ? (
+              <Table.Tr>
+                <Table.Td
+                  colSpan={8}
+                  style={{ textAlign: "center", padding: 20 }}
                 >
-                  <Table.Td>{incident.incidentNo}</Table.Td>
-                  <Table.Td>{incident.assignedTo}</Table.Td>
-                  <Table.Td>{incident.shortDescription}</Table.Td>
-                  <Table.Td>{incident.category}</Table.Td>
-                  <Table.Td>{incident.state}</Table.Td>
-                  <Table.Td>{incident.actualResolvedTime}</Table.Td>
-                  <Table.Td>{incident.resolvedDateTime}</Table.Td>
+                  No incidents found
+                </Table.Td>
+              </Table.Tr>
+            ) : (
+              incidents.map((incident) => {
+                const isBreached = incident.breachSLA !== "No Breach";
 
-                  <Table.Td className="highlight-downarrow">
-                    <div className="breach-cell">
-                      <span>{incident.breachSLA}</span>
+                return (
+                  <Table.Tr
+                    key={incident.incidentNo}
+                    className={`breached-row ${isBreached ? "breached" : ""}`}
+                  >
+                    <Table.Td>{incident.incidentNo}</Table.Td>
+                    <Table.Td>{incident.assignedTo}</Table.Td>
+                    <Table.Td>{incident.shortDescription}</Table.Td>
+                    <Table.Td>{incident.category}</Table.Td>
+                    <Table.Td>{incident.state}</Table.Td>
+                    <Table.Td>{incident.actualResolvedTime}</Table.Td>
+                    <Table.Td>{incident.resolvedDateTime}</Table.Td>
 
-                      {isBreached && (
-                        <ArrowDropDownCircleIcon className="arrow" />
-                      )}
-                    </div>
-                  </Table.Td>
-                </Table.Tr>
-              );
-            })
-          )}
-        </Table.Tbody>
-      </Table>
+                    <Table.Td className="highlight-downarrow">
+                      <div className="breach-cell">
+                        <span>{incident.breachSLA}</span>
+
+                        {isBreached && (
+                          <ArrowDropDownCircleIcon className="arrow" />
+                        )}
+                      </div>
+                    </Table.Td>
+                  </Table.Tr>
+                );
+              })
+            )}
+          </Table.Tbody>
+        </Table>
+      </Table.ScrollContainer>
 
       {/* pagination */}
       <div className="pagination-footer">

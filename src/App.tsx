@@ -23,7 +23,9 @@ export default function App() {
                 element={<Navigate to="/login" replace={true} />}
               />
               <Route path="/login" element={<Login />} />
-              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/dashboard" element={
+                !sessionStorage.getItem('userId') ? <Dashboard /> : <Navigate to="/login" replace={true} />
+              } />
               <Route path="/forgotPassword" element={<ForgotPassword />} />
               <Route
                 path="*"

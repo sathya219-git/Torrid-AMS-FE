@@ -30,7 +30,7 @@ export default function IncidentPriorityDetailsCard({
             </div>
           </div>
         </div>
-        <div style={{display:"flex",flexDirection:"row",gap:"10px"}}>
+        <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", padding: "15px 0px", gap: "15px" }}>
           <div className="status-section">
             <div className="status-item">
               <span className="status-label">Open</span>
@@ -57,13 +57,11 @@ export default function IncidentPriorityDetailsCard({
               <span className="status-count">{stats?.resolved ?? "—"}</span>
             </div>
           </div>
-
-          <div style={{backgroundColor:"#f15f6149",marginTop:"20px",padding:"10px",borderRadius:"10px",display:"flex",alignItems:"center",flexDirection:"column",width:"150px"}}>
+          <div style={{ backgroundColor: "#f15f6149", padding: "15px 10px", borderRadius: "10px", display: "flex", alignItems: "center", flexDirection: "column", flexGrow: 1 }}>
             <span className="status-label">Breached</span>
             <span className="status-count">34</span>
           </div>
         </div>
-
       </div>
     </div>
   );
