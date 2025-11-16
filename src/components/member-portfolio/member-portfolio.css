@@ -10,7 +10,7 @@ body {
 /* Main container */
 .team-portfolio-container {
   font-family: Inter;
-  padding: 0px 16px;
+  /* padding: 0px 16px; */
   font-weight: 600;
   background-color: #fff;
   border-radius: 8px;
@@ -60,12 +60,17 @@ body {
 
 /* Member list */
 .member-list {
+  border-radius: 14px;
+  background-color: #f5f6fa;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
 .member-list .member-card:first-child {
+      border-radius: 10px;
+
   background-color: #e3e8f0;
   font-weight: 600;
   box-shadow: none;
@@ -152,6 +157,7 @@ body {
   }
 
   .member-card {
+    border-radius: 10px;
     grid-template-columns: 1fr;
     padding: 15px;
   }

@@ -90,7 +90,11 @@ td {
   display: flex;
   gap: 4px;
 }
-
+Table
+{
+  background-color: #f7f9fc !important;
+  border-radius: 12px 12px;
+}
 .pagination-controls button {
   display: flex;
   align-items: center;

@@ -50,14 +50,14 @@ export default function IncidentsList() {
             gap: "15px",
           }}
         >
-          <Tabs.Panel value="1 - Critical">
-            <Accordion
+          <Tabs.Panel value="1 - Critical" className="incident-breach-accordion-config">
+            <Accordion 
               classNames={{ content: "accordion-padding" }}
               onChange={setActiveCriticalAccordion}
             >
               <P1Critical />
             </Accordion>
-            <Accordion
+            <Accordion 
               classNames={{
                 item: "accordion-border",
                 content: "accordion-padding",
@@ -68,7 +68,7 @@ export default function IncidentsList() {
             </Accordion>
           </Tabs.Panel>
 
-          <Tabs.Panel value="2 - High">
+          <Tabs.Panel value="2 - High" className="incident-breach-accordion-config">
             <Accordion
               classNames={{ content: "accordion-padding" }}
               onChange={setActiveCriticalAccordion}
@@ -86,7 +86,7 @@ export default function IncidentsList() {
             </Accordion>
           </Tabs.Panel>
 
-          <Tabs.Panel value="3 - Moderate">
+          <Tabs.Panel value="3 - Moderate" className="incident-breach-accordion-config">
             <Accordion
               classNames={{ content: "accordion-padding" }}
               onChange={setActiveCriticalAccordion}
@@ -104,7 +104,7 @@ export default function IncidentsList() {
             </Accordion>
           </Tabs.Panel>
 
-          <Tabs.Panel value="4 - Low">
+          <Tabs.Panel value="4 - Low" className="incident-breach-accordion-config">
             <Accordion
               classNames={{ content: "accordion-padding" }}
               onChange={setActiveCriticalAccordion}

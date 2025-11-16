@@ -1,5 +1,6 @@
 import { Table } from "@mantine/core";
 import "./IncidentTable.css";
+import "../BreachedListTable/BreachedListTable.css"
 import { useCallback, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { BsList } from "react-icons/bs";
@@ -144,55 +145,76 @@ export default function IncidentTable({ priority }: { priority: string }) {
   );
 
   return (
-    <div className="table-container">
+    <div className="bl-table-container">
       <Table.ScrollContainer minWidth={600}>
         <Table>
           <Table.Thead>
-            <Table.Tr>
-              <Table.Th onClick={() => handleSort("incidentNo")}>
-                <div className="table-headers">
+            <Table.Tr className="bl-header-row">
+              <Table.Th
+                className="bl-header-cell first-header"
+                onClick={() => handleSort("incidentNo")}
+              >
+                <div className="bl-table-headers">
                   <span> Incident No </span>
                   <span> {renderSortIcon("incidentNo")} </span>
                 </div>
               </Table.Th>
 
-              <Table.Th onClick={() => handleSort("assignedTo")}>
-                <div className="table-headers">
+              <Table.Th
+                className="bl-header-cell"
+                onClick={() => handleSort("assignedTo")}
+              >
+                <div className="bl-table-headers">
                   <span> Assigned To </span>
                   <span> {renderSortIcon("assignedTo")} </span>
                 </div>
               </Table.Th>
 
-              <Table.Th onClick={() => handleSort("shortDescription")}>
-                <div className="table-headers">
+              <Table.Th
+                className="bl-header-cell"
+                onClick={() => handleSort("shortDescription")}
+              >
+                <div className="bl-table-headers">
                   <span> Description </span>
                   <span> {renderSortIcon("shortDescription")} </span>
                 </div>
               </Table.Th>
 
-              <Table.Th onClick={() => handleSort("category")}>
-                <div className="table-headers">
+              <Table.Th
+                className="bl-header-cell"
+                onClick={() => handleSort("category")}
+              >
+                <div className="bl-table-headers">
                   <span> Category </span>
                   <span> {renderSortIcon("category")} </span>
                 </div>
               </Table.Th>
 
-              <Table.Th onClick={() => handleSort("state")}>
-                <div className="table-headers">
+              <Table.Th
+                className="bl-header-cell"
+                onClick={() => handleSort("state")}
+              >
+                <div className="bl-table-headers">
                   <span> State </span>
                   <span> {renderSortIcon("state")} </span>
                 </div>
               </Table.Th>
 
-              <Table.Th onClick={() => handleSort("actualResolvedTime")}>
-                <div className="table-headers">
+              <Table.Th
+                className="bl-header-cell"
+                onClick={() => handleSort("actualResolvedTime")}
+              >
+                <div className="bl-table-headers">
                   <span> Actual Resolved Time </span>
                   <span> {renderSortIcon("actualResolvedTime")} </span>
                 </div>
               </Table.Th>
 
-              <Table.Th onClick={() => handleSort("resolvedDateTime")}>
-                <div className="table-headers">
+              <Table.Th
+                className="bl-header-cell"
+                onClick={() => handleSort("resolvedDateTime")}
+              >
+                <div className="bl-table-headers">
                   <span> Resolved Date & Time </span>
                   <span> {renderSortIcon("resolvedDateTime")} </span>
                 </div>
@@ -205,8 +227,11 @@ export default function IncidentTable({ priority }: { priority: string }) {
                 </div>
               </Table.Th> */}
 
-              <Table.Th onClick={() => handleSort("breachSLA")}>
-                <div className="table-headers">
+              <Table.Th
+                className="bl-header-cell last-header"
+                onClick={() => handleSort("breachSLA")}
+              >
+                <div className="bl-table-headers">
                   <span> Breach SLA </span>
                   <span> {renderSortIcon("breachSLA")} </span>
                 </div>
@@ -225,13 +250,15 @@ export default function IncidentTable({ priority }: { priority: string }) {
                 </Table.Td>
               </Table.Tr>
             ) : (
-              incidents.map((incident) => {
+              incidents.map((incident,index) => {
                 const isBreached = incident.breachSLA !== "No Breach";
 
                 return (
                   <Table.Tr
                     key={incident.incidentNo}
                     className={`breached-row ${isBreached ? "breached" : ""}`}
+                    style={{ outline: index === 0 ? "paddingTop:20px" : undefined }}
+
                   >
                     <Table.Td>{incident.incidentNo}</Table.Td>
                     <Table.Td>{incident.assignedTo}</Table.Td>

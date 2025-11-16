@@ -2,9 +2,6 @@
   padding-top: 5px;
 }
 
-.accordion-border:last-of-type {
-  border-bottom: none;
-}
 
 .Accordion-title {
   background-color: #e5e7ee;
@@ -54,10 +51,6 @@
   background: #f3f3f3;
 }
 
-.accordion-border:last-of-type {
-  border-bottom: none;
-}
-
 .Accordion-title {
   background-color: #f5f6fa;
 }
@@ -67,4 +60,44 @@
   flex-direction: column;
   gap: 10px;
 
+}
+.mantine-Tabs-tab[data-active="true"] {
+  border-bottom: 5px solid #1c7ed6 !important; /* adjust thickness & color */
+}
+
+.incident-breach-accordion-config {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.accordion-padding {
+  padding:16px 20px 19px 20px !important;
+}
+
+/* Accordion outer style */
+.incident-breach-accordion-config .mantine-Accordion-item {
+  border-radius: 10px;
+  background-color: #f7f9fc;
+  overflow: hidden;
+  border: 1px solid #e0e0e0;
+}
+
+/* Accordion header look */
+.incident-breach-accordion-config .mantine-Accordion-control {
+  padding: 10px 18px;
+  background-color: #F5F6FA;
+}
+
+/* Hover effect */
+/* .incident-breach-accordion-config .mantine-Accordion-control:hover {
+  background-color: #eef2f7;
+} */
+
+/* Remove bottom border from last accordion */
+.incident-breach-accordion-config .mantine-Accordion-item:last-of-type {
+  border: none;
+}
+.mantine-Tabs-tab {
+    padding-bottom: 8px !important;
 }

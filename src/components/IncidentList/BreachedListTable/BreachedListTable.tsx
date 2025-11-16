@@ -66,10 +66,7 @@ export default function BreachedListTable({
   }, [totalPage]);
 
   useEffect(() => {
-    if (
-      activeIncidentTab !== priority ||
-      activeBreachAccordion !== priority
-    ) {
+    if (activeIncidentTab !== priority || activeBreachAccordion !== priority) {
       return;
     }
     const query = buildFilterQuery();
@@ -171,58 +168,64 @@ export default function BreachedListTable({
       <Table.ScrollContainer minWidth={600}>
         <Table>
           <Table.Thead>
-            <Table.Tr>
-              <Table.Th onClick={() => handleSort("incidentNumber")}>
+            <Table.Tr className="bl-header-row">
+              <Table.Th
+                className="bl-header-cell first-header"
+                onClick={() => handleSort("incidentNumber")}
+              >
                 <div className="bl-table-headers">
-                  <span> Incident No </span>
-                  <span> {renderSortIcon("incidentNumber")} </span>
+                  <span>Incident No</span>
+                  <span>{renderSortIcon("incidentNumber")}</span>
                 </div>
               </Table.Th>
 
-              <Table.Th>
-                <div
-                  className="bl-table-headers"
-                  onClick={() => handleSort("assignedTo")}
-                >
-                  <span> Assigned To </span>
-                  <span> {renderSortIcon("assignedTo")} </span>
-                </div>
-              </Table.Th>
-
-              <Table.Th>
-                <div
-                  className="bl-table-headers"
-                  onClick={() => handleSort("shortDescription")}
-                >
-                  <span> Description </span>
-                  <span> {renderSortIcon("shortDescription")} </span>
-                </div>
-              </Table.Th>
-
-              <Table.Th onClick={() => handleSort("category")}>
+              <Table.Th
+                className="bl-header-cell"
+                onClick={() => handleSort("assignedTo")}
+              >
                 <div className="bl-table-headers">
-                  <span> Category </span>
-                  <span> {renderSortIcon("category")} </span>
+                  <span>Assigned To</span>
+                  <span>{renderSortIcon("assignedTo")}</span>
                 </div>
               </Table.Th>
 
-              <Table.Th>
-                <div
-                  className="bl-table-headers"
-                  onClick={() => handleSort("actualResolvedTime")}
-                >
-                  <span> Actual Resolved Time </span>
-                  <span> {renderSortIcon("actualResolvedTime")} </span>
+              <Table.Th
+                className="bl-header-cell"
+                onClick={() => handleSort("shortDescription")}
+              >
+                <div className="bl-table-headers">
+                  <span>Description</span>
+                  <span>{renderSortIcon("shortDescription")}</span>
                 </div>
               </Table.Th>
 
-              <Table.Th>
-                <div
-                  className="bl-table-headers"
-                  onClick={() => handleSort("breachSLA")}
-                >
-                  <span> Breach SLA </span>
-                  <span> {renderSortIcon("breachSLA")} </span>
+              <Table.Th
+                className="bl-header-cell"
+                onClick={() => handleSort("category")}
+              >
+                <div className="bl-table-headers">
+                  <span>Category</span>
+                  <span>{renderSortIcon("category")}</span>
+                </div>
+              </Table.Th>
+
+              <Table.Th
+                className="bl-header-cell"
+                onClick={() => handleSort("actualResolvedTime")}
+              >
+                <div className="bl-table-headers">
+                  <span>Actual Resolved Time</span>
+                  <span>{renderSortIcon("actualResolvedTime")}</span>
+                </div>
+              </Table.Th>
+
+              <Table.Th
+                className="bl-header-cell last-header"
+                onClick={() => handleSort("breachSLA")}
+              >
+                <div className="bl-table-headers">
+                  <span>Breach SLA</span>
+                  <span>{renderSortIcon("breachSLA")}</span>
                 </div>
               </Table.Th>
             </Table.Tr>
@@ -239,14 +242,17 @@ export default function BreachedListTable({
                 </Table.Td>
               </Table.Tr>
             ) : (
-              breachedIncidents.map((breachedIncident) => (
-                <Table.Tr key={breachedIncident.incidentNumber}>
-                  <Table.Td>{breachedIncident.incidentNumber}</Table.Td>
-                  <Table.Td>{breachedIncident.assignedTo}</Table.Td>
-                  <Table.Td>{breachedIncident.shortDescription}</Table.Td>
-                  <Table.Td>{breachedIncident.category}</Table.Td>
-                  <Table.Td>{breachedIncident.actualResolvedTime}</Table.Td>
-                  <Table.Td>{breachedIncident.breachSLA}</Table.Td>
+              breachedIncidents.map((item, index) => (
+                <Table.Tr
+                  key={item.incidentNumber}
+                  className={index === 0 ? "first-row-gap" : ""}
+                >
+                  <Table.Td>{item.incidentNumber}</Table.Td>
+                  <Table.Td>{item.assignedTo}</Table.Td>
+                  <Table.Td>{item.shortDescription}</Table.Td>
+                  <Table.Td>{item.category}</Table.Td>
+                  <Table.Td>{item.actualResolvedTime}</Table.Td>
+                  <Table.Td>{item.breachSLA}</Table.Td>
                 </Table.Tr>
               ))
             )}
@@ -259,6 +265,7 @@ export default function BreachedListTable({
         <span>
           Showing {startRange}-{endRange} of {totalElements} Total Incidents
         </span>
+
         <div className="bl-pagination-controls">
           <button
             onClick={resetPageNumber}
@@ -267,12 +274,15 @@ export default function BreachedListTable({
             <img src={forward} alt="" />
             <img src={forward} alt="" />
           </button>
+
           <button onClick={prevPage}>
             <img src={forward} alt="" />
           </button>
+
           <button onClick={nextPage}>
             <img src={backward} alt="" />
           </button>
+
           <button onClick={lastPage} style={{ borderRadius: "0 6px 6px 0" }}>
             <img src={backward} alt="" />
             <img src={backward} alt="" />

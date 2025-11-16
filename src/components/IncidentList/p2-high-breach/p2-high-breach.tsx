@@ -36,11 +36,11 @@ export default function P2HighBreach() {
             }}
           >
             <Accordion.Item value="filter">
-              <Accordion.Control className="Accordion-title">
+              <Accordion.Control className="Accordion-title"style={{backgroundColor:"#EAECF5"}} >
                 <Text fw={600}>Filter</Text>
               </Accordion.Control>
 
-              <Accordion.Panel>
+              <Accordion.Panel style={{backgroundColor:"#fff"}}>
                 <div className="BL-filter-container">
                   <div>
                     <Text fw={500} mb="xs">
