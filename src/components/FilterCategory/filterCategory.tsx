@@ -23,7 +23,6 @@ export default function FilterCategory() {
   const setSelectedCategories = useSetAtom(selectedCategories);
   const setSelectedStatus = useSetAtom(selectedStatus);
   const setSelectedTeamMembers = useSetAtom(selectedTeamMembers);
-
   const setAppliedFilters = useSetAtom(appliedFilter);
   const appliedFilterChips = useAtomValue(filterChips);
   const hasActiveFilters = useAtomValue(resetEnabled);
