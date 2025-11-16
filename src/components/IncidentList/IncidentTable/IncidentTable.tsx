@@ -4,7 +4,7 @@ import "../BreachedListTable/BreachedListTable.css"
 import { useCallback, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { BsList } from "react-icons/bs";
-import { FaSortAmountDownAlt } from "react-icons/fa";
+import { FaArrowCircleDown, FaSortAmountDownAlt } from "react-icons/fa";
 import { FaSortAmountUp } from "react-icons/fa";
 import backward from "../../../assets/backward.png";
 import forward from "../../../assets/forward.png";
@@ -252,7 +252,8 @@ export default function IncidentTable({ priority }: { priority: string }) {
             ) : (
               incidents.map((incident,index) => {
                 const isBreached = incident.breachSLA !== "No Breach";
-
+                console.log(isBreached);
+                
                 return (
                   <Table.Tr
                     key={incident.incidentNo}
@@ -272,10 +273,10 @@ export default function IncidentTable({ priority }: { priority: string }) {
                     <Table.Td className="highlight-downarrow">
                       <div className="breach-cell">
                         <span>{incident.breachSLA}</span>
-
-                        {isBreached && (
-                          <ArrowDropDownCircleIcon className="arrow" />
-                        )}
+                        <span style={{minWidth:"17px"}}>{isBreached && (
+                          <FaArrowCircleDown  className="arrow" />
+                        )}</span>
+                        
                       </div>
                     </Table.Td>
                   </Table.Tr>

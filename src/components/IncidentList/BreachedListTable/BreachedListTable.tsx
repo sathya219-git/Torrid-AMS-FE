@@ -44,7 +44,7 @@ export default function BreachedListTable({
   const appliedFilters = useAtomValue(appliedFilter);
   const activeIncidentTab = useAtomValue(ActiveIncidentTab);
   const activeBreachAccordion = useAtomValue(ActiveBreachAccordion);
-
+  
   const nextPage = useCallback(() => {
     if (currentPage < totalPage) {
       setCurrentPage((prev) => prev + 1);
@@ -69,7 +69,9 @@ export default function BreachedListTable({
     if (activeIncidentTab !== priority || activeBreachAccordion !== priority) {
       return;
     }
+
     const query = buildFilterQuery();
+
     const url = `http://localhost:5092/api/Incident/breachlistbypriority?Priority=${encodeURIComponent(
       priority
     )}&PageNumber=${currentPage}&PageSize=${8}${query}`;
@@ -99,15 +101,22 @@ export default function BreachedListTable({
 
   const buildFilterQuery = useCallback(() => {
     const params = new URLSearchParams();
-    if (appliedFilters.Category?.length > 0) {
+    if (breachFilters.categories && breachFilters.categories.trim() !== "") {
+      params.append("Category", breachFilters.categories);
+    }
+    // 2. Else use appliedFilters.Category
+    else if (appliedFilters.Category?.length > 0) {
       params.append("Category", appliedFilters.Category.join(","));
+    }
+    if (breachFilters.assignedTo && breachFilters.assignedTo.trim() !== "") {
+      params.append("AssignedToName", breachFilters.assignedTo);
+    } else if (appliedFilters.AssignedToName?.length > 0) {
+      params.append("AssignedToName", appliedFilters.AssignedToName.join(","));
     }
     if (appliedFilters.State?.length > 0) {
       params.append("State", appliedFilters.State.join(","));
     }
-    if (appliedFilters.AssignedToName?.length > 0) {
-      params.append("AssignedToName", appliedFilters.AssignedToName.join(","));
-    }
+
     if (appliedFilters.FromDate) {
       const formatted = new Date(appliedFilters.FromDate).toLocaleString(
         "en-US"

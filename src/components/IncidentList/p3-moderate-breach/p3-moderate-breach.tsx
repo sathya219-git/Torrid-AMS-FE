@@ -1,18 +1,20 @@
-import { useAtom } from "jotai";
-import { P3BreachFilters } from "../../../store/filterStore";
+import { PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from "jotai";
+import { appliedFilter, filterChips, P3BreachFilters, selectedTeamMembers } from "../../../store/filterStore";
 import { Accordion, Radio, Text } from "@mantine/core";
 import BreachedListTable from "../BreachedListTable/BreachedListTable";
 import {
   ActualResolvedTimeFilters,
   BreachSLAStatusFilters,
 } from "../breached-list-filter.constants";
-import { BreachFilters } from "../../../store/filter-store.interface";
-import { useCallback } from "react";
+import { BreachFilters, FilterState } from "../../../store/filter-store.interface";
+import { useCallback, useEffect } from "react";
 
 export default function P3ModerateBreach() {
   const [p3BreachFilters, setP3BreachFilters] = useAtom(P3BreachFilters);
+  const mainAppliedFilters = useAtomValue(appliedFilter);
 
   const setValue = useCallback((key: keyof BreachFilters, value: string) => {
+        
     setP3BreachFilters((prev) => {
       return {
         ...prev,
@@ -44,6 +46,52 @@ export default function P3ModerateBreach() {
                 <div className="BL-filter-container">
                   <div>
                     <Text fw={500} mb="xs">
+                      Assigned To
+                    </Text>
+                    <div className="incident-scroll">
+                      <Radio.Group
+                        name="p3AssignedTo"
+                        value={p3BreachFilters.assignedTo}
+                        onChange={(e) => setValue("assignedTo", e)}
+                      >
+                        {mainAppliedFilters.AssignedToName.map((item) => (
+                          <div className="incident-checkbox" key={item}>
+                            <Radio label={item} value={item} onClick={() => {
+                                // If already selected → unselect
+                                if (p3BreachFilters.assignedTo === item) {
+                                  setValue("assignedTo", ""); // CLEAR
+                                }
+                              }}/>
+                          </div>
+                        ))}
+                      </Radio.Group>
+                    </div>
+                  </div>
+                  <div>
+                    <Text fw={500} mb="xs">
+                      Category
+                    </Text>
+                    <div className="incident-scroll">
+                      <Radio.Group
+                        name="p3Category"
+                        value={p3BreachFilters.categories}
+                        onChange={(e) => setValue("categories", e)}
+                      >
+                        {mainAppliedFilters.Category.map((item) => (
+                          <div className="incident-checkbox" key={item}>
+                            <Radio label={item} value={item}  onClick={() => {
+                                // If already selected → unselect
+                                if (p3BreachFilters.categories === item) {
+                                  setValue("categories", ""); // CLEAR
+                                }
+                              }}/>
+                          </div>
+                        ))}
+                      </Radio.Group>
+                    </div>
+                  </div>
+                  <div>
+                    <Text fw={500} mb="xs">
                       Actual Resolved Time
                     </Text>
                     <div className="incident-scroll">
@@ -54,7 +102,15 @@ export default function P3ModerateBreach() {
                       >
                         {ActualResolvedTimeFilters.map((item) => (
                           <div className="incident-checkbox" key={item.value}>
-                            <Radio label={item.time} value={item.value} />
+                            <Radio label={item.time} value={item.value} onClick={() => {
+                                // If the clicked option is already selected → unselect it
+                                if (
+                                  p3BreachFilters.actualResolvedTime ===
+                                  item.value
+                                ) {
+                                  setValue("actualResolvedTime", ""); // clear selection
+                                }
+                              }}/>
                           </div>
                         ))}
                       </Radio.Group>
@@ -74,7 +130,15 @@ export default function P3ModerateBreach() {
                       >
                         {BreachSLAStatusFilters.map((item) => (
                           <div className="incident-checkbox" key={item.value}>
-                            <Radio label={item.status} value={item.value} />
+                            <Radio label={item.status} value={item.value} onClick={() => {
+                                // If the clicked option is already selected → unselect it
+                                if (
+                                  p3BreachFilters.breachSLA ===
+                                  item.value
+                                ) {
+                                  setValue("breachSLA", ""); // clear selection
+                                }
+                              }}/>
                           </div>
                         ))}
                       </Radio.Group>
@@ -93,3 +157,4 @@ export default function P3ModerateBreach() {
     </Accordion.Item>
   );
 }
+
