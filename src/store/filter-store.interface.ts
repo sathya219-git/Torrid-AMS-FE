@@ -1,11 +1,11 @@
 export interface FilterChip {
   key:
-  | "AssignmentGroup"
-  | "FromDate"
-  | "ToDate"
-  | "Category"
-  | "State"
-  | "AssignedToName";
+    | "AssignmentGroup"
+    | "FromDate"
+    | "ToDate"
+    | "Category"
+    | "State"
+    | "AssignedToName";
   value: string;
 }
 
@@ -33,8 +33,8 @@ export interface BreachFilters {
   categories?: string;
   assignedTo?: string;
 }
-export interface ApiRequest{
-  url:string;
-  method:string;
-  body:any
+
+export interface ApiRequest {
+  method: string;
+  body: any;
 }

@@ -71,7 +71,13 @@ td {
   color: #ef4444;
   font-size: 18px;
 }
-
+.bl-table-headers
+{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
 /* PAGINATION */
 .pagination-footer {
   display: flex;
@@ -79,6 +85,9 @@ td {
   align-items: center;
   padding: 5px 10px 10px 10px;
   width: 100%;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px
 }
 
 .pagination-footer span {

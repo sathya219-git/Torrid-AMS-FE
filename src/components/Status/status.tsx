@@ -1,29 +1,27 @@
 import { Accordion, Badge, Checkbox, Text } from "@mantine/core";
-import axios from "axios";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useEffect } from "react";
-import { selectedStatus, status } from "../../store/filterStore";
+import { InitiateAPI, selectedStatus, status } from "../../store/filterStore";
 import "./status.css";
-import { StatusItem } from "./status.interface";
 
 export default function Status() {
+  const statusList = useAtomValue(status);
   const [selectedFilters, setSelectedFilters] = useAtom(selectedStatus);
-  const [statusList, setStatusList] = useAtom(status);
+
+  const initiateAPI = useSetAtom(InitiateAPI);
 
   useEffect(() => {
     if (statusList.length > 0) {
       return;
     }
-    axios
-      .get("http://localhost:5092/api/Incident/statuscountbypriority")
-      .then((res) => {
-        const data: StatusItem[] = Array.isArray(res.data) ? res.data : [];
-        setStatusList(data);
-      })
-      .catch((err) => {
-        console.error("Error fetching status:", err);
-        setStatusList([]);
+    initiateAPI((prev) => {
+      const curr = new Map(prev);
+      curr.set("http://localhost:5092/api/Incident/statuscountbypriority", {
+        method: "GET",
+        body: null,
       });
+      return curr;
+    });
   }, []);
 
   const statusChanges = useCallback((value: string) => {

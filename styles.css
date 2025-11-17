@@ -5,6 +5,8 @@ body {
   padding: 0;
 }
 
-.loader {
-  overflow: hidden;
+.center-loader {
+  position: fixed !important;
+  top: 50%;
+  left: 50%;
 }

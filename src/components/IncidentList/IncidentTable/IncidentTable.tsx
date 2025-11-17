@@ -1,26 +1,37 @@
 import { Table } from "@mantine/core";
 import "./IncidentTable.css";
-import "../BreachedListTable/BreachedListTable.css"
+import "../BreachedListTable/BreachedListTable.css";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import axios from "axios";
 import { BsList } from "react-icons/bs";
 import { FaArrowCircleDown, FaSortAmountDownAlt } from "react-icons/fa";
 import { FaSortAmountUp } from "react-icons/fa";
 import backward from "../../../assets/backward.png";
 import forward from "../../../assets/forward.png";
-import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import {
   ActiveCriticalAccordion,
   ActiveIncidentTab,
   appliedFilter,
+  IncidentsResponse,
+  InitiateAPI,
 } from "../../../store/filterStore";
 import { Incident, SortOrder } from "./incident-table.interface";
 
 export default function IncidentTable({ priority }: { priority: string }) {
-  const [incidents, setIncidents] = useState<Incident[]>([]);
-  const [totalElements, settotalElements] = useState(0);
-  const [totalPage, setTotalPages] = useState(0);
+  const incidentsResponse = useAtomValue(IncidentsResponse);
+
+  const incidents = useMemo(() => {
+    return incidentsResponse?.incidents ?? [];
+  }, [incidentsResponse]);
+
+  const totalElements = useMemo(() => {
+    return incidentsResponse?.totalElements ?? 0;
+  }, [incidentsResponse]);
+
+  const totalPage = useMemo(() => {
+    return incidentsResponse?.totalPages ?? 0;
+  }, [incidentsResponse]);
+
   const [currentPage, setCurrentPage] = useState(1);
 
   const [sortField, setSortField] = useState<keyof Incident | "">("");
@@ -58,6 +69,8 @@ export default function IncidentTable({ priority }: { priority: string }) {
     setCurrentPage(totalPage);
   }, []);
 
+  const initiateAPI = useSetAtom(InitiateAPI);
+
   useEffect(() => {
     if (
       activeIncidentTab !== priority ||
@@ -68,19 +81,14 @@ export default function IncidentTable({ priority }: { priority: string }) {
     const query = buildFilterQuery();
     const encodedPriority = encodeURIComponent(priority);
     const url = `http://localhost:5092/api/Incident/detailsbypriority?Priority=${encodedPriority}&PageNumber=${currentPage}${query}`;
-    axios
-      .get(url)
-      .then((res) => {
-        setIncidents(res.data.incidents ?? []);
-        settotalElements(res.data.totalElements);
-        setTotalPages(res.data.totalPages);
-      })
-      .catch((err) => {
-        console.error("Error:", err);
-        setIncidents([]);
-        settotalElements(0);
-        setTotalPages(0);
+    initiateAPI((prev) => {
+      const curr = new Map(prev);
+      curr.set(url, {
+        method: "GET",
+        body: null,
       });
+      return curr;
+    });
   }, [
     priority,
     currentPage,
@@ -250,16 +258,17 @@ export default function IncidentTable({ priority }: { priority: string }) {
                 </Table.Td>
               </Table.Tr>
             ) : (
-              incidents.map((incident,index) => {
+              incidents.map((incident, index) => {
                 const isBreached = incident.breachSLA !== "No Breach";
                 console.log(isBreached);
-                
+
                 return (
                   <Table.Tr
                     key={incident.incidentNo}
                     className={`breached-row ${isBreached ? "breached" : ""}`}
-                    style={{ outline: index === 0 ? "paddingTop:20px" : undefined }}
-
+                    style={{
+                      outline: index === 0 ? "paddingTop:20px" : undefined,
+                    }}
                   >
                     <Table.Td>{incident.incidentNo}</Table.Td>
                     <Table.Td>{incident.assignedTo}</Table.Td>
@@ -273,10 +282,11 @@ export default function IncidentTable({ priority }: { priority: string }) {
                     <Table.Td className="highlight-downarrow">
                       <div className="breach-cell">
                         <span>{incident.breachSLA}</span>
-                        <span style={{minWidth:"17px"}}>{isBreached && (
-                          <FaArrowCircleDown  className="arrow" />
-                        )}</span>
-                        
+                        <span style={{ minWidth: "17px" }}>
+                          {isBreached && (
+                            <FaArrowCircleDown className="arrow" />
+                          )}
+                        </span>
                       </div>
                     </Table.Td>
                   </Table.Tr>

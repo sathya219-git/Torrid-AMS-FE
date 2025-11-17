@@ -1,6 +1,5 @@
 import { Table } from "@mantine/core";
-import axios from "axios";
-import { useAtomValue } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { BsList } from "react-icons/bs";
 import { FaSortAmountDownAlt, FaSortAmountUp } from "react-icons/fa";
@@ -10,6 +9,8 @@ import {
   ActiveBreachAccordion,
   ActiveIncidentTab,
   appliedFilter,
+  BreachedResponse,
+  InitiateAPI,
 } from "../../../store/filterStore";
 import "./BreachedListTable.css";
 import { BreachedIncidents, SortOrder } from "./breached-list-table.interface";
@@ -22,11 +23,19 @@ export default function BreachedListTable({
   priority: string;
   breachFilters: BreachFilters;
 }) {
-  const [breachedIncidents, setBreachedIncidents] = useState<
-    BreachedIncidents[]
-  >([]);
-  const [totalElements, settotalElements] = useState(0);
-  const [totalPage, setTotalPages] = useState(0);
+  const breachedResponse = useAtomValue(BreachedResponse);
+
+  const breachedIncidents = useMemo(() => {
+    return breachedResponse?.items ?? [];
+  }, [breachedResponse]);
+
+  const totalElements = useMemo(() => {
+    return breachedResponse?.totalElements ?? 0;
+  }, [breachedResponse]);
+
+  const totalPage = useMemo(() => {
+    return breachedResponse?.totalElements ?? 0;
+  }, [breachedResponse]);
 
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -44,7 +53,7 @@ export default function BreachedListTable({
   const appliedFilters = useAtomValue(appliedFilter);
   const activeIncidentTab = useAtomValue(ActiveIncidentTab);
   const activeBreachAccordion = useAtomValue(ActiveBreachAccordion);
-  
+
   const nextPage = useCallback(() => {
     if (currentPage < totalPage) {
       setCurrentPage((prev) => prev + 1);
@@ -65,29 +74,24 @@ export default function BreachedListTable({
     setCurrentPage(totalPage);
   }, [totalPage]);
 
+  const initiateAPI = useSetAtom(InitiateAPI);
+
   useEffect(() => {
     if (activeIncidentTab !== priority || activeBreachAccordion !== priority) {
       return;
     }
-
     const query = buildFilterQuery();
-
     const url = `http://localhost:5092/api/Incident/breachlistbypriority?Priority=${encodeURIComponent(
       priority
     )}&PageNumber=${currentPage}&PageSize=${8}${query}`;
-    axios
-      .get(url)
-      .then((res) => {
-        setBreachedIncidents(res.data.items ?? []);
-        settotalElements(res.data.totalElements);
-        setTotalPages(res.data.totalPages);
-      })
-      .catch((err) => {
-        console.error("Axios Error:", err);
-        setBreachedIncidents([]);
-        settotalElements(0);
-        setTotalPages(0);
+    initiateAPI((prev) => {
+      const curr = new Map(prev);
+      curr.set(url, {
+        method: "GET",
+        body: null,
       });
+      return curr;
+    });
   }, [
     priority,
     currentPage,
@@ -127,10 +131,16 @@ export default function BreachedListTable({
       const formatted = new Date(appliedFilters.ToDate).toLocaleString("en-US");
       params.append("ToDate", formatted);
     }
-    if (breachFilters.breachSLA !== undefined) {
+    if (
+      breachFilters.breachSLA !== undefined &&
+      breachFilters.breachSLA !== ""
+    ) {
       params.append("BreachSLA", breachFilters.breachSLA);
     }
-    if (breachFilters.actualResolvedTime !== undefined) {
+    if (
+      breachFilters.actualResolvedTime !== undefined &&
+      breachFilters.actualResolvedTime !== ""
+    ) {
       params.append("ActualResolvedTime", breachFilters.actualResolvedTime);
     }
     if (sortField !== "") {

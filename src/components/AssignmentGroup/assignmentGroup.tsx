@@ -16,7 +16,14 @@ export default function AssignmentGroup() {
     if (assignmentGroups.length > 0) {
       return;
     }
-    initiateAPI({url:"http://localhost:5092/api/Incident/assignmentgroups",method:"GET",body:null});
+    initiateAPI((prev) => {
+      const curr = new Map(prev);
+      curr.set("http://localhost:5092/api/Incident/assignmentgroups", {
+        method: "GET",
+        body: null,
+      });
+      return curr;
+    });
   }, []);
 
   const staticGroups = useMemo(() => {

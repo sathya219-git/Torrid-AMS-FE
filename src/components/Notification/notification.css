@@ -2,8 +2,27 @@
 .notification-item {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  word-break: break-word; /* Prevents filename overflow */
+  gap: 8px;
+  padding: 12px;
+  border-radius: 8px;
+  background: #ffffff;
+  border-left: 5px solid #3b82f6;
+  margin-bottom: 12px;
+}
+.popover-dropdown{
+
+  min-width: 550px !important;
+    max-width: 550px !important;
+
+}
+.notification-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 5px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #0369a1;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 /* Filename + size style */
@@ -56,11 +75,4 @@
 .upload-notification::-webkit-scrollbar-thumb {
   background: #60aaebb7;
   border-radius: 10px;
-}
-.notification-header
-{
-
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
 }

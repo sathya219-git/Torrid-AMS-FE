@@ -1,30 +1,33 @@
 import { Accordion, Checkbox, Text } from "@mantine/core";
-import axios from "axios";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useEffect, useMemo } from "react";
 import { List, RowComponentProps } from "react-window";
-import { categories, selectedCategories } from "../../store/filterStore";
+import {
+  categories,
+  InitiateAPI,
+  selectedCategories,
+} from "../../store/filterStore";
 import "./category.css";
 import { CategoryItem } from "./category.interface";
 
 export default function Category() {
-  const [categoryList, setCategories] = useAtom(categories);
+  const categoryList = useAtomValue(categories);
   const [selectedFilters, setSelectedFilters] = useAtom(selectedCategories);
+
+  const initiateAPI = useSetAtom(InitiateAPI);
 
   useEffect(() => {
     if (categoryList.length > 0) {
       return;
     }
-    axios
-      .get("http://localhost:5092/api/Incident/categorycountbygroup")
-      .then((res) => {
-        const data: CategoryItem[] = Array.isArray(res.data) ? res.data : [];
-        setCategories(data);
-      })
-      .catch((err) => {
-        console.error("Error fetching category counts:", err);
-        setCategories([]);
+    initiateAPI((prev) => {
+      const curr = new Map(prev);
+      curr.set("http://localhost:5092/api/Incident/categorycountbygroup", {
+        method: "GET",
+        body: null,
       });
+      return curr;
+    });
   }, []);
 
   const selectAll = useMemo(() => {

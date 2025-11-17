@@ -1,23 +1,28 @@
 import { ScrollAreaAutosize, Select } from "@mantine/core";
-import { useAtomValue } from "jotai";
-import { useCallback, useEffect, useState } from "react";
+import { useAtomValue, useSetAtom } from "jotai";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { GoSortAsc, GoSortDesc } from "react-icons/go";
 import backward from "../../assets/backward.png";
 import forward from "../../assets/forward.png";
-import { appliedFilter } from "../../store/filterStore";
+import {
+  appliedFilter,
+  InitiateAPI,
+  TeamMemberDetails,
+} from "../../store/filterStore";
 import { buildFilterQuery } from "../../utils/queryBuilder";
 import { TeamMembersColumnConfig } from "./member-portfolio.constants";
 import "./member-portfolio.css";
-import {
-  MemberDetails,
-  MemberDetailsResponse,
-} from "./member-portfolio.interface";
 import TeamMemberCard from "./team-member-card/team-member-card";
 
 export default function MemberPortfolio() {
   const appliedFilters = useAtomValue(appliedFilter);
+  const memberDetailsResponse = useAtomValue(TeamMemberDetails);
 
-  const [members, setMembers] = useState<MemberDetails[]>([]);
+  const initiateAPI = useSetAtom(InitiateAPI);
+
+  const members = useMemo(() => {
+    return memberDetailsResponse?.memberDetails ?? [];
+  }, [memberDetailsResponse]);
 
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState("5");
@@ -25,8 +30,13 @@ export default function MemberPortfolio() {
   const [sortBy, setSortBy] = useState("name");
   const [sortOrder, setSortOrder] = useState("ascending");
 
-  const [totalRecords, setTotalRecords] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
+  const totalRecords = useMemo(() => {
+    return memberDetailsResponse?.pagination.totalRecords ?? 0;
+  }, [memberDetailsResponse]);
+
+  const totalPages = useMemo(() => {
+    return memberDetailsResponse?.pagination.totalPages ?? 0;
+  }, [memberDetailsResponse]);
 
   useEffect(() => {
     const query = buildFilterQuery(appliedFilters);
@@ -42,20 +52,14 @@ export default function MemberPortfolio() {
 
     url += query ? `&${params.toString()}` : `?${params.toString()}`;
 
-    fetch(url)
-      .then((res) => {
-        res.json().then((data: MemberDetailsResponse) => {
-          setMembers(data.memberDetails);
-          setTotalRecords(data.pagination.totalRecords);
-          setTotalPages(data.pagination.totalPages);
-          setPageNumber(data.pagination.page);
-          setPageSize(data.pagination.pageSize.toString());
-        });
-      })
-      .catch((err) => {
-        console.error("Error fetching member summary:", err);
-        setMembers([]);
+    initiateAPI((prev) => {
+      const curr = new Map(prev);
+      curr.set(url, {
+        method: "GET",
+        body: null,
       });
+      return curr;
+    });
   }, [appliedFilters, pageNumber, pageSize, sortBy, sortOrder]);
 
   const goToFirstPage = useCallback(() => {

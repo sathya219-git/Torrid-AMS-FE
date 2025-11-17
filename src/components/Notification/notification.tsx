@@ -18,9 +18,10 @@ export default function Notification() {
       backgroundColor: "#f4f5f9",
       border: "1px solid #bae6fd",
       borderRadius: "10px",
-      padding: "10px 15px",  
+      padding: "15px 20px",
       boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-      maxWidth: "100%",
+      width: "100%", // ✅ full width
+      boxSizing: "border-box",
     },
     title: {
       marginBottom: "10px",
@@ -40,7 +41,15 @@ export default function Notification() {
     },
     filename: { color: "#1e3a8a" },
     size: { color: "#6b7280", fontSize: "0.9em" },
-    message: { color: "#065f46", fontSize: "0.95em", marginTop: "4px", display: "flex", justifyContent: "center", alignItems: "center", gap: "8px" },
+    message: {
+      color: "#065f46",
+      fontSize: "0.95em",
+      marginTop: "4px",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      gap: "8px",
+    },
   };
 
   const [files, setFiles] = useState<FileDetails[]>([]);
@@ -71,19 +80,24 @@ export default function Notification() {
   useEffect(() => {
     const handleCustomUpdate = () => loadFiles();
     window.addEventListener("uploadedFilesUpdated", handleCustomUpdate);
-    return () => window.removeEventListener("uploadedFilesUpdated", handleCustomUpdate);
+    return () =>
+      window.removeEventListener("uploadedFilesUpdated", handleCustomUpdate);
   }, []);
 
   // if (files.length === 0) return <div>No files uploaded yet.</div>;
 
   return (
     <div className="header-left">
-      <Popover width={650} position="bottom" shadow="md">
+      <Popover width={1000} position="bottom" shadow="md">
         <Popover.Target>
           <Button
             // variant="subtle"
             p={10}
-            style={{ display: "flex", alignItems: "center", justifyContent: "center", }}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
           >
             <NotificationsIcon fontSize="small" />
           </Button>
@@ -110,17 +124,26 @@ export default function Notification() {
               <h3 style={styles.title}>Upload Notifications</h3>
               <ul style={styles.list}>
                 {files.map((file, index) => {
-                  const time = new Date(file.uploadedAt).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  });
+                  const time = new Date(file.uploadedAt).toLocaleTimeString(
+                    [],
+                    {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    }
+                  );
                   const date = new Date(file.uploadedAt).toLocaleDateString();
 
                   return (
-                    <li key={index} style={styles.item} className="notification-item">
+                    <li
+                      key={index}
+                      style={styles.item}
+                      className="notification-item"
+                    >
                       <div className="notification-file">
                         <span>{file.name}</span>
-                        <span style={{ color: "#6b7280", fontSize: "0.9em" }}>({file.size})</span>
+                        <span style={{ color: "#6b7280", fontSize: "0.9em" }}>
+                          ({file.size})
+                        </span>
                       </div>
 
                       <div className="notification-success">

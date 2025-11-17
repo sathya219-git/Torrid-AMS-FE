@@ -287,6 +287,22 @@ const UploadReport = () => {
               <div className="table-header">
                 <h2>Uploaded File History</h2>
                 <Input
+                  radius="md"
+                  styles={{
+                    input: {
+                      border:"1px solid #2c2c2c31",
+                      borderRadius: "8px",
+                      padding: "22px",
+                      outline: "none",
+                      boxShadow: "none",
+
+                      "&:focus": {
+                        outline: "none",
+                        boxShadow: "none", 
+                        // borderColor: "inherit", // optional subtle border
+                      },
+                    },
+                  }}
                   placeholder="Search here..."
                   value={searchText}
                   onChange={handleSearchChange}

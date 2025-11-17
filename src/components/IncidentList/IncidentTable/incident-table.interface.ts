@@ -1,3 +1,9 @@
+export interface IncidentResponse {
+  incidents: Incident[];
+  totalElements: number;
+  totalPages: number;
+}
+
 export interface Incident {
   incidentNo: string;
   assignedTo: string;
@@ -7,6 +13,6 @@ export interface Incident {
   state: string;
   resolvedDateTime: string;
   breachSLA: string;
-};
+}
 
 export type SortOrder = "ASC" | "DESC" | "";

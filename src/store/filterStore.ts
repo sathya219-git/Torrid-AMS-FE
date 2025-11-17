@@ -8,16 +8,29 @@ import {
   FilterChip,
   FilterState,
 } from "./filter-store.interface";
+import { MemberDetailsResponse } from "../components/member-portfolio/member-portfolio.interface";
+import {
+  IncidentPrioritySummary,
+  IncidentSummary,
+} from "../components/cards/cards.interface";
+import { BreachedIncidentsResponse } from "../components/IncidentList/BreachedListTable/breached-list-table.interface";
+import { IncidentResponse } from "../components/IncidentList/IncidentTable/incident-table.interface";
 
-export const InitiateAPI = atom<ApiRequest>({
-  url:"",
-  method:"",
-  body:null
-});
+export const InitiateAPI = atom<Map<string, ApiRequest>>(new Map());
 
-export const filterState = atom(true);
+export const filterState = atom(false);
 
 export const tabValue = atom(true);
+
+export const KPIs = atom<IncidentSummary | undefined>();
+
+export const CountByPriority = atom<IncidentPrioritySummary | undefined>();
+
+export const TeamMemberDetails = atom<MemberDetailsResponse | undefined>();
+
+export const IncidentsResponse = atom<IncidentResponse | undefined>();
+
+export const BreachedResponse = atom<BreachedIncidentsResponse | undefined>();
 
 // Left side filters
 export const groups = atom<string[]>([]);
