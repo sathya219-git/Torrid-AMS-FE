@@ -18,9 +18,11 @@ import {
   IncidentsResponse,
   InitiateAPI,
   KPIs,
+  ReloadUploadedReportsGrid,
   status,
   TeamMemberDetails,
   teamMembers,
+  UploadedReportsResponse,
 } from "./store/filterStore";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { AssignmentGroupItem } from "./components/AssignmentGroup/assignment-group.interface";
@@ -45,6 +47,8 @@ export default function App() {
   const setMemberDetailsResponse = useSetAtom(TeamMemberDetails);
   const setIncidentsResponse = useSetAtom(IncidentsResponse);
   const setBreachedResponse = useSetAtom(BreachedResponse);
+  const setUploadedReportsResponse = useSetAtom(UploadedReportsResponse);
+  const setReloadUploadedReportsGrid = useSetAtom(ReloadUploadedReportsGrid);
 
   useEffect(() => {
     if (initiateAPI.size === 0) {
@@ -64,21 +68,25 @@ export default function App() {
           if (res.ok) {
             handleResponse(key, res);
           } else {
-            notifications.show({
-              position: "top-right",
-              title: "An error occured",
-              message: res.statusText,
-              color: "red",
-              radius: "md",
-              styles: {
-                root: {
-                  backgroundColor: "#ffe6e6",
-                  border: "1px solid #e74c3c",
-                  boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+            res.text().then((val) => {
+              const errMsg = val.slice(1, val.length - 1);
+              notifications.show({
+                position: "top-right",
+                title: "An error occured",
+                message: errMsg,
+                color: "red",
+                radius: "md",
+                classNames: {
+                  root: "err-ntfn-root",
                 },
-                title: { fontWeight: 600, color: "#922b21" },
-                description: { color: "#943126" },
-              },
+                styles: {
+                  body: {
+                    margin: "10px",
+                  },
+                  title: { fontWeight: 600, color: "#922b21" },
+                  description: { color: "#943126" },
+                },
+              });
             });
             handleError(key);
           }
@@ -115,6 +123,25 @@ export default function App() {
         setBreachedResponse(data);
       } else if (url.includes("api/Incident/detailsbypriority")) {
         setIncidentsResponse(data);
+      } else if (url.includes("api/files/history")) {
+        setUploadedReportsResponse(data);
+      } else if (url.includes("api/files/upload")) {
+        notifications.show({
+          title: "✅ Upload Successful",
+          message: `File uploaded successfully!`,
+          color: "green",
+          radius: "md",
+          styles: {
+            root: {
+              backgroundColor: "#e6ffed",
+              border: "1px solid #27ae60",
+              boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+            },
+            title: { fontWeight: 600, color: "#145a32" },
+            description: { color: "#196f3d" },
+          },
+        });
+        setReloadUploadedReportsGrid(new Date().getTime());
       }
       setActiveURLs((prev) => {
         const curr = new Set(prev);
@@ -143,6 +170,8 @@ export default function App() {
       setBreachedResponse(undefined);
     } else if (url.includes("api/Incident/detailsbypriority")) {
       setIncidentsResponse(undefined);
+    } else if (url.includes("api/files/history")) {
+      setUploadedReportsResponse(undefined);
     }
     setActiveURLs((prev) => {
       const curr = new Set(prev);

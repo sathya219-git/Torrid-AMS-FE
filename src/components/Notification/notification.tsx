@@ -1,16 +1,10 @@
 import "./notification.css";
-import { Badge, Button, Divider, Popover, Text } from "@mantine/core";
+import { Button, Popover, Text } from "@mantine/core";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import CloseIcon from "@mui/icons-material/Close";
 import { useEffect, useState } from "react";
 import { TiTick } from "react-icons/ti";
-
-interface FileDetails {
-  name: string;
-  size: string;
-  type: string;
-  uploadedAt: string;
-}
+import { FileDetail } from "../UploadReport/upload-report.interface";
 
 export default function Notification() {
   const styles: Record<string, React.CSSProperties> = {
@@ -52,7 +46,8 @@ export default function Notification() {
     },
   };
 
-  const [files, setFiles] = useState<FileDetails[]>([]);
+  const [opened, setOpened] = useState(false);
+  const [files, setFiles] = useState<FileDetail[]>([]);
 
   const loadFiles = () => {
     const stored = localStorage.getItem("uploadedFiles");
@@ -63,40 +58,28 @@ export default function Notification() {
   // ✅ Load once on mount
   useEffect(() => {
     loadFiles();
-
-    // ✅ Listen for localStorage updates
-    const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === "uploadedFiles") {
-        loadFiles();
-      }
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-
-    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
-
-  // ✅ Also listen for custom event when same tab updates
-  useEffect(() => {
-    const handleCustomUpdate = () => loadFiles();
-    window.addEventListener("uploadedFilesUpdated", handleCustomUpdate);
-    return () =>
-      window.removeEventListener("uploadedFilesUpdated", handleCustomUpdate);
-  }, []);
-
-  // if (files.length === 0) return <div>No files uploaded yet.</div>;
 
   return (
     <div className="header-left">
-      <Popover width={1000} position="bottom" shadow="md">
+      <Popover
+        width={1000}
+        position="bottom"
+        shadow="md"
+        opened={opened}
+        onChange={setOpened}
+      >
         <Popover.Target>
           <Button
-            // variant="subtle"
             p={10}
             style={{
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+            }}
+            onClick={() => {
+              loadFiles();
+              setOpened((prev) => !prev);
             }}
           >
             <NotificationsIcon fontSize="small" />
@@ -124,14 +107,14 @@ export default function Notification() {
               <h3 style={styles.title}>Upload Notifications</h3>
               <ul style={styles.list}>
                 {files.map((file, index) => {
-                  const time = new Date(file.uploadedAt).toLocaleTimeString(
+                  const time = new Date(file.uploadedDate).toLocaleTimeString(
                     [],
                     {
                       hour: "2-digit",
                       minute: "2-digit",
                     }
                   );
-                  const date = new Date(file.uploadedAt).toLocaleDateString();
+                  const date = new Date(file.uploadedDate).toLocaleDateString();
 
                   return (
                     <li
@@ -140,9 +123,9 @@ export default function Notification() {
                       className="notification-item"
                     >
                       <div className="notification-file">
-                        <span>{file.name}</span>
+                        <span>{file.fileName}</span>
                         <span style={{ color: "#6b7280", fontSize: "0.9em" }}>
-                          ({file.size})
+                          ({file.fileSize})
                         </span>
                       </div>
 

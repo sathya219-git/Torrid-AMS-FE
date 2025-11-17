@@ -9,11 +9,9 @@
   border-left: 5px solid #3b82f6;
   margin-bottom: 12px;
 }
-.popover-dropdown{
-
+.popover-dropdown {
   min-width: 550px !important;
-    max-width: 550px !important;
-
+  max-width: 550px !important;
 }
 .notification-header {
   display: flex;
@@ -75,4 +73,11 @@
 .upload-notification::-webkit-scrollbar-thumb {
   background: #60aaebb7;
   border-radius: 10px;
+}
+
+.err-ntfn-root {
+  background-color: #ffe6e6;
+  border: 1px solid #e74c3c;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-height: 300px !important;
 }

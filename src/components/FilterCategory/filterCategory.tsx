@@ -129,7 +129,7 @@ export default function FilterCategory() {
 
             {/* ✅ Conditional Header */}
             {hasValidFilters && (
-              <h1 style={{ color: "#333B69", paddingLeft: "10px" }}>
+              <h1 style={{ color: "#333B69", paddingLeft: "10px",fontWeight:"600",fontSize:"22px" }}>
                 Filtered Results
               </h1>
             )}

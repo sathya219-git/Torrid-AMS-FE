@@ -20,8 +20,9 @@ table {
 
 /* HEADER CELL */
 .bl-header-cell {
+  text-align: left;
   height: 60px;
-  padding: 14px 18px;
+  padding: 12px 18px;
   color: #202224;
   font-weight: 600;
   letter-spacing: 0.3px;
@@ -29,6 +30,11 @@ table {
   border-bottom: none !important;
   border-right: 1px solid rgba(0, 0, 0, 0.08);
   cursor: pointer;
+}
+.bl-header-cell .bl-table-headers {
+  display: flex;
+  justify-content: flex-start; /* align left */
+  gap: 6px;
 }
 
 /* Remove last border */

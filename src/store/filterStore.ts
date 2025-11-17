@@ -15,6 +15,7 @@ import {
 } from "../components/cards/cards.interface";
 import { BreachedIncidentsResponse } from "../components/IncidentList/BreachedListTable/breached-list-table.interface";
 import { IncidentResponse } from "../components/IncidentList/IncidentTable/incident-table.interface";
+import { UploadReportResponse } from "../components/UploadReport/upload-report.interface";
 
 export const InitiateAPI = atom<Map<string, ApiRequest>>(new Map());
 
@@ -31,6 +32,10 @@ export const TeamMemberDetails = atom<MemberDetailsResponse | undefined>();
 export const IncidentsResponse = atom<IncidentResponse | undefined>();
 
 export const BreachedResponse = atom<BreachedIncidentsResponse | undefined>();
+
+export const UploadedReportsResponse = atom<UploadReportResponse | undefined>();
+
+export const ReloadUploadedReportsGrid = atom(new Date().getTime());
 
 // Left side filters
 export const groups = atom<string[]>([]);

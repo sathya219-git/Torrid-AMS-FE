@@ -12,7 +12,7 @@
   text-transform: capitalize;
   color: #1e3a8a;
   cursor: pointer;  
-  padding: 14px 10px;
+  /* padding: 14px 10px; */
   transition: all 0.2s ease;
   border-bottom: 2px solid #e0e7ff;
   white-space: nowrap;
@@ -49,7 +49,7 @@
 
 /* BODY */
 td {
-  padding: 12px 16px;
+  padding: 12px 16px !important;
   color: #080808;
 }
 
