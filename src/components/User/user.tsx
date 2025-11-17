@@ -3,12 +3,17 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import avatar from "../../assets/avatar.png";
 import "./user.css";
 import { useNavigate } from "react-router-dom";
+import { useSetAtom } from "jotai";
+import { LoginSuccess } from "../../store/filterStore";
 
 export default function User() {
   const navigate = useNavigate();
 
+  const setLoginSuccess = useSetAtom(LoginSuccess);
+
   const logout = () => {
     sessionStorage.clear();
+    setLoginSuccess(false);
     navigate("/login");
     // localStorage.removeItem("uploadedFiles");
   };
