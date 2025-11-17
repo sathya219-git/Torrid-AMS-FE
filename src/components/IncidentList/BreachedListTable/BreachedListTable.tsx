@@ -34,7 +34,7 @@ export default function BreachedListTable({
   }, [breachedResponse]);
 
   const totalPage = useMemo(() => {
-    return breachedResponse?.totalElements ?? 0;
+    return breachedResponse?.totalPages ?? 0;
   }, [breachedResponse]);
 
   const [currentPage, setCurrentPage] = useState(1);

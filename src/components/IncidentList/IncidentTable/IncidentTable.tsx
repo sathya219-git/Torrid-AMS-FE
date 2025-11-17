@@ -67,7 +67,7 @@ export default function IncidentTable({ priority }: { priority: string }) {
 
   const lastPage = useCallback(() => {
     setCurrentPage(totalPage);
-  }, []);
+  }, [totalPage]);
 
   const initiateAPI = useSetAtom(InitiateAPI);
 

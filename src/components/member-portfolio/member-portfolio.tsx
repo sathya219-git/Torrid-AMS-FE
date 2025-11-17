@@ -68,7 +68,7 @@ export default function MemberPortfolio() {
 
   const goToLastPage = useCallback(() => {
     setPageNumber(totalPages);
-  }, []);
+  }, [totalPages]);
 
   const goToPreviousPage = useCallback(() => {
     if (pageNumber > 1) setPageNumber(pageNumber - 1);

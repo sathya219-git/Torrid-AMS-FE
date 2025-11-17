@@ -15,14 +15,11 @@ import { useAtomValue, useSetAtom } from "jotai";
 import {
   InitiateAPI,
   ReloadUploadedReportsGrid,
-  tabValue,
   UploadedReportsResponse,
 } from "../../store/filterStore";
 import { FileDetail } from "./upload-report.interface";
 
 const UploadReport = () => {
-  const setTab = useSetAtom(tabValue);
-
   const uploadedReportsResponse = useAtomValue(UploadedReportsResponse);
   const reloadUploadedReportsGrid = useAtomValue(ReloadUploadedReportsGrid);
 
@@ -145,24 +142,17 @@ const UploadReport = () => {
       );
     return <GoSortAsc className="inactive-icon" />;
   };
-  const pushToDashboard = async (id: any) => {
-    try {
-      const apiUrl = `http://localhost:5092/api/files/import?uploadHistoryId=${id}`;
-      const response = await fetch(apiUrl, {
+
+  const pushToDashboard = (id: any) => {
+    const apiUrl = `http://localhost:5092/api/files/import?uploadHistoryId=${id}`;
+    initiateAPI((prev) => {
+      const curr = new Map(prev);
+      curr.set(apiUrl, {
         method: "POST",
+        body: undefined,
       });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      await response.json();
-
-      // ✅ If response is fine, set atom to true
-      setTab(true);
-    } catch (error) {
-      console.error("Error calling API:", error);
-    }
+      return curr;
+    });
   };
 
   return (

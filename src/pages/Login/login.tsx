@@ -9,7 +9,8 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { useAtomValue, useSetAtom } from "jotai";
+import { InitiateAPI, LoginSuccess } from "../../store/filterStore";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -17,41 +18,32 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [loginClicked, setLoginClicked] = useState(false);
-  const [success, setSuccess] = useState("");
-  const [error, setError] = useState("");
+  const initiateAPI = useSetAtom(InitiateAPI);
+  const loginSuccess = useAtomValue(LoginSuccess);
 
   const login = () => {
-    setLoginClicked(true);
-  };
-  const forgotPassword = () => {
-    navigate("/forgotPassword");
+    initiateAPI((prev) => {
+      const curr = new Map(prev);
+      curr.set("http://localhost:5092/api/auth/login", {
+        method: "POST",
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+      return curr;
+    });
   };
 
   useEffect(() => {
-    if (!loginClicked) return;
-    setError("");
-    setSuccess("");
-    axios
-      .post("http://localhost:5092/api/auth/login", {
-        email,
-        password,
-      })
-      .then(() => {
-        setSuccess(" Login successfully ");
+    if (loginSuccess) {
+      navigate("/dashboard");
+    }
+  }, [loginSuccess]);
 
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 1000);
-      })
-      .catch((err) => {
-        setSuccess("");
-        setError(err.response?.data?.message || "Invalid username or password");
-      })
-      .finally(() => {
-        setLoginClicked(false);
-      });
-  }, [loginClicked]);
+  const forgotPassword = () => {
+    navigate("/forgotPassword");
+  };
 
   return (
     <div className="login-container">
@@ -96,8 +88,6 @@ export default function Login() {
               <Button variant="filled" onClick={login} fullWidth>
                 Sign In
               </Button>
-              {success && <p style={{ color: "green" }}>{success}</p>}
-              {error && <p style={{ color: "red" }}>{error}</p>}
             </div>
           </Card.Section>
         </div>

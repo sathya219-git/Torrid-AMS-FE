@@ -18,8 +18,10 @@ import {
   IncidentsResponse,
   InitiateAPI,
   KPIs,
+  LoginSuccess,
   ReloadUploadedReportsGrid,
   status,
+  tabValue,
   TeamMemberDetails,
   teamMembers,
   UploadedReportsResponse,
@@ -49,6 +51,8 @@ export default function App() {
   const setBreachedResponse = useSetAtom(BreachedResponse);
   const setUploadedReportsResponse = useSetAtom(UploadedReportsResponse);
   const setReloadUploadedReportsGrid = useSetAtom(ReloadUploadedReportsGrid);
+  const setTab = useSetAtom(tabValue);
+  const setLoginSuccess = useSetAtom(LoginSuccess);
 
   useEffect(() => {
     if (initiateAPI.size === 0) {
@@ -64,29 +68,54 @@ export default function App() {
         fetch(key, {
           method: value.method,
           body: value.body,
+          headers: key.includes("auth/login")
+            ? {
+                "Content-Type": "application/json",
+              }
+            : undefined,
         }).then((res) => {
           if (res.ok) {
             handleResponse(key, res);
           } else {
             res.text().then((val) => {
               const errMsg = val.slice(1, val.length - 1);
-              notifications.show({
-                position: "top-right",
-                title: "An error occured",
-                message: errMsg,
-                color: "red",
-                radius: "md",
-                classNames: {
-                  root: "err-ntfn-root",
-                },
-                styles: {
-                  body: {
-                    margin: "10px",
+              if (key.includes("auth/login")) {
+                notifications.show({
+                  position: "top-right",
+                  title: "Login Failed",
+                  message: "Invalid username or password",
+                  color: "red",
+                  radius: "md",
+                  classNames: {
+                    root: "err-ntfn-root",
                   },
-                  title: { fontWeight: 600, color: "#922b21" },
-                  description: { color: "#943126" },
-                },
-              });
+                  styles: {
+                    body: {
+                      margin: "10px",
+                    },
+                    title: { fontWeight: 600, color: "#922b21" },
+                    description: { color: "#943126" },
+                  },
+                });
+              } else {
+                notifications.show({
+                  position: "top-right",
+                  title: "An error occured",
+                  message: errMsg,
+                  color: "red",
+                  radius: "md",
+                  classNames: {
+                    root: "err-ntfn-root",
+                  },
+                  styles: {
+                    body: {
+                      margin: "10px",
+                    },
+                    title: { fontWeight: 600, color: "#922b21" },
+                    description: { color: "#943126" },
+                  },
+                });
+              }
             });
             handleError(key);
           }
@@ -125,6 +154,30 @@ export default function App() {
         setIncidentsResponse(data);
       } else if (url.includes("api/files/history")) {
         setUploadedReportsResponse(data);
+      } else if (url.includes("api/auth/login")) {
+        notifications.show({
+          title: "✅ Success",
+          message: `Logged in successfully!`,
+          color: "green",
+          radius: "md",
+          styles: {
+            root: {
+              backgroundColor: "#e6ffed",
+              border: "1px solid #27ae60",
+              boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+            },
+            title: { fontWeight: 600, color: "#145a32" },
+            description: { color: "#196f3d" },
+          },
+        });
+        sessionStorage.setItem("userLoggedIn", "true");
+        setLoginSuccess(true);
+      } else if (url.includes("api/files/import?uploadHistoryId")) {
+        setAssignmentGroups([]);
+        setCategories([]);
+        setStatusList([]);
+        setMemberDetailsResponse(undefined);
+        setTab(true);
       } else if (url.includes("api/files/upload")) {
         notifications.show({
           title: "✅ Upload Successful",
@@ -203,7 +256,7 @@ export default function App() {
               <Route
                 path="/dashboard"
                 element={
-                  !sessionStorage.getItem("userId") ? (
+                  sessionStorage.getItem("userLoggedIn") === "true" ? (
                     <Dashboard />
                   ) : (
                     <Navigate to="/login" replace={true} />
