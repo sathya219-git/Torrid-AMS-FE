@@ -3,17 +3,45 @@ import { CategoryItem } from "../components/Category/category.interface";
 import { StatusItem } from "../components/Status/status.interface";
 import { TeamMember } from "../components/TeamMembers/team-members.interface";
 import {
+  ApiRequest,
   BreachFilters,
   FilterChip,
   FilterState,
-  PaginatedRequest,
-  PaginatedResponse,
 } from "./filter-store.interface";
+import { MemberDetailsResponse } from "../components/member-portfolio/member-portfolio.interface";
+import {
+  IncidentPrioritySummary,
+  IncidentSummary,
+} from "../components/cards/cards.interface";
+import { BreachedIncidentsResponse } from "../components/IncidentList/BreachedListTable/breached-list-table.interface";
+import { IncidentResponse } from "../components/IncidentList/IncidentTable/incident-table.interface";
+import { UploadReportResponse } from "../components/UploadReport/upload-report.interface";
 
-export const filterState = atom(true);
+export const InitiateAPI = atom<Map<string, ApiRequest>>(new Map());
+
+export const filterState = atom(false);
 
 export const tabValue = atom(true);
 
+export const KPIs = atom<IncidentSummary | undefined>();
+
+export const CountByPriority = atom<IncidentPrioritySummary | undefined>();
+
+export const TeamMemberDetails = atom<MemberDetailsResponse | undefined>();
+
+export const IncidentsResponse = atom<IncidentResponse | undefined>();
+
+export const BreachedResponse = atom<BreachedIncidentsResponse | undefined>();
+
+export const UploadedReportsResponse = atom<UploadReportResponse | undefined>();
+
+export const ReloadUploadedReportsGrid = atom(new Date().getTime());
+
+export const LoginSuccess = atom(false);
+
+export const ResetSuccess = atom(false);
+
+// Left side filters
 export const groups = atom<string[]>([]);
 export const selectedGroups = atom<string[]>([]);
 
@@ -67,6 +95,7 @@ export const filterEnabled = atom((get) => {
   );
 });
 
+// Top Filter Chips
 export const filterChips = atom((get) => {
   const filters = get(appliedFilter);
   const chips: FilterChip[] = [];
@@ -117,20 +146,34 @@ export const filterChips = atom((get) => {
   return chips;
 });
 
-export const incidentAPIRequests = atom<Record<string, PaginatedRequest>>({
-  "All Incidents": {
-    PageNumber: 1,
-    PageSize: 8,
-    SortOrder: "",
-    SortBy: "",
-    Search: "",
-  },
+export const P1BreachFilters = atom<BreachFilters>({
+  actualResolvedTime: undefined,
+  breachSLA: undefined,
+  categories: undefined,
+  assignedTo: undefined,
 });
 
-export const incidentAPIResponses = atom<Record<string, PaginatedResponse>>({});
-
-export const breachFiltersAtom = atom<BreachFilters>({
-  actualResolvedTime: [],
-  breachSLA: [],
-  incidentId: [],
+export const P2BreachFilters = atom<BreachFilters>({
+  actualResolvedTime: undefined,
+  breachSLA: undefined,
+  categories: undefined,
+  assignedTo: undefined,
 });
+
+export const P3BreachFilters = atom<BreachFilters>({
+  actualResolvedTime: undefined,
+  breachSLA: undefined,
+  categories: undefined,
+  assignedTo: undefined,
+});
+
+export const P4BreachFilters = atom<BreachFilters>({
+  actualResolvedTime: undefined,
+  breachSLA: undefined,
+  categories: undefined,
+  assignedTo: undefined,
+});
+
+export const ActiveIncidentTab = atom<string | null>("1 - Critical");
+export const ActiveCriticalAccordion = atom<string | null>(null);
+export const ActiveBreachAccordion = atom<string | null>(null);

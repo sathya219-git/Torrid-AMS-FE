@@ -1,23 +1,28 @@
-import { LoadingOverlay, Select } from "@mantine/core";
-import { useAtomValue } from "jotai";
-import { useCallback, useEffect, useState } from "react";
+import { ScrollAreaAutosize, Select } from "@mantine/core";
+import { useAtomValue, useSetAtom } from "jotai";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { GoSortAsc, GoSortDesc } from "react-icons/go";
 import backward from "../../assets/backward.png";
 import forward from "../../assets/forward.png";
-import { appliedFilter } from "../../store/filterStore";
+import {
+  appliedFilter,
+  InitiateAPI,
+  TeamMemberDetails,
+} from "../../store/filterStore";
 import { buildFilterQuery } from "../../utils/queryBuilder";
 import { TeamMembersColumnConfig } from "./member-portfolio.constants";
 import "./member-portfolio.css";
-import {
-  MemberDetails,
-  MemberDetailsResponse,
-} from "./member-portfolio.interface";
 import TeamMemberCard from "./team-member-card/team-member-card";
 
 export default function MemberPortfolio() {
   const appliedFilters = useAtomValue(appliedFilter);
+  const memberDetailsResponse = useAtomValue(TeamMemberDetails);
 
-  const [members, setMembers] = useState<MemberDetails[]>([]);
+  const initiateAPI = useSetAtom(InitiateAPI);
+
+  const members = useMemo(() => {
+    return memberDetailsResponse?.memberDetails ?? [];
+  }, [memberDetailsResponse]);
 
   const [pageNumber, setPageNumber] = useState(1);
   const [pageSize, setPageSize] = useState("5");
@@ -25,13 +30,15 @@ export default function MemberPortfolio() {
   const [sortBy, setSortBy] = useState("name");
   const [sortOrder, setSortOrder] = useState("ascending");
 
-  const [totalRecords, setTotalRecords] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
+  const totalRecords = useMemo(() => {
+    return memberDetailsResponse?.pagination.totalRecords ?? 0;
+  }, [memberDetailsResponse]);
 
-  const [loading, setLoading] = useState(true);
+  const totalPages = useMemo(() => {
+    return memberDetailsResponse?.pagination.totalPages ?? 0;
+  }, [memberDetailsResponse]);
 
   useEffect(() => {
-    setLoading(true);
     const query = buildFilterQuery(appliedFilters);
     let url = `http://localhost:5092/api/Incident/nameandcountbypriority`;
 
@@ -44,25 +51,15 @@ export default function MemberPortfolio() {
     if (sortOrder) params.append("SortOrder", sortOrder);
 
     url += query ? `&${params.toString()}` : `?${params.toString()}`;
-    console.log("Final URL:", url);
 
-    fetch(url)
-      .then((res) => {
-        res.json().then((data: MemberDetailsResponse) => {
-          setMembers(data.memberDetails);
-          setTotalRecords(data.pagination.totalRecords);
-          setTotalPages(data.pagination.totalPages);
-          setPageNumber(data.pagination.page);
-          setPageSize(data.pagination.pageSize.toString());
-        });
-      })
-      .catch((err) => {
-        console.error("Error fetching member summary:", err);
-        setMembers([]);
-      })
-      .finally(() => {
-        setLoading(false);
+    initiateAPI((prev) => {
+      const curr = new Map(prev);
+      curr.set(url, {
+        method: "GET",
+        body: null,
       });
+      return curr;
+    });
   }, [appliedFilters, pageNumber, pageSize, sortBy, sortOrder]);
 
   const goToFirstPage = useCallback(() => {
@@ -71,7 +68,7 @@ export default function MemberPortfolio() {
 
   const goToLastPage = useCallback(() => {
     setPageNumber(totalPages);
-  }, []);
+  }, [totalPages]);
 
   const goToPreviousPage = useCallback(() => {
     if (pageNumber > 1) setPageNumber(pageNumber - 1);
@@ -97,58 +94,56 @@ export default function MemberPortfolio() {
     <div className="team-portfolio-container">
       {/* Header */}
       <header className="portfolio-header">
-        <h1 style={{ color: "#333B69" }}>Team Member Portfolio</h1>
+        <h1>Team Member Portfolio</h1>
       </header>
 
       {/* Main List */}
       <main className="member-list">
-        <LoadingOverlay
-          visible={loading}
-          zIndex={1000}
-          overlayProps={{ blur: 2 }}
-        />
         {/* Table Header */}
-        <div className="member-card header-row">
-          <div className="metrics-grid">
-            {TeamMembersColumnConfig.map((col) => (
-              <div
-                key={col.key}
-                className="metric-item sortable"
-                onClick={() => onSort(col.key)}
-                style={{
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  // justifyContent: "center",
-                  gap: "4px",
-                  fontWeight: "600",
-                  color: "#333B69",
-                  flexDirection: "row",
-                }}
-              >
-                {col.label}
-                {sortBy === col.key ? (
-                  sortOrder === "ascending" ? (
-                    <GoSortAsc size={16} />
+        <ScrollAreaAutosize scrollbars="x">
+          <div className="member-card header-row">
+            <div className="metrics-grid">
+              {TeamMembersColumnConfig.map((col) => (
+                <div
+                  key={col.key}
+                  className="metric-item sortable"
+                  onClick={() => onSort(col.key)}
+                  style={{
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    // justifyContent: "center",
+                    gap: "4px",
+                    fontWeight: "600",
+                    color: "#333B69",
+                    flexDirection: "row",
+                    minWidth: "130px",
+                  }}
+                >
+                  {col.label}
+                  {sortBy === col.key ? (
+                    sortOrder === "ascending" ? (
+                      <GoSortAsc size={16} />
+                    ) : (
+                      <GoSortDesc size={16} />
+                    )
                   ) : (
-                    <GoSortDesc size={16} />
-                  )
-                ) : (
-                  <GoSortAsc size={16} style={{ opacity: 0.3 }} />
-                )}
-              </div>
-            ))}
+                    <GoSortAsc size={16} style={{ opacity: 0.3 }} />
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
 
-        {/* Data Rows */}
-        {members.length > 0 ? (
-          members.map((member, index) => (
-            <TeamMemberCard key={index} member={member} />
-          ))
-        ) : (
-          <p>No data available.</p>
-        )}
+          {/* Data Rows */}
+          {members.length > 0 ? (
+            members.map((member, index) => (
+              <TeamMemberCard key={index} member={member} />
+            ))
+          ) : (
+            <p>No data available.</p>
+          )}
+        </ScrollAreaAutosize>
       </main>
 
       {/* Footer Pagination */}

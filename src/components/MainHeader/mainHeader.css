@@ -1,24 +1,59 @@
+/* header container */
 .main-header {
-  flex-grow: 0;
-  flex-shrink: 0;
-  flex-basis: 80px;
-  background-color: white;
-  padding: 30px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
+  align-items: stretch;      /* children can control their own vertical alignment */
+  height: 80px;              /* fixed header height (you had flex-basis:80px before) */
+  padding-left:  30px;
+  padding-right: 30px;        /* adjust as needed */
+  background-color: white;
+  box-sizing: border-box;
 }
 
+/* left (logo) - align to top of header */
+.header-left {
+  display: flex;
+  align-items: center;   /* top */
+  justify-content: flex-start;
+  width: 200px;              /* reserve some width so center can truly center */
+  box-sizing: border-box;
+}
+
+/* center (tabs) - bottom centered */
+.header-center {
+  flex: 1;                   /* take remaining space so center is really centered */
+  display: flex;
+  align-items: end;       /* center vertically of container; tabs-wrapper will push to bottom */
+  justify-content: center;
+  /* box-sizing: border-box; */
+}
+
+.mantine-Tabs-tab {
+  padding-bottom: 30px !important; /* increase this value as needed */
+}
+
+
+/* right (icons) - vertically centered */
+.header-right {
+  display: flex;
+  align-items: center;       /* vertically center notification + user */
+  justify-content: flex-end;
+  column-gap: 10px;
+  width: 200px;              /* give some reserved width */
+  box-sizing: border-box;
+}
+
+/* logo size */
 .logo {
   height: 40px;
   width: auto;
 }
 
-.header-right {
-  display: flex;
-  flex-direction: row;
-  column-gap: 10px;
-  align-items: center;
-  justify-content: center;
+/* Optional: make sure Mantine Tabs fills only as needed,
+   and respects our wrapper alignment (increase specificity if necessary) */
+.header-center .mantine-Tabs-root,
+.tabs-wrapper .mantine-Tabs-root {
+  height: auto;
+  display: block;
 }

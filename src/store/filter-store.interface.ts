@@ -1,11 +1,3 @@
-export interface PaginatedRequest {
-  PageNumber: number;
-  PageSize: number;
-  SortOrder: string;
-  SortBy: string;
-  Search: string;
-}
-
 export interface FilterChip {
   key:
     | "AssignmentGroup"
@@ -35,16 +27,14 @@ export interface Incident {
   resolvedDateTime: string;
 }
 
-export interface PaginatedResponse {
-  pageNumber: number;
-  pageSize: number;
-  totalPages: number;
-  totalElements: number;
-  incidents: Incident[];
+export interface BreachFilters {
+  actualResolvedTime?: string;
+  breachSLA?: string;
+  categories?: string;
+  assignedTo?: string;
 }
 
-export interface BreachFilters {
-  actualResolvedTime: string[];
-  breachSLA: string[];
-  incidentId: string[];
+export interface ApiRequest {
+  method: string;
+  body: any;
 }

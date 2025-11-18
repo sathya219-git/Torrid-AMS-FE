@@ -3,14 +3,19 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import avatar from "../../assets/avatar.png";
 import "./user.css";
 import { useNavigate } from "react-router-dom";
+import { useSetAtom } from "jotai";
+import { LoginSuccess } from "../../store/filterStore";
 
 export default function User() {
   const navigate = useNavigate();
 
-  const logout = () => {
-    navigate("/login");
-    localStorage.removeItem("uploadedFiles");
+  const setLoginSuccess = useSetAtom(LoginSuccess);
 
+  const logout = () => {
+    sessionStorage.clear();
+    setLoginSuccess(false);
+    navigate("/login");
+    // localStorage.removeItem("uploadedFiles");
   };
   return (
     <div className="user-dropdown">
@@ -25,9 +30,16 @@ export default function User() {
             <KeyboardArrowDownIcon />
           </div>
         </Menu.Target>
-        <Menu.Dropdown style={{backgroundColor:"#1f1f1f",borderRadius:"8px"}}>
-          <Menu.Item style={{backgroundColor:"#1f1f1f"}}>
-            <Text onClick={logout} style={{backgroundColor:"#1f1f1f",color:"#fff"}}>Sign out</Text>
+        <Menu.Dropdown
+          style={{ backgroundColor: "#1f1f1f", borderRadius: "8px" }}
+        >
+          <Menu.Item style={{ backgroundColor: "#1f1f1f" }}>
+            <Text
+              onClick={logout}
+              style={{ backgroundColor: "#1f1f1f", color: "#fff" }}
+            >
+              Sign out
+            </Text>
           </Menu.Item>
         </Menu.Dropdown>
       </Menu>

@@ -2,7 +2,7 @@
 
 .filter-slide {
   position: absolute;
-  top: 80px; /* adjust depending on header height */
+  top: 20px; /* adjust depending on header height */
   left: 0;
   z-index: 99;
   min-width: 400px;

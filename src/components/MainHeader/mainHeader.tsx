@@ -9,17 +9,24 @@ interface MainHeaderProps {
   onTabChange: (value: string | null) => void;
 }
 
-export default function MainHeader({ activeTab, onTabChange }: MainHeaderProps) {
+export default function MainHeader({
+  activeTab,
+  onTabChange,
+}: MainHeaderProps) {
   return (
     <div className="main-header">
-      <img src={logo} className="logo" />
+      <div className="header-left">
+        <img src={logo} className="logo" alt="logo" />
+      </div>
 
-      <Tabs color="blue" radius="xs" value={activeTab} onChange={onTabChange}>
-        <Tabs.List>
-          <Tabs.Tab value="Upload-Report">Upload File</Tabs.Tab>
-          <Tabs.Tab value="dashboard">Dashboard</Tabs.Tab>
-        </Tabs.List>
-      </Tabs>
+      <div className="header-center">
+        <Tabs color="blue" radius="xs" value={activeTab} onChange={onTabChange}>
+          <Tabs.List>
+            <Tabs.Tab value="Upload-Report">Upload File</Tabs.Tab>
+            <Tabs.Tab value="dashboard">Dashboard</Tabs.Tab>
+          </Tabs.List>
+        </Tabs>
+      </div>
 
       <div className="header-right">
         <Notification />

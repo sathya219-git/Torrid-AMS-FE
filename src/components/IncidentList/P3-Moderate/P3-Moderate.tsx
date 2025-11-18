@@ -1,10 +1,8 @@
-import { Accordion, Input, Text } from "@mantine/core";
+import { Accordion, Text } from "@mantine/core";
 import "./P3-Moderate.css";
 import IncidentTable from "../IncidentTable/IncidentTable";
-import { useState } from "react";
 
 export default function P3Moderate() {
-  const [search, setSearch] = useState("");
   return (
       <Accordion.Item value={"3 - Moderate"}>
         <Accordion.Control className="Accordion-title">
@@ -12,14 +10,8 @@ export default function P3Moderate() {
         </Accordion.Control>
         <Accordion.Panel>
           <div className="p3-search">
-            {/* <Input
-              className=""
-              placeholder="Search incidents..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            /> */}
           </div>
-          <IncidentTable priority="3 - Moderate" search={search} />
+          <IncidentTable priority="3 - Moderate" />
         </Accordion.Panel>
       </Accordion.Item>
   );

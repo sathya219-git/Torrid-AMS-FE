@@ -1,90 +1,109 @@
 import { Table } from "@mantine/core";
 import "./IncidentTable.css";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import "../BreachedListTable/BreachedListTable.css";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { BsList } from "react-icons/bs";
-import { FaSortAmountDownAlt, FaSortAmountUp, FaArrowCircleDown } from "react-icons/fa";
+import { FaArrowCircleDown, FaSortAmountDownAlt } from "react-icons/fa";
+import { FaSortAmountUp } from "react-icons/fa";
 import backward from "../../../assets/backward.png";
 import forward from "../../../assets/forward.png";
-import { useAtomValue } from "jotai";
-import { appliedFilter, FilterState } from "../../../store/filterStore";
+import { useAtomValue, useSetAtom } from "jotai";
+import {
+  ActiveCriticalAccordion,
+  ActiveIncidentTab,
+  appliedFilter,
+  IncidentsResponse,
+  InitiateAPI,
+} from "../../../store/filterStore";
+import { Incident, SortOrder } from "./incident-table.interface";
 
-type Incident = {
-  incidentNo: string;
-  assignedTo: string;
-  shortDescription: string;
-  category: string;
-  actualResolvedTime: string;
-  state: string;
-  resolvedDateTime: string;
-  breachSLA: string;
-};
+export default function IncidentTable({ priority }: { priority: string }) {
+  const incidentsResponse = useAtomValue(IncidentsResponse);
 
-export default function IncidentTable({
-  priority,
-  search,
-}: {
-  priority: string;
-  search: string;
-}) {
-  const [incidents, setIncidents] = useState<Incident[]>([]);
-  const [totalElements, settotalElements] = useState(0);
-  const [totalPage, setTotalPages] = useState(0);
-  const appliedFilters = useAtomValue(appliedFilter);
+  const incidents = useMemo(() => {
+    return incidentsResponse?.incidents ?? [];
+  }, [incidentsResponse]);
+
+  const totalElements = useMemo(() => {
+    return incidentsResponse?.totalElements ?? 0;
+  }, [incidentsResponse]);
+
+  const totalPage = useMemo(() => {
+    return incidentsResponse?.totalPages ?? 0;
+  }, [incidentsResponse]);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 8;
-
-  const startRange = (currentPage - 1) * pageSize + 1;
-  const endRange = Math.min(currentPage * pageSize, totalElements);
 
   const [sortField, setSortField] = useState<keyof Incident | "">("");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("");
 
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [priority, search]);
+  const appliedFilters = useAtomValue(appliedFilter);
+  const activeIncidentTab = useAtomValue(ActiveIncidentTab);
+  const activeCriticalAccordion = useAtomValue(ActiveCriticalAccordion);
+
+  const startRange = useMemo(() => {
+    return (currentPage - 1) * 8 + 1;
+  }, [currentPage]);
+
+  const endRange = useMemo(() => {
+    return Math.min(currentPage * 8, totalElements);
+  }, [currentPage, totalElements]);
 
   const nextPage = () => {
-    if (currentPage < totalPage) setCurrentPage((prev) => prev + 1);
+    if (currentPage < totalPage) {
+      setCurrentPage((prev) => prev + 1);
+    }
   };
 
-  const prevPage = () => {
-    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
-  };
+  const prevPage = useCallback(() => {
+    if (currentPage > 1) {
+      setCurrentPage((prev) => prev - 1);
+    }
+  }, [currentPage]);
 
-  const resetPageNumber = () => setCurrentPage(1);
-  const lastPage = () => setCurrentPage(totalPage);
+  const resetPageNumber = useCallback(() => {
+    setCurrentPage(1);
+  }, []);
+
+  const lastPage = useCallback(() => {
+    setCurrentPage(totalPage);
+  }, [totalPage]);
+
+  const initiateAPI = useSetAtom(InitiateAPI);
 
   useEffect(() => {
-    const fetchIncidents = async () => {
-      try {
-        const query = buildFilterQuery(appliedFilters);
-        const url = `http://localhost:5092/api/Incident/detailsbypriority?Priority=${encodeURIComponent(
-          priority
-        )}&Search=${encodeURIComponent(
-          search
-        )}&PageNumber=${currentPage}${query}`;
-        const res = await axios.get(url);
-        console.log("Incidents response:", res.data.incidents);
+    if (
+      activeIncidentTab !== priority ||
+      activeCriticalAccordion !== priority
+    ) {
+      return;
+    }
+    const query = buildFilterQuery();
+    const encodedPriority = encodeURIComponent(priority);
+    const url = `http://localhost:5092/api/Incident/detailsbypriority?Priority=${encodedPriority}&PageNumber=${currentPage}${query}`;
+    initiateAPI((prev) => {
+      const curr = new Map(prev);
+      curr.set(url, {
+        method: "GET",
+        body: null,
+      });
+      return curr;
+    });
+  }, [
+    priority,
+    currentPage,
+    appliedFilters,
+    sortField,
+    sortOrder,
+    activeIncidentTab,
+    activeCriticalAccordion,
+  ]);
 
-        settotalElements(res.data.totalElements);
-        setIncidents(res.data.incidents ?? []);
-        setTotalPages(res.data.totalPages);
-      } catch (err) {
-        console.error("Error:", err);
-      }
-    };
-    fetchIncidents();
-  }, [priority, search, currentPage, appliedFilters]);
-
-  const buildFilterQuery = (appliedFilters: FilterState) => {
+  const buildFilterQuery = useCallback(() => {
     const params = new URLSearchParams();
+
     if (appliedFilters.Category?.length > 0) {
       params.append("Category", appliedFilters.Category.join(","));
-    }
-    if (appliedFilters.Priority?.length > 0) {
-      params.append("Priority", appliedFilters.Priority.join(","));
     }
     if (appliedFilters.State?.length > 0) {
       params.append("State", appliedFilters.State.join(","));
@@ -92,105 +111,202 @@ export default function IncidentTable({
     if (appliedFilters.AssignedToName?.length > 0) {
       params.append("AssignedToName", appliedFilters.AssignedToName.join(","));
     }
+    if (sortField !== "") {
+      params.append("SortBy", sortField);
+      params.append("SortOrder", sortOrder);
+    }
     const queryString = params.toString();
     return queryString ? `&${queryString}` : "";
-  };
+  }, [appliedFilters, sortField, sortOrder]);
 
-  const handleSort = (field: keyof Incident) => {
-    let order: "asc" | "desc" = "asc";
-    if (sortField === field) {
-      order = sortOrder === "asc" ? "desc" : "asc";
-    }
+  const handleSort = useCallback(
+    (field: keyof Incident) => {
+      let order: SortOrder = "ASC";
+      let sortBy: keyof Incident | "" = field;
 
-    setSortField(field);
-    setSortOrder(order);
+      if (sortField === field) {
+        if (sortOrder === "DESC") {
+          order = "ASC";
+          sortBy = "";
+        } else {
+          order = sortOrder === "ASC" ? "DESC" : "ASC";
+        }
+      }
 
-    const sorted = [...incidents].sort((a, b) => {
-      const valueA = a[field]?.toString().toLowerCase();
-      const valueB = b[field]?.toString().toLowerCase();
-      if (valueA < valueB) return order === "asc" ? -1 : 1;
-      if (valueA > valueB) return order === "asc" ? 1 : -1;
-      return 0;
-    });
-    setIncidents(sorted);
-  };
+      setSortField(sortBy);
+      setSortOrder(order);
+    },
+    [sortField, sortOrder]
+  );
 
-  const renderSortIcon = (field: keyof Incident) => {
-    if (sortField !== field) return <BsList className="sort-icon" />;
-    return sortOrder === "asc" ? (
-      <FaSortAmountUp className="sort-icon active" />
-    ) : (
-      <FaSortAmountDownAlt className="sort-icon active" />
-    );
-  };
+  const renderSortIcon = useCallback(
+    (field: keyof Incident) => {
+      if (sortField !== field) return <BsList fontSize="small" />;
+
+      return sortOrder === "ASC" ? (
+        <FaSortAmountUp fontSize="small" />
+      ) : (
+        <FaSortAmountDownAlt fontSize="small" />
+      );
+    },
+    [sortField, sortOrder]
+  );
 
   return (
-    <div className="table-container">
-      <Table>
-        <Table.Thead>
-          <Table.Tr>
-            {[
-              { key: "incidentNo", label: "Incident No" },
-              { key: "assignedTo", label: "Assigned To" },
-              { key: "shortDescription", label: "Description" },
-              { key: "category", label: "Category" },
-              { key: "state", label: "State" },
-              { key: "actualResolvedTime", label: "Actual Resolved Time" },
-              { key: "resolvedDateTime", label: "Resolved Date & Time" },
-              { key: "breachSLA", label: "Breach SLA" },
-            ].map((col) => (
-              <Table.Th key={col.key} onClick={() => handleSort(col.key as keyof Incident)}>
-                <div className={`table-headers ${sortField === col.key ? "active" : ""}`}>
-                  <span>{col.label}</span>
-                  {renderSortIcon(col.key as keyof Incident)}
+    <div className="bl-table-container">
+      <Table.ScrollContainer minWidth={600}>
+        <Table>
+          <Table.Thead>
+            <Table.Tr className="bl-header-row">
+              <Table.Th
+                className="bl-header-cell first-header"
+                onClick={() => handleSort("incidentNo")}
+              >
+                <div className="bl-table-headers">
+                  <span> Incident No </span>
+                  <span> {renderSortIcon("incidentNo")} </span>
                 </div>
               </Table.Th>
-            ))}
-          </Table.Tr>
-        </Table.Thead>
 
-        <Table.Tbody>
-          {totalElements === 0 ? (
-            <Table.Tr>
-              <Table.Td colSpan={8} style={{ textAlign: "center", padding: 20 }}>
-                No incidents found
-              </Table.Td>
+              <Table.Th
+                className="bl-header-cell"
+                onClick={() => handleSort("assignedTo")}
+              >
+                <div className="bl-table-headers">
+                  <span> Assigned To </span>
+                  <span> {renderSortIcon("assignedTo")} </span>
+                </div>
+              </Table.Th>
+
+              <Table.Th
+                className="bl-header-cell"
+                onClick={() => handleSort("shortDescription")}
+              >
+                <div className="bl-table-headers">
+                  <span> Description </span>
+                  <span> {renderSortIcon("shortDescription")} </span>
+                </div>
+              </Table.Th>
+
+              <Table.Th
+                className="bl-header-cell"
+                onClick={() => handleSort("category")}
+              >
+                <div className="bl-table-headers">
+                  <span> Category </span>
+                  <span> {renderSortIcon("category")} </span>
+                </div>
+              </Table.Th>
+
+              <Table.Th
+                className="bl-header-cell"
+                onClick={() => handleSort("state")}
+              >
+                <div className="bl-table-headers">
+                  <span> State </span>
+                  <span> {renderSortIcon("state")} </span>
+                </div>
+              </Table.Th>
+
+              <Table.Th
+                className="bl-header-cell"
+                onClick={() => handleSort("actualResolvedTime")}
+              >
+                <div className="bl-table-headers">
+                  <span> Actual Resolved Time </span>
+                  <span> {renderSortIcon("actualResolvedTime")} </span>
+                </div>
+              </Table.Th>
+
+              <Table.Th
+                className="bl-header-cell"
+                onClick={() => handleSort("resolvedDateTime")}
+              >
+                <div className="bl-table-headers">
+                  <span> Resolved Date & Time </span>
+                  <span> {renderSortIcon("resolvedDateTime")} </span>
+                </div>
+              </Table.Th>
+
+              {/* <Table.Th onClick={() => handleSort("createdDate")}>
+                <div className="table-headers">
+                  <span> Created Date </span>
+                  <span> {renderSortIcon("createdDate")} </span>
+                </div>
+              </Table.Th> */}
+
+              <Table.Th
+                className="bl-header-cell last-header"
+                onClick={() => handleSort("breachSLA")}
+              >
+                <div className="bl-table-headers">
+                  <span> Breach SLA </span>
+                  <span> {renderSortIcon("breachSLA")} </span>
+                </div>
+              </Table.Th>
             </Table.Tr>
-          ) : (
-            incidents.map((incident) => {
-              const isBreached = incident.breachSLA !== "No Breach";
-              return (
-                <Table.Tr
-                  key={incident.incidentNo}
-                  className={`breached-row ${isBreached ? "breached" : ""}`}
-                >
-                  <Table.Td>{incident.incidentNo}</Table.Td>
-                  <Table.Td>{incident.assignedTo}</Table.Td>
-                  <Table.Td>{incident.shortDescription}</Table.Td>
-                  <Table.Td>{incident.category}</Table.Td>
-                  <Table.Td>{incident.state}</Table.Td>
-                  <Table.Td>{incident.actualResolvedTime}</Table.Td>
-                  <Table.Td>{incident.resolvedDateTime}</Table.Td>
-                  <Table.Td className="highlight-downarrow">
-                    <div className="breach-cell">
-                      <span>{incident.breachSLA}</span>
-                      {isBreached && <FaArrowCircleDown className="arrow" />}
-                    </div>
-                  </Table.Td>
-                </Table.Tr>
-              );
-            })
-          )}
-        </Table.Tbody>
-      </Table>
+          </Table.Thead>
 
-      {/* Pagination */}
+          <Table.Tbody>
+            {totalElements === 0 ? (
+              <Table.Tr>
+                <Table.Td
+                  colSpan={8}
+                  style={{ textAlign: "center", padding: 20 }}
+                >
+                  No incidents found
+                </Table.Td>
+              </Table.Tr>
+            ) : (
+              incidents.map((incident, index) => {
+                const isBreached = incident.breachSLA !== "No Breach";
+                console.log(isBreached);
+
+                return (
+                  <Table.Tr
+                    key={incident.incidentNo}
+                    className={`breached-row ${isBreached ? "breached" : ""}`}
+                    style={{
+                      outline: index === 0 ? "paddingTop:20px" : undefined,
+                    }}
+                  >
+                    <Table.Td>{incident.incidentNo}</Table.Td>
+                    <Table.Td>{incident.assignedTo}</Table.Td>
+                    <Table.Td>{incident.shortDescription}</Table.Td>
+                    <Table.Td>{incident.category}</Table.Td>
+                    <Table.Td>{incident.state}</Table.Td>
+                    <Table.Td>{incident.actualResolvedTime}</Table.Td>
+                    <Table.Td>{incident.resolvedDateTime}</Table.Td>
+                    {/* <Table.Td>{incident.createdDate}</Table.Td> */}
+
+                    <Table.Td className="highlight-downarrow">
+                      <div className="breach-cell">
+                        <span>{incident.breachSLA}</span>
+                        <span style={{ minWidth: "17px" }}>
+                          {isBreached && (
+                            <FaArrowCircleDown className="arrow" />
+                          )}
+                        </span>
+                      </div>
+                    </Table.Td>
+                  </Table.Tr>
+                );
+              })
+            )}
+          </Table.Tbody>
+        </Table>
+      </Table.ScrollContainer>
+
+      {/* pagination */}
       <div className="pagination-footer">
         <span>
           Showing {startRange}-{endRange} of {totalElements} Total Incidents
         </span>
         <div className="pagination-controls">
-          <button onClick={resetPageNumber} style={{ borderRadius: "6px 0 0 6px" }}>
+          <button
+            onClick={resetPageNumber}
+            style={{ borderRadius: "6px 0 0 6px" }}
+          >
             <img src={forward} alt="" />
             <img src={forward} alt="" />
           </button>

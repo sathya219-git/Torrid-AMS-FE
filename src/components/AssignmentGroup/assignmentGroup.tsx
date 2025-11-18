@@ -1,14 +1,14 @@
 import { Accordion, Checkbox, Collapse, Text } from "@mantine/core";
-import axios from "axios";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { groups, selectedGroups } from "../../store/filterStore";
-import { AssignmentGroupItem } from "./assignment-group.interface";
+import { groups, InitiateAPI, selectedGroups } from "../../store/filterStore";
 import "./assignmentGroup.css";
 
 export default function AssignmentGroup() {
-  const [assignmentGroups, setAssignmentGroups] = useAtom(groups);
+  const assignmentGroups = useAtomValue(groups);
   const [selectedFilters, setSelectedFilters] = useAtom(selectedGroups);
+
+  const initiateAPI = useSetAtom(InitiateAPI);
 
   const [opened, setOpened] = useState(false);
 
@@ -16,22 +16,14 @@ export default function AssignmentGroup() {
     if (assignmentGroups.length > 0) {
       return;
     }
-    axios
-      .get("http://localhost:5092/api/Incident/assignmentgroups")
-      .then((res) => {
-        const data: AssignmentGroupItem[] = Array.isArray(res.data)
-          ? res.data
-          : [];
-        setAssignmentGroups(
-          data.map((item) => {
-            return item.assignmentGroupName;
-          })
-        );
-      })
-      .catch((err) => {
-        console.error("Error fetching category counts:", err);
-        setAssignmentGroups([]);
+    initiateAPI((prev) => {
+      const curr = new Map(prev);
+      curr.set("http://localhost:5092/api/Incident/assignmentgroups", {
+        method: "GET",
+        body: null,
       });
+      return curr;
+    });
   }, []);
 
   const staticGroups = useMemo(() => {

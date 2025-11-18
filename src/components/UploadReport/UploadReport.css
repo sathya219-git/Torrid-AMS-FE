@@ -47,8 +47,8 @@
 }
 
 .upload-icon {
-  font-size: 40px;
-  color: #007bff;
+  font-size: 60px;
+  color: #00246d;
   margin-bottom: 10px;
 }
 
@@ -64,17 +64,14 @@
 }
 
 .btn-secondary {
-  background-color: #007bff;
-  color: white;
+  background-color: #f5f6fa;
+  color: #007bff;
   padding: 8px 16px;
-  border: none;
+  border-color:#007bff ;
   border-radius: 6px;
   cursor: pointer;
 }
 
-.btn-secondary:hover {
-  background-color: #0056b3;
-}
 
 /* Right History Section */
 .history-section {

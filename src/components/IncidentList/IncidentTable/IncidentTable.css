@@ -1,7 +1,6 @@
 .table-container {
   font-family: 'Inter', sans-serif;
   background-color: #ffffff;
-  border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   overflow: hidden;
 }
@@ -13,7 +12,7 @@
   text-transform: capitalize;
   color: #1e3a8a;
   cursor: pointer;  
-  padding: 14px 10px;
+  /* padding: 14px 10px; */
   transition: all 0.2s ease;
   border-bottom: 2px solid #e0e7ff;
   white-space: nowrap;
@@ -50,7 +49,7 @@
 
 /* BODY */
 td {
-  padding: 12px 16px;
+  padding: 12px 16px !important;
   color: #080808;
 }
 
@@ -72,14 +71,23 @@ td {
   color: #ef4444;
   font-size: 18px;
 }
-
+.bl-table-headers
+{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
 /* PAGINATION */
 .pagination-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 0;
+  padding: 5px 10px 10px 10px;
   width: 100%;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px
 }
 
 .pagination-footer span {
@@ -91,7 +99,11 @@ td {
   display: flex;
   gap: 4px;
 }
-
+Table
+{
+  background-color: #f7f9fc !important;
+  border-radius: 12px 12px;
+}
 .pagination-controls button {
   display: flex;
   align-items: center;

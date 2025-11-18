@@ -1,107 +1,124 @@
 import { Table } from "@mantine/core";
-import axios from "axios";
-import { useAtomValue } from "jotai";
-import { useEffect, useState } from "react";
+import { useAtomValue, useSetAtom } from "jotai";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { BsList } from "react-icons/bs";
 import { FaSortAmountDownAlt, FaSortAmountUp } from "react-icons/fa";
 import backward from "../../../assets/backward.png";
 import forward from "../../../assets/forward.png";
 import {
+  ActiveBreachAccordion,
+  ActiveIncidentTab,
   appliedFilter,
-  breachFiltersAtom,
+  BreachedResponse,
+  InitiateAPI,
 } from "../../../store/filterStore";
 import "./BreachedListTable.css";
-import { FilterState } from "../../../store/filter-store.interface";
+import { BreachedIncidents, SortOrder } from "./breached-list-table.interface";
+import { BreachFilters } from "../../../store/filter-store.interface";
 
-type BreachedIncidents = {
-  incidentNumber: string;
-  assignedTo: string;
-  shortDescription: string;
-  category: string;
-  actualResolvedTime: string;
-  breachSLA: string;
-};
+export default function BreachedListTable({
+  priority,
+  breachFilters,
+}: {
+  priority: string;
+  breachFilters: BreachFilters;
+}) {
+  const breachedResponse = useAtomValue(BreachedResponse);
 
-export default function BreachedListTable({ priority }: { priority: string }) {
-  const [breachedIncidents, setBreachedIncidents] = useState<
-    BreachedIncidents[]
-  >([]);
-  const [totalElements, settotalElements] = useState(0);
-  const [totalPage, setTotalPages] = useState(0);
+  const breachedIncidents = useMemo(() => {
+    return breachedResponse?.items ?? [];
+  }, [breachedResponse]);
+
+  const totalElements = useMemo(() => {
+    return breachedResponse?.totalElements ?? 0;
+  }, [breachedResponse]);
+
+  const totalPage = useMemo(() => {
+    return breachedResponse?.totalPages ?? 0;
+  }, [breachedResponse]);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 8;
 
-  const startRange = (currentPage - 1) * pageSize + 1;
-  const endRange = Math.min(currentPage * pageSize, totalElements);
+  const [sortField, setSortField] = useState<keyof BreachedIncidents | "">("");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("");
+
+  const startRange = useMemo(() => {
+    return (currentPage - 1) * 8 + 1;
+  }, [currentPage]);
+
+  const endRange = useMemo(() => {
+    return Math.min(currentPage * 8, totalElements);
+  }, [currentPage, totalElements]);
+
   const appliedFilters = useAtomValue(appliedFilter);
-  const breachFilters = useAtomValue(breachFiltersAtom);
+  const activeIncidentTab = useAtomValue(ActiveIncidentTab);
+  const activeBreachAccordion = useAtomValue(ActiveBreachAccordion);
 
-  const nextPage = () => {
+  const nextPage = useCallback(() => {
     if (currentPage < totalPage) {
       setCurrentPage((prev) => prev + 1);
     }
-  };
+  }, [currentPage, totalPage]);
 
-  const prevPage = () => {
+  const prevPage = useCallback(() => {
     if (currentPage > 1) {
       setCurrentPage((prev) => prev - 1);
     }
-  };
+  }, [currentPage]);
 
-  const resetPageNumber = () => {
+  const resetPageNumber = useCallback(() => {
     setCurrentPage(1);
-  };
+  }, []);
 
-  const lastPage = () => {
+  const lastPage = useCallback(() => {
     setCurrentPage(totalPage);
-  };
+  }, [totalPage]);
 
-  // sorting states
-  const [sortField, setSortField] = useState<keyof BreachedIncidents | "">("");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const initiateAPI = useSetAtom(InitiateAPI);
 
   useEffect(() => {
-    const fetchBreachedList = async () => {
-      try {
-        const pageSize = 8;
-        const query = buildFilterQuery(appliedFilters);
+    if (activeIncidentTab !== priority || activeBreachAccordion !== priority) {
+      return;
+    }
+    const query = buildFilterQuery();
+    const url = `http://localhost:5092/api/Incident/breachlistbypriority?Priority=${encodeURIComponent(
+      priority
+    )}&PageNumber=${currentPage}&PageSize=${8}${query}`;
+    initiateAPI((prev) => {
+      const curr = new Map(prev);
+      curr.set(url, {
+        method: "GET",
+        body: null,
+      });
+      return curr;
+    });
+  }, [
+    priority,
+    currentPage,
+    appliedFilters,
+    breachFilters,
+    sortField,
+    sortOrder,
+    activeIncidentTab,
+    activeBreachAccordion,
+  ]);
 
-        const url = `http://localhost:5092/api/Incident/breachlistbypriority?Priority=${encodeURIComponent(
-          priority
-        )}&PageNumber=${currentPage}&PageSize=${pageSize}${query}`;
-
-        const res = await axios.get(url);
-        let items = res.data.items ?? [];
-
-        console.log("Filtered Breached response:", items);
-        settotalElements(items.length);
-        setBreachedIncidents(items);
-        setTotalPages(res.data.totalPages);
-      } catch (err) {
-        console.error("Axios Error:", err);
-      }
-    };
-
-    fetchBreachedList();
-  }, [priority, currentPage, appliedFilters, breachFilters]);
-
-  // Build API filters
-  const buildFilterQuery = (appliedFilters: FilterState) => {
+  const buildFilterQuery = useCallback(() => {
     const params = new URLSearchParams();
-
-    if (appliedFilters.Category?.length > 0) {
+    if (breachFilters.categories && breachFilters.categories.trim() !== "") {
+      params.append("Category", breachFilters.categories);
+    }
+    // 2. Else use appliedFilters.Category
+    else if (appliedFilters.Category?.length > 0) {
       params.append("Category", appliedFilters.Category.join(","));
     }
-
-    
-
+    if (breachFilters.assignedTo && breachFilters.assignedTo.trim() !== "") {
+      params.append("AssignedToName", breachFilters.assignedTo);
+    } else if (appliedFilters.AssignedToName?.length > 0) {
+      params.append("AssignedToName", appliedFilters.AssignedToName.join(","));
+    }
     if (appliedFilters.State?.length > 0) {
       params.append("State", appliedFilters.State.join(","));
-    }
-
-    if (appliedFilters.AssignedToName?.length > 0) {
-      params.append("AssignedToName", appliedFilters.AssignedToName.join(","));
     }
 
     if (appliedFilters.FromDate) {
@@ -110,153 +127,164 @@ export default function BreachedListTable({ priority }: { priority: string }) {
       );
       params.append("FromDate", formatted);
     }
-
     if (appliedFilters.ToDate) {
       const formatted = new Date(appliedFilters.ToDate).toLocaleString("en-US");
       params.append("ToDate", formatted);
     }
-
-    if (breachFilters.breachSLA.length > 0) {
-      params.append("BreachSLA", breachFilters.breachSLA.join(","));
+    if (
+      breachFilters.breachSLA !== undefined &&
+      breachFilters.breachSLA !== ""
+    ) {
+      params.append("BreachSLA", breachFilters.breachSLA);
     }
-    if (breachFilters.actualResolvedTime.length > 0) {
-      params.append(
-        "ActualResolvedTime",
-        breachFilters.actualResolvedTime.join(",")
-      );
+    if (
+      breachFilters.actualResolvedTime !== undefined &&
+      breachFilters.actualResolvedTime !== ""
+    ) {
+      params.append("ActualResolvedTime", breachFilters.actualResolvedTime);
     }
-    if (breachFilters.incidentId.length > 0) {
-      params.append("IncidentNumber", breachFilters.incidentId.join(","));
+    if (sortField !== "") {
+      params.append("SortBy", sortField);
+      params.append("SortOrder", sortOrder);
     }
-
     const queryString = params.toString();
     return queryString ? `&${queryString}` : "";
-  };
+  }, [appliedFilters, breachFilters, sortField, sortOrder]);
 
-  // sorting function
-  const handleSort = (field: keyof BreachedIncidents) => {
-    let order: "asc" | "desc" = "asc";
+  const handleSort = useCallback(
+    (field: keyof BreachedIncidents) => {
+      let order: SortOrder = "ASC";
+      let sortBy: keyof BreachedIncidents | "" = field;
+      if (sortField === field) {
+        if (sortOrder === "DESC") {
+          order = "ASC";
+          sortBy = "";
+        } else {
+          order = sortOrder === "ASC" ? "DESC" : "ASC";
+        }
+      }
+      setSortField(sortBy);
+      setSortOrder(order);
+    },
+    [sortField, sortOrder]
+  );
 
-    if (sortField === field) {
-      order = sortOrder === "asc" ? "desc" : "asc";
-    }
+  const renderSortIcon = useCallback(
+    (field: keyof BreachedIncidents) => {
+      if (sortField !== field) return <BsList fontSize="small" />;
 
-    setSortField(field);
-    setSortOrder(order);
-
-    const sorted = [...breachedIncidents].sort((a, b) => {
-      const valueA = a[field]?.toString().toLowerCase();
-      const valueB = b[field]?.toString().toLowerCase();
-
-      if (valueA < valueB) return order === "asc" ? -1 : 1;
-      if (valueA > valueB) return order === "asc" ? 1 : -1;
-      return 0;
-    });
-    setBreachedIncidents(sorted);
-  };
-
-  const renderSortIcon = (field: keyof BreachedIncidents) => {
-    if (sortField !== field) return <BsList fontSize="small" />;
-
-    return sortOrder === "asc" ? (
-      <FaSortAmountUp fontSize="small" />
-    ) : (
-      <FaSortAmountDownAlt fontSize="small" />
-    );
-  };
+      return sortOrder === "ASC" ? (
+        <FaSortAmountUp fontSize="small" />
+      ) : (
+        <FaSortAmountDownAlt fontSize="small" />
+      );
+    },
+    [sortOrder, sortField]
+  );
 
   return (
     <div className="bl-table-container">
-      <Table>
-        <Table.Thead>
-          <Table.Tr>
-            <Table.Th onClick={() => handleSort("incidentNumber")}>
-              <div className="bl-table-headers">
-                <span> Incident_No </span>
-                <span> {renderSortIcon("incidentNumber")} </span>
-              </div>
-            </Table.Th>
+      <Table.ScrollContainer minWidth={600}>
+        <Table>
+          <Table.Thead>
+            <Table.Tr className="bl-header-row">
+              <Table.Th
+                className="bl-header-cell first-header"
+                onClick={() => handleSort("incidentNumber")}
+              >
+                <div className="bl-table-headers">
+                  <span>Incident No</span>
+                  <span>{renderSortIcon("incidentNumber")}</span>
+                </div>
+              </Table.Th>
 
-            <Table.Th>
-              <div
-                className="bl-table-headers"
+              <Table.Th
+                className="bl-header-cell"
                 onClick={() => handleSort("assignedTo")}
               >
-                <span> Assigned To </span>
-                <span> {renderSortIcon("assignedTo")} </span>
-              </div>
-            </Table.Th>
+                <div className="bl-table-headers">
+                  <span>Assigned To</span>
+                  <span>{renderSortIcon("assignedTo")}</span>
+                </div>
+              </Table.Th>
 
-            <Table.Th>
-              <div
-                className="bl-table-headers"
+              <Table.Th
+                className="bl-header-cell"
                 onClick={() => handleSort("shortDescription")}
               >
-                <span> Description </span>
-                <span> {renderSortIcon("shortDescription")} </span>
-              </div>
-            </Table.Th>
+                <div className="bl-table-headers">
+                  <span>Description</span>
+                  <span>{renderSortIcon("shortDescription")}</span>
+                </div>
+              </Table.Th>
 
-            <Table.Th onClick={() => handleSort("category")}>
-              <div className="bl-table-headers">
-                <span> Category </span>
-                <span> {renderSortIcon("category")} </span>
-              </div>
-            </Table.Th>
-            
+              <Table.Th
+                className="bl-header-cell"
+                onClick={() => handleSort("category")}
+              >
+                <div className="bl-table-headers">
+                  <span>Category</span>
+                  <span>{renderSortIcon("category")}</span>
+                </div>
+              </Table.Th>
 
-            <Table.Th>
-              <div
-                className="bl-table-headers"
+              <Table.Th
+                className="bl-header-cell"
                 onClick={() => handleSort("actualResolvedTime")}
               >
-                <span> Actual Resolved Time </span>
-                <span> {renderSortIcon("actualResolvedTime")} </span>
-              </div>
-            </Table.Th>
+                <div className="bl-table-headers">
+                  <span>Actual Resolved Time</span>
+                  <span>{renderSortIcon("actualResolvedTime")}</span>
+                </div>
+              </Table.Th>
 
-            <Table.Th>
-              <div
-                className="bl-table-headers"
+              <Table.Th
+                className="bl-header-cell last-header"
                 onClick={() => handleSort("breachSLA")}
               >
-                <span> Breach SLA </span>
-                <span> {renderSortIcon("breachSLA")} </span>
-              </div>
-            </Table.Th>
-          </Table.Tr>
-        </Table.Thead>
-
-        <Table.Tbody>
-          {totalElements === 0 ? (
-            <Table.Tr>
-              <Table.Td
-                colSpan={6}
-                style={{ textAlign: "center", padding: 20 }}
-              >
-                No incidents found
-              </Table.Td>
+                <div className="bl-table-headers">
+                  <span>Breach SLA</span>
+                  <span>{renderSortIcon("breachSLA")}</span>
+                </div>
+              </Table.Th>
             </Table.Tr>
-          ) : (
-            breachedIncidents.map((breachedIncident) => (
-              <Table.Tr key={breachedIncident.incidentNumber}>
-                <Table.Td>{breachedIncident.incidentNumber}</Table.Td>
-                <Table.Td>{breachedIncident.assignedTo}</Table.Td>
-                <Table.Td>{breachedIncident.shortDescription}</Table.Td>
-                <Table.Td>{breachedIncident.category}</Table.Td>
-                <Table.Td>{breachedIncident.actualResolvedTime}</Table.Td>
-                <Table.Td>{breachedIncident.breachSLA}</Table.Td>
+          </Table.Thead>
+
+          <Table.Tbody>
+            {totalElements === 0 ? (
+              <Table.Tr>
+                <Table.Td
+                  colSpan={6}
+                  style={{ textAlign: "center", padding: 20 }}
+                >
+                  No incidents found
+                </Table.Td>
               </Table.Tr>
-            ))
-          )}
-        </Table.Tbody>
-      </Table>
+            ) : (
+              breachedIncidents.map((item, index) => (
+                <Table.Tr
+                  key={item.incidentNumber}
+                  className={index === 0 ? "first-row-gap" : ""}
+                >
+                  <Table.Td>{item.incidentNumber}</Table.Td>
+                  <Table.Td>{item.assignedTo}</Table.Td>
+                  <Table.Td>{item.shortDescription}</Table.Td>
+                  <Table.Td>{item.category}</Table.Td>
+                  <Table.Td>{item.actualResolvedTime}</Table.Td>
+                  <Table.Td>{item.breachSLA}</Table.Td>
+                </Table.Tr>
+              ))
+            )}
+          </Table.Tbody>
+        </Table>
+      </Table.ScrollContainer>
 
       {/* pagination */}
       <div className="bl-pagination-footer">
         <span>
           Showing {startRange}-{endRange} of {totalElements} Total Incidents
         </span>
+
         <div className="bl-pagination-controls">
           <button
             onClick={resetPageNumber}
@@ -265,12 +293,15 @@ export default function BreachedListTable({ priority }: { priority: string }) {
             <img src={forward} alt="" />
             <img src={forward} alt="" />
           </button>
+
           <button onClick={prevPage}>
             <img src={forward} alt="" />
           </button>
+
           <button onClick={nextPage}>
             <img src={backward} alt="" />
           </button>
+
           <button onClick={lastPage} style={{ borderRadius: "0 6px 6px 0" }}>
             <img src={backward} alt="" />
             <img src={backward} alt="" />

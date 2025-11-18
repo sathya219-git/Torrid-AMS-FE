@@ -10,11 +10,9 @@ body {
 /* Main container */
 .team-portfolio-container {
   font-family: Inter;
-  padding: 0px 20px 20px 20px;
+  /* padding: 0px 16px; */
   font-weight: 600;
   background-color: #fff;
-  width: 95%;
-  margin: 30px auto 0 auto;
   border-radius: 8px;
 }
 
@@ -28,9 +26,10 @@ body {
 }
 
 .portfolio-header h1 {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 600;
-  color: black;
+  color: #333B69;
+  margin: 0;
 }
 
 .controls {
@@ -61,12 +60,17 @@ body {
 
 /* Member list */
 .member-list {
+  border-radius: 14px;
+  background-color: #f5f6fa;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 2px;
 }
 
 .member-list .member-card:first-child {
+      border-radius: 10px;
+
   background-color: #e3e8f0;
   font-weight: 600;
   box-shadow: none;
@@ -153,6 +157,7 @@ body {
   }
 
   .member-card {
+    border-radius: 10px;
     grid-template-columns: 1fr;
     padding: 15px;
   }

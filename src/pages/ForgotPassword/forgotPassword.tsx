@@ -2,7 +2,8 @@ import { Card, TextInput, Text, PasswordInput, Button } from "@mantine/core";
 import "./forgotPassword.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { useAtomValue, useSetAtom } from "jotai";
+import { InitiateAPI, ResetSuccess } from "../../store/filterStore";
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
@@ -11,36 +12,31 @@ export default function ForgotPassword() {
   const [defaultPassword, setDefaultPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
-  const [responseMsg, setResponseMsg] = useState("");
+
+  const initiateAPI = useSetAtom(InitiateAPI);
+  const resetSuccess = useAtomValue(ResetSuccess);
+
   useEffect(() => {
-    if (responseMsg === "success") {
+    if (resetSuccess) {
       navigate("/login");
     }
-  }, [responseMsg, navigate]);
+  }, [resetSuccess]);
 
-  const changePassword = async () => {
+  const changePassword = () => {
     const body = {
       emailID,
       defaultPassword,
       newPassword,
       confirmNewPassword,
     };
-
-    try {
-      const response = await axios.post(
-        "http://localhost:5092/api/Auth/resetPassword",
-        body
-      );
-
-      if (response.data.success) {
-        alert(response.data.message);
-        setResponseMsg("success");
-      } else {
-        alert(response.data.message || "Failed to update password.");
-      }
-    } catch (err) {
-      alert("Something went wrong. Try again!");
-    }
+    initiateAPI((prev) => {
+      const curr = new Map(prev);
+      curr.set("http://localhost:5092/api/auth/resetPassword", {
+        method: "POST",
+        body: JSON.stringify(body),
+      });
+      return curr;
+    });
   };
 
   return (

@@ -1,16 +1,10 @@
 import "./notification.css";
-import { Badge, Button, Divider, Popover, Text } from "@mantine/core";
+import { Button, Popover, Text } from "@mantine/core";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import CloseIcon from "@mui/icons-material/Close";
 import { useEffect, useState } from "react";
 import { TiTick } from "react-icons/ti";
-
-interface FileDetails {
-  name: string;
-  size: string;
-  type: string;
-  uploadedAt: string;
-}
+import { FileDetail } from "../UploadReport/upload-report.interface";
 
 export default function Notification() {
   const styles: Record<string, React.CSSProperties> = {
@@ -20,7 +14,8 @@ export default function Notification() {
       borderRadius: "10px",
       padding: "15px 20px",
       boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-      maxWidth: "500px",
+      width: "100%", // ✅ full width
+      boxSizing: "border-box",
     },
     title: {
       marginBottom: "10px",
@@ -40,10 +35,19 @@ export default function Notification() {
     },
     filename: { color: "#1e3a8a" },
     size: { color: "#6b7280", fontSize: "0.9em" },
-    message: { color: "#065f46", fontSize: "0.95em", marginTop: "4px",display:"flex",justifyContent:"center",alignItems:"center",gap:"8px" },
+    message: {
+      color: "#065f46",
+      fontSize: "0.95em",
+      marginTop: "4px",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      gap: "8px",
+    },
   };
 
-  const [files, setFiles] = useState<FileDetails[]>([]);
+  const [opened, setOpened] = useState(false);
+  const [files, setFiles] = useState<FileDetail[]>([]);
 
   const loadFiles = () => {
     const stored = localStorage.getItem("uploadedFiles");
@@ -54,36 +58,29 @@ export default function Notification() {
   // ✅ Load once on mount
   useEffect(() => {
     loadFiles();
-
-    // ✅ Listen for localStorage updates
-    const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === "uploadedFiles") {
-        loadFiles();
-      }
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-
-    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
-
-  // ✅ Also listen for custom event when same tab updates
-  useEffect(() => {
-    const handleCustomUpdate = () => loadFiles();
-    window.addEventListener("uploadedFilesUpdated", handleCustomUpdate);
-    return () => window.removeEventListener("uploadedFilesUpdated", handleCustomUpdate);
-  }, []);
-
-  // if (files.length === 0) return <div>No files uploaded yet.</div>;
 
   return (
     <div className="header-left">
-      <Popover width={550} position="bottom" shadow="md">
+      <Popover
+        width={1000}
+        position="bottom"
+        shadow="md"
+        opened={opened}
+        onChange={setOpened}
+      >
         <Popover.Target>
           <Button
-            // variant="subtle"
             p={10}
-            style={{ display: "flex", alignItems: "center", justifyContent: "center", }}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            onClick={() => {
+              loadFiles();
+              setOpened((prev) => !prev);
+            }}
           >
             <NotificationsIcon fontSize="small" />
           </Button>
@@ -105,25 +102,35 @@ export default function Notification() {
             </div>
           </div>
 
-          <div className="notification">
+          <div className="upload-notification">
             <div style={styles.container}>
               <h3 style={styles.title}>Upload Notifications</h3>
               <ul style={styles.list}>
                 {files.map((file, index) => {
-                  const time = new Date(file.uploadedAt).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  });
-                  const date = new Date(file.uploadedAt).toLocaleDateString();
+                  const time = new Date(file.uploadedDate).toLocaleTimeString(
+                    [],
+                    {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    }
+                  );
+                  const date = new Date(file.uploadedDate).toLocaleDateString();
 
                   return (
-                    <li key={index} style={styles.item}>
-                      <div>
-                        <strong style={styles.filename}>{file.name}</strong>{" "}
-                        <span style={styles.size}>({file.size})</span>
+                    <li
+                      key={index}
+                      style={styles.item}
+                      className="notification-item"
+                    >
+                      <div className="notification-file">
+                        <span>{file.fileName}</span>
+                        <span style={{ color: "#6b7280", fontSize: "0.9em" }}>
+                          ({file.fileSize})
+                        </span>
                       </div>
-                      <div style={styles.message}>
-                        <TiTick style={{fontSize:"30px"}}/>
+
+                      <div className="notification-success">
+                        <TiTick style={{ fontSize: "22px" }} />
                         Successfully uploaded on <b>{date}</b> at <b>{time}</b>
                       </div>
                     </li>

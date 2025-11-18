@@ -1,8 +1,54 @@
 .priority-search {
   padding-top: 5px;
 }
-.accordion-border:last-of-type {
-  border-bottom: none;
+
+
+.Accordion-title {
+  background-color: #e5e7ee;
+}
+
+.accordion-padding {
+  padding: 0%;
+}
+
+.inc-list-header h1 {
+  color: #333B69;
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0 0 10px 0;
+}
+
+.BL-filter-container {
+  display: flex;
+  flex-direction: row;
+  gap: 75px;
+  padding: 20px 0 0 20px;
+}
+
+.incident-scroll {
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 6px;
+  padding-right: 20px;
+}
+
+.incident-checkbox {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.incident-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.incident-scroll::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.incident-scroll::-webkit-scrollbar-track {
+  background: #f3f3f3;
 }
 
 .Accordion-title {
@@ -10,5 +56,48 @@
 }
 
 .accordion-padding {
-  padding: 0%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+}
+.mantine-Tabs-tab[data-active="true"] {
+  border-bottom: 5px solid #1c7ed6 !important; /* adjust thickness & color */
+}
+
+.incident-breach-accordion-config {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.accordion-padding {
+  padding:16px 20px 19px 20px !important;
+}
+
+/* Accordion outer style */
+.incident-breach-accordion-config .mantine-Accordion-item {
+  border-radius: 10px;
+  background-color: #f7f9fc;
+  overflow: hidden;
+  border: 1px solid #e0e0e0;
+}
+
+/* Accordion header look */
+.incident-breach-accordion-config .mantine-Accordion-control {
+  padding: 10px 18px;
+  background-color: #F5F6FA;
+}
+
+/* Hover effect */
+/* .incident-breach-accordion-config .mantine-Accordion-control:hover {
+  background-color: #eef2f7;
+} */
+
+/* Remove bottom border from last accordion */
+.incident-breach-accordion-config .mantine-Accordion-item:last-of-type {
+  border: none;
+}
+.mantine-Tabs-tab {
+    padding-bottom: 8px !important;
 }

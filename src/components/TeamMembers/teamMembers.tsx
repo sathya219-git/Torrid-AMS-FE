@@ -1,31 +1,36 @@
 import { Accordion, Checkbox, Input, Text } from "@mantine/core";
 import SearchIcon from "@mui/icons-material/Search";
-import axios from "axios";
-import { useAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { List, RowComponentProps } from "react-window";
-import { selectedTeamMembers, teamMembers } from "../../store/filterStore";
+import {
+  InitiateAPI,
+  selectedTeamMembers,
+  teamMembers,
+} from "../../store/filterStore";
 import { TeamMember } from "./team-members.interface";
 import "./teamMembers.css";
 
 export default function TeamMembers() {
-  const [teamMemberList, setTeamMembers] = useAtom(teamMembers);
+  const teamMemberList = useAtomValue(teamMembers);
   const [selectedFilters, setSelectedFilters] = useAtom(selectedTeamMembers);
+
+  const initiateAPI = useSetAtom(InitiateAPI);
+
   const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
     if (teamMemberList.length > 0) {
       return;
     }
-    axios
-      .get("http://localhost:5092/api/Incident/nameandcountbypriority")
-      .then((res) => {
-        setTeamMembers(res.data?.memberDetails ?? []);
-      })
-      .catch((err) => {
-        console.error("Error fetching team members:", err);
-        setTeamMembers([]);
+    initiateAPI((prev) => {
+      const curr = new Map(prev);
+      curr.set("http://localhost:5092/api/Incident/nameandcountbypriority", {
+        method: "GET",
+        body: null,
       });
+      return curr;
+    });
   }, []);
 
   const filteredMembers = useMemo(() => {
@@ -53,7 +58,7 @@ export default function TeamMembers() {
         <Accordion.Panel>
           <div className="search">
             <Input
-              placeholder="Search team members..."
+              placeholder="   Search team members..."
               leftSection={<SearchIcon fontSize="medium" />}
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
