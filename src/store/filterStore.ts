@@ -39,6 +39,8 @@ export const ReloadUploadedReportsGrid = atom(new Date().getTime());
 
 export const LoginSuccess = atom(false);
 
+export const ResetSuccess = atom(false);
+
 // Left side filters
 export const groups = atom<string[]>([]);
 export const selectedGroups = atom<string[]>([]);

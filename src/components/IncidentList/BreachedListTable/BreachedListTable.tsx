@@ -179,7 +179,7 @@ export default function BreachedListTable({
         <FaSortAmountDownAlt fontSize="small" />
       );
     },
-    [sortOrder]
+    [sortOrder, sortField]
   );
 
   return (
