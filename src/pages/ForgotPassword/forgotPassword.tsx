@@ -8,7 +8,7 @@ import { InitiateAPI, ResetSuccess } from "../../store/filterStore";
 export default function ForgotPassword() {
   const navigate = useNavigate();
 
-  const [emailID] = useState("");
+  const [emailID,setEmailID] = useState("");
   const [defaultPassword, setDefaultPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
@@ -55,12 +55,12 @@ export default function ForgotPassword() {
             </Text>
             <p>This helps reset your password. Stay secure!</p>
 
-            {/* <TextInput
+            <TextInput
               label="Email ID"
               placeholder="user@example.com"
               value={emailID}
               onChange={(e) => setEmailID(e.target.value)}
-            /> */}
+            />
 
             <TextInput
               label="Default Password"

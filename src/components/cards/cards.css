@@ -356,7 +356,7 @@ color: #0000;
 .icon-property
 {
   max-width: 22px;
-  min-width: 22px;
+  /* min-width: 22px; */
 }
 
 .card.progress {
