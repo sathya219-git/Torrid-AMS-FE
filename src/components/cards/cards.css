@@ -21,11 +21,11 @@
 
 /* Priority Tag Styling (P1 - Critical 450) */
 .priority-tag {
-  background-color: #dae0f7;
+  background-color: #EAECF5;
   /* Light blue background */
   color: #4b5fae;
   /* Darker blue text */
-  padding: 10px 15px;
+  padding: 8px 10px;
   border-radius: 6px;
   display: flex;
   flex-direction: column;
@@ -37,13 +37,15 @@
 .priority-label {
   font-size: 14px;
   font-weight: 500;
-  margin-bottom: 4px;
+  color: #202224;
+  font-family: "Inter", sans-serif;
+
 }
 
 .count {
-  font-size: 28px;
-  font-weight: bold;
-  color: #004d99;
+  font-size: 16px;
+  font-weight: 600;
+  color: #202224;
   /* Maintain dark blue for the count */
 }
 
@@ -66,18 +68,20 @@
 
 .metric-title {
   font-size: 14px;
-  color: #666;
-  margin-bottom: 4px;
+  font-weight: 500;
+  color: #696969;
+  font-family: "Inter", sans-serif;
+
 }
 
 .metric-value {
-  font-size: 18px;
+  font-size: 16px;
   font-family: "Inter", sans-serif;
-  font-weight: bold;
-  color: #333;
-  display: flex;
+  font-weight: 400;
+  color: #000000;
+  /* display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 5px; */
 }
 
 .arrow-up {
@@ -349,6 +353,11 @@ color: #0000;
 .card.open {
   background-color: #c5e5ebd0;
 }
+.icon-property
+{
+  max-width: 22px;
+  min-width: 22px;
+}
 
 .card.progress {
   background-color: #f9f0cc;
@@ -445,10 +454,11 @@ color: #0000;
 }
 
 .incident-priority-header h2 {
-  font-size: 22px;
+  font-size: 20px;
   color: #333B69;
   font-weight: 600;
-  margin: 0;
+    font-family: "Inter", sans-serif;
+
 }
 
 .metrics-dropdown {

@@ -13,6 +13,8 @@ export interface Incident {
   state: string;
   resolvedDateTime: string;
   breachSLA: string;
+  createdDateTime:string;
+  updatedDateTime:string;
 }
 
 export type SortOrder = "ASC" | "DESC" | "";

@@ -41,6 +41,7 @@ export default function Filter() {
       Category: selCategories,
       State: selStatus,
       AssignedToName: selTeamMembers,
+      UpdatedOn: new Date().getTime(),
     });
   }, [
     selGroups,
@@ -59,6 +60,7 @@ export default function Filter() {
       Category: [],
       State: [],
       AssignedToName: [],
+      UpdatedOn: new Date().getTime(),
     };
 
     setSelectedGroups([]);

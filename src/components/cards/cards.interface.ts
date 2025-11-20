@@ -12,6 +12,7 @@ export interface PriorityDetails {
   details: PriorityStats[];
   avgResolvedTime: string;
   totalResolvedTime: string;
+  breachedCount:number;
 }
 
 export interface IncidentPrioritySummary {
@@ -23,4 +24,5 @@ export interface IncidentSummary {
   openIncidents: number;
   inProgressIncidents: number;
   closedIncidents: number;
+  breachedCount:number;
 }

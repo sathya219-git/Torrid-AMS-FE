@@ -260,13 +260,16 @@ const UploadReport = () => {
                             <span
                               onClick={() => pushToDashboard(item.id)}
                               style={{
+                                display:"flex",
+                                alignItems:"center",
+                                justifyContent:"center",
                                 padding: "8px 16px",
                                 borderRadius: "9px",
                                 backgroundColor: "#abcbeeff",
                                 color: "black",
                                 fontWeight: "500",
                                 cursor: "pointer",
-                                boxShadow: "0 2px 2px rgba(0, 0, 0, 0.2)", // ✨ soft shado2
+                                boxShadow: "0 2px 2px rgba(0, 0, 0, 0.2)",
                                 transition: "all 0.3s ease",
                               }}
                             >

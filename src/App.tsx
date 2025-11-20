@@ -11,14 +11,20 @@ import Login from "./pages/Login/login";
 import { theme } from "./theme";
 import { useAtom, useSetAtom } from "jotai";
 import {
-  BreachedResponse,
   categories,
   CountByPriority,
   groups,
-  IncidentsResponse,
   InitiateAPI,
   KPIs,
   LoginSuccess,
+  P1BreachedResponse,
+  P1IncidentsResponse,
+  P2BreachedResponse,
+  P2IncidentsResponse,
+  P3BreachedResponse,
+  P3IncidentsResponse,
+  P4BreachedResponse,
+  P4IncidentsResponse,
   ReloadUploadedReportsGrid,
   ResetSuccess,
   status,
@@ -48,8 +54,17 @@ export default function App() {
   const setIncidentSummary = useSetAtom(KPIs);
   const setIncidentPrioritySummary = useSetAtom(CountByPriority);
   const setMemberDetailsResponse = useSetAtom(TeamMemberDetails);
-  const setIncidentsResponse = useSetAtom(IncidentsResponse);
-  const setBreachedResponse = useSetAtom(BreachedResponse);
+
+  const setP1IncidentsResponse = useSetAtom(P1IncidentsResponse);
+  const setP2IncidentsResponse = useSetAtom(P2IncidentsResponse);
+  const setP3IncidentsResponse = useSetAtom(P3IncidentsResponse);
+  const setP4IncidentsResponse = useSetAtom(P4IncidentsResponse);
+
+  const setP1BreachedResponse = useSetAtom(P1BreachedResponse);
+  const setP2BreachedResponse = useSetAtom(P2BreachedResponse);
+  const setP3BreachedResponse = useSetAtom(P3BreachedResponse);
+  const setP4BreachedResponse = useSetAtom(P4BreachedResponse);
+
   const setUploadedReportsResponse = useSetAtom(UploadedReportsResponse);
   const setReloadUploadedReportsGrid = useSetAtom(ReloadUploadedReportsGrid);
   const setTab = useSetAtom(tabValue);
@@ -152,9 +167,25 @@ export default function App() {
       } else if (url.includes("api/Incident/kpis")) {
         setIncidentSummary(data);
       } else if (url.includes("api/Incident/breachlistbypriority")) {
-        setBreachedResponse(data);
+        if (url.includes(encodeURIComponent("1 - Critical"))) {
+          setP1BreachedResponse(data);
+        } else if (url.includes(encodeURIComponent("2 - High"))) {
+          setP2BreachedResponse(data);
+        } else if (url.includes(encodeURIComponent("3 - Moderate"))) {
+          setP3BreachedResponse(data);
+        } else if (url.includes(encodeURIComponent("4 - Low"))) {
+          setP4BreachedResponse(data);
+        }
       } else if (url.includes("api/Incident/detailsbypriority")) {
-        setIncidentsResponse(data);
+        if (url.includes(encodeURIComponent("1 - Critical"))) {
+          setP1IncidentsResponse(data);
+        } else if (url.includes(encodeURIComponent("2 - High"))) {
+          setP2IncidentsResponse(data);
+        } else if (url.includes(encodeURIComponent("3 - Moderate"))) {
+          setP3IncidentsResponse(data);
+        } else if (url.includes(encodeURIComponent("4 - Low"))) {
+          setP4IncidentsResponse(data);
+        }
       } else if (url.includes("api/files/history")) {
         setUploadedReportsResponse(data);
       } else if (url.includes("api/auth/resetPassword")) {
@@ -240,9 +271,25 @@ export default function App() {
     } else if (url.includes("api/Incident/kpis")) {
       setIncidentSummary(undefined);
     } else if (url.includes("api/Incident/breachlistbypriority")) {
-      setBreachedResponse(undefined);
+      if (url.includes(encodeURIComponent("1 - Critical"))) {
+        setP1BreachedResponse(undefined);
+      } else if (url.includes(encodeURIComponent("2 - High"))) {
+        setP2BreachedResponse(undefined);
+      } else if (url.includes(encodeURIComponent("3 - Moderate"))) {
+        setP3BreachedResponse(undefined);
+      } else if (url.includes(encodeURIComponent("4 - Low"))) {
+        setP4BreachedResponse(undefined);
+      }
     } else if (url.includes("api/Incident/detailsbypriority")) {
-      setIncidentsResponse(undefined);
+      if (url.includes(encodeURIComponent("1 - Critical"))) {
+        setP1IncidentsResponse(undefined);
+      } else if (url.includes(encodeURIComponent("2 - High"))) {
+        setP2IncidentsResponse(undefined);
+      } else if (url.includes(encodeURIComponent("3 - Moderate"))) {
+        setP3IncidentsResponse(undefined);
+      } else if (url.includes(encodeURIComponent("4 - Low"))) {
+        setP4IncidentsResponse(undefined);
+      }
     } else if (url.includes("api/files/history")) {
       setUploadedReportsResponse(undefined);
     }

@@ -16,6 +16,7 @@ export interface FilterState {
   Category: string[];
   State: string[];
   AssignedToName: string[];
+  UpdatedOn: number;
 }
 
 export interface Incident {
@@ -32,8 +33,11 @@ export interface BreachFilters {
   breachSLA?: string;
   categories?: string;
   assignedTo?: string;
+   Search?: string;
 }
-
+export interface BreachSearchFilters {
+  Search?: string;
+}
 export interface ApiRequest {
   method: string;
   body: any;

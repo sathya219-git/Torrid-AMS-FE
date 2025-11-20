@@ -3,8 +3,7 @@ import "./IncidentTable.css";
 import "../BreachedListTable/BreachedListTable.css";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { BsList } from "react-icons/bs";
-import { FaArrowCircleDown, FaSortAmountDownAlt } from "react-icons/fa";
-import { FaSortAmountUp } from "react-icons/fa";
+import { FaArrowCircleDown } from "react-icons/fa";
 import backward from "../../../assets/backward.png";
 import forward from "../../../assets/forward.png";
 import { useAtomValue, useSetAtom } from "jotai";
@@ -12,14 +11,24 @@ import {
   ActiveCriticalAccordion,
   ActiveIncidentTab,
   appliedFilter,
-  IncidentsResponse,
   InitiateAPI,
 } from "../../../store/filterStore";
-import { Incident, SortOrder } from "./incident-table.interface";
+import {
+  Incident,
+  IncidentResponse,
+  SortOrder,
+} from "./incident-table.interface";
+import { GoSortAsc, GoSortDesc } from "react-icons/go";
 
-export default function IncidentTable({ priority }: { priority: string }) {
-  const incidentsResponse = useAtomValue(IncidentsResponse);
-
+export default function IncidentTable({
+  priority,
+  Search,
+  incidentsResponse,
+}: {
+  priority: string;
+  Search: string;
+  incidentsResponse: IncidentResponse | undefined;
+}) {
   const incidents = useMemo(() => {
     return incidentsResponse?.incidents ?? [];
   }, [incidentsResponse]);
@@ -71,6 +80,58 @@ export default function IncidentTable({ priority }: { priority: string }) {
 
   const initiateAPI = useSetAtom(InitiateAPI);
 
+  const [lastUpdatedOn, setLastUpdatedOn] = useState(0);
+
+  const apiUrl = useMemo(() => {
+    const params = new URLSearchParams();
+
+    if (appliedFilters.Category?.length > 0) {
+      params.append("Category", appliedFilters.Category.join(","));
+    }
+
+    if (Search) {
+      params.append("Search", Search);
+    }
+
+    if (appliedFilters.State?.length > 0) {
+      params.append("State", appliedFilters.State.join(","));
+    }
+    if (appliedFilters.AssignedToName?.length > 0) {
+      params.append("AssignedToName", appliedFilters.AssignedToName.join(","));
+    }
+    if (appliedFilters.FromDate) {
+      const formatted = new Date(appliedFilters.FromDate).toLocaleString(
+        "en-US"
+      );
+      params.append("FromDate", formatted);
+    }
+    if (appliedFilters.ToDate) {
+      const formatted = new Date(appliedFilters.ToDate).toLocaleString("en-US");
+      params.append("ToDate", formatted);
+    }
+    if (sortField !== "") {
+      params.append("SortBy", sortField);
+      params.append("SortOrder", sortOrder);
+    }
+    const query = params.size > 0 ? `&${params.toString()}` : "";
+    const encodedPriority = encodeURIComponent(priority);
+
+    if (appliedFilters.UpdatedOn > lastUpdatedOn) {
+      setLastUpdatedOn(appliedFilters.UpdatedOn);
+      setCurrentPage(1);
+    }
+
+    return `http://localhost:5092/api/Incident/detailsbypriority?Priority=${encodedPriority}&PageNumber=${currentPage}&PageSize=${8}${query}`;
+  }, [
+    priority,
+    appliedFilters,
+    sortField,
+    sortOrder,
+    currentPage,
+    lastUpdatedOn,
+    Search,
+  ]);
+
   useEffect(() => {
     if (
       activeIncidentTab !== priority ||
@@ -78,46 +139,15 @@ export default function IncidentTable({ priority }: { priority: string }) {
     ) {
       return;
     }
-    const query = buildFilterQuery();
-    const encodedPriority = encodeURIComponent(priority);
-    const url = `http://localhost:5092/api/Incident/detailsbypriority?Priority=${encodedPriority}&PageNumber=${currentPage}${query}`;
     initiateAPI((prev) => {
       const curr = new Map(prev);
-      curr.set(url, {
+      curr.set(apiUrl, {
         method: "GET",
         body: null,
       });
       return curr;
     });
-  }, [
-    priority,
-    currentPage,
-    appliedFilters,
-    sortField,
-    sortOrder,
-    activeIncidentTab,
-    activeCriticalAccordion,
-  ]);
-
-  const buildFilterQuery = useCallback(() => {
-    const params = new URLSearchParams();
-
-    if (appliedFilters.Category?.length > 0) {
-      params.append("Category", appliedFilters.Category.join(","));
-    }
-    if (appliedFilters.State?.length > 0) {
-      params.append("State", appliedFilters.State.join(","));
-    }
-    if (appliedFilters.AssignedToName?.length > 0) {
-      params.append("AssignedToName", appliedFilters.AssignedToName.join(","));
-    }
-    if (sortField !== "") {
-      params.append("SortBy", sortField);
-      params.append("SortOrder", sortOrder);
-    }
-    const queryString = params.toString();
-    return queryString ? `&${queryString}` : "";
-  }, [appliedFilters, sortField, sortOrder]);
+  }, [apiUrl, activeIncidentTab, activeCriticalAccordion]);
 
   const handleSort = useCallback(
     (field: keyof Incident) => {
@@ -144,9 +174,9 @@ export default function IncidentTable({ priority }: { priority: string }) {
       if (sortField !== field) return <BsList fontSize="small" />;
 
       return sortOrder === "ASC" ? (
-        <FaSortAmountUp fontSize="small" />
+        <GoSortAsc size={16} />
       ) : (
-        <FaSortAmountDownAlt fontSize="small" />
+        <GoSortDesc size={16} />
       );
     },
     [sortField, sortOrder]
@@ -207,17 +237,24 @@ export default function IncidentTable({ priority }: { priority: string }) {
                   <span> {renderSortIcon("state")} </span>
                 </div>
               </Table.Th>
-
               <Table.Th
                 className="bl-header-cell"
-                onClick={() => handleSort("actualResolvedTime")}
+                onClick={() => handleSort("resolvedDateTime")}
               >
                 <div className="bl-table-headers">
-                  <span> Actual Resolved Time </span>
-                  <span> {renderSortIcon("actualResolvedTime")} </span>
+                  <span> Created Date</span>
+                  <span> {renderSortIcon("createdDateTime")} </span>
                 </div>
               </Table.Th>
-
+              {/* <Table.Th
+                className="bl-header-cell"
+                onClick={() => handleSort("updatedDateTime")}
+              >
+                <div className="bl-table-headers">
+                  <span> Updated Date</span>
+                  <span> {renderSortIcon("updatedDateTime")} </span>
+                </div>
+              </Table.Th> */}
               <Table.Th
                 className="bl-header-cell"
                 onClick={() => handleSort("resolvedDateTime")}
@@ -227,13 +264,15 @@ export default function IncidentTable({ priority }: { priority: string }) {
                   <span> {renderSortIcon("resolvedDateTime")} </span>
                 </div>
               </Table.Th>
-
-              {/* <Table.Th onClick={() => handleSort("createdDate")}>
-                <div className="table-headers">
-                  <span> Created Date </span>
-                  <span> {renderSortIcon("createdDate")} </span>
+              <Table.Th
+                className="bl-header-cell"
+                onClick={() => handleSort("actualResolvedTime")}
+              >
+                <div className="bl-table-headers">
+                  <span> Actual Resolved Time </span>
+                  <span> {renderSortIcon("actualResolvedTime")} </span>
                 </div>
-              </Table.Th> */}
+              </Table.Th>
 
               <Table.Th
                 className="bl-header-cell last-header"
@@ -260,7 +299,6 @@ export default function IncidentTable({ priority }: { priority: string }) {
             ) : (
               incidents.map((incident, index) => {
                 const isBreached = incident.breachSLA !== "No Breach";
-                console.log(isBreached);
 
                 return (
                   <Table.Tr
@@ -275,9 +313,11 @@ export default function IncidentTable({ priority }: { priority: string }) {
                     <Table.Td>{incident.shortDescription}</Table.Td>
                     <Table.Td>{incident.category}</Table.Td>
                     <Table.Td>{incident.state}</Table.Td>
-                    <Table.Td>{incident.actualResolvedTime}</Table.Td>
+                    <Table.Td>{incident.createdDateTime}</Table.Td>
+                    {/* <Table.Td>{incident.updatedDateTime}</Table.Td> */}
                     <Table.Td>{incident.resolvedDateTime}</Table.Td>
-                    {/* <Table.Td>{incident.createdDate}</Table.Td> */}
+
+                    <Table.Td>{incident.actualResolvedTime}</Table.Td>
 
                     <Table.Td className="highlight-downarrow">
                       <div className="breach-cell">

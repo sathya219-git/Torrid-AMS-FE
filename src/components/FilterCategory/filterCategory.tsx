@@ -36,6 +36,7 @@ export default function FilterCategory() {
       Category: [],
       State: [],
       AssignedToName: [],
+      UpdatedOn: new Date().getTime(),
     };
 
     setAppliedFilters(clearedState);
@@ -84,27 +85,29 @@ export default function FilterCategory() {
             AssignmentGroup: prev.AssignmentGroup.filter(
               (v) => v !== chip.value
             ),
+            UpdatedOn: new Date().getTime(),
           };
         case "Category":
           return {
             ...prev,
             Category: prev.Category.filter((v) => v !== chip.value),
+            UpdatedOn: new Date().getTime(),
           };
         case "FromDate":
-          return { ...prev, FromDate: null };
+          return { ...prev, FromDate: null, UpdatedOn: new Date().getTime() };
         case "ToDate":
-          return { ...prev, ToDate: null };
+          return { ...prev, ToDate: null, UpdatedOn: new Date().getTime() };
         case "State":
           return {
             ...prev,
             State: prev.State.filter((v) => v !== chip.value),
+            UpdatedOn: new Date().getTime(),
           };
         case "AssignedToName":
           return {
             ...prev,
-            AssignedToName: prev.AssignedToName.filter(
-              (v) => v !== chip.value
-            ),
+            AssignedToName: prev.AssignedToName.filter((v) => v !== chip.value),
+            UpdatedOn: new Date().getTime(),
           };
         default:
           return prev;
@@ -115,7 +118,8 @@ export default function FilterCategory() {
 
   // ✅ Show header only if we have non-null filters
   const hasValidFilters = appliedFilterChips?.some(
-    (item) => item?.value !== null && item?.value !== "" && item?.value !== undefined
+    (item) =>
+      item?.value !== null && item?.value !== "" && item?.value !== undefined
   );
 
   return (
@@ -126,18 +130,23 @@ export default function FilterCategory() {
       <Card.Section inheritPadding>
         <div className="selected-filter">
           <div className="filtered-results">
-
             {/* ✅ Conditional Header */}
             {hasValidFilters && (
-              <h1 style={{ color: "#333B69", paddingLeft: "10px",fontWeight:"600",fontSize:"22px" }}>
+              <h1
+                style={{
+                  color: "#333B69",
+                  paddingLeft: "10px",
+                  fontWeight: "600",
+                  fontSize: "22px",
+                }}
+              >
                 Filtered Results
               </h1>
             )}
 
             <div className="filter-tags">
-
               {/* ✅ Render only non-null chips */}
-              {appliedFilterChips.map((chip) => (
+              {appliedFilterChips.map((chip) =>
                 chip.value ? (
                   <div className="tag" key={chip.value}>
                     <span>{chip.value}</span>
@@ -149,7 +158,7 @@ export default function FilterCategory() {
                     </button>
                   </div>
                 ) : null
-              ))}
+              )}
 
               {hasActiveFilters && (
                 <span className="clear-all" onClick={clearAll}>

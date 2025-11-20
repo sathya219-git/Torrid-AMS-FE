@@ -1,18 +1,16 @@
 import { useAtom, useAtomValue } from "jotai";
-import { appliedFilter, P2BreachFilters } from "../../../store/filterStore";
-import { Accordion, Radio, Text } from "@mantine/core";
-import BreachedListTable from "../BreachedListTable/BreachedListTable";
 import {
-  ActualResolvedTimeFilters,
-  BreachSLAStatusFilters,
-} from "../breached-list-filter.constants";
+  P2BreachedResponse,
+  P2BreachFilters,
+} from "../../../store/filterStore";
+import { Accordion, Input, Text } from "@mantine/core";
+import BreachedListTable from "../BreachedListTable/BreachedListTable";
 import { BreachFilters } from "../../../store/filter-store.interface";
 import { useCallback } from "react";
 
 export default function P2HighBreach() {
-    const mainAppliedFilters = useAtomValue(appliedFilter);
-
   const [p2BreachFilters, setP2BreachFilters] = useAtom(P2BreachFilters);
+  const p2BreachedResponse = useAtomValue(P2BreachedResponse);
 
   const setValue = useCallback((key: keyof BreachFilters, value: string) => {
     setP2BreachFilters((prev) => {
@@ -29,7 +27,34 @@ export default function P2HighBreach() {
         <Text fw={700}>P2 - High Breach List </Text>
       </Accordion.Control>
       <Accordion.Panel>
-        <div>
+        <Input
+          radius="md"
+          styles={{
+            input: {
+              border: "1px solid #2c2c2c31",
+              borderRadius: "8px",
+              padding: "22px",
+              outline: "none",
+              boxShadow: "none",
+
+              "&:focus": {
+                outline: "none",
+                boxShadow: "none",
+                // borderColor: "inherit", // optional subtle border
+              },
+            },
+          }}
+          placeholder="Search here..."
+          onKeyUp={(e) => {
+            const value = (e.target as HTMLInputElement).value;
+            if (e.key === "Enter") {
+              setValue("Search", value);
+            } else if (!value) {
+              setValue("Search", "");
+            }
+          }}
+        />
+        {/* <div>
           <Accordion
             defaultValue="filter"
             classNames={{
@@ -58,9 +83,8 @@ export default function P2HighBreach() {
                         {mainAppliedFilters.AssignedToName.map((item) => (
                           <div className="incident-checkbox" key={item}>
                             <Radio label={item} value={item} onClick={() => {
-                                // If already selected → unselect
                                 if (p2BreachFilters.assignedTo === item) {
-                                  setValue("assignedTo", ""); // CLEAR
+                                  setValue("assignedTo", ""); 
                                 }
                               }}/>
                           </div>
@@ -81,9 +105,8 @@ export default function P2HighBreach() {
                         {mainAppliedFilters.Category.map((item) => (
                           <div className="incident-checkbox" key={item}>
                             <Radio label={item} value={item}  onClick={() => {
-                                // If already selected → unselect
                                 if (p2BreachFilters.categories === item) {
-                                  setValue("categories", ""); // CLEAR
+                                  setValue("categories", "");
                                 }
                               }}/>
                           </div>
@@ -104,12 +127,11 @@ export default function P2HighBreach() {
                         {ActualResolvedTimeFilters.map((item) => (
                           <div className="incident-checkbox" key={item.value}>
                             <Radio label={item.time} value={item.value} onClick={() => {
-                                // If the clicked option is already selected → unselect it
                                 if (
                                   p2BreachFilters.actualResolvedTime ===
                                   item.value
                                 ) {
-                                  setValue("actualResolvedTime", ""); // clear selection
+                                  setValue("actualResolvedTime", ""); 
                                 }
                               }}/>
                           </div>
@@ -118,7 +140,6 @@ export default function P2HighBreach() {
                     </div>
                   </div>
 
-                  {/* ✅ Breach SLA */}
                   <div>
                     <Text fw={500} mb="xs">
                       Breach SLA
@@ -132,12 +153,11 @@ export default function P2HighBreach() {
                         {BreachSLAStatusFilters.map((item) => (
                           <div className="incident-checkbox" key={item.value}>
                             <Radio label={item.status} value={item.value} onClick={() => {
-                                // If the clicked option is already selected → unselect it
                                 if (
                                   p2BreachFilters.breachSLA ===
                                   item.value
                                 ) {
-                                  setValue("breachSLA", ""); // clear selection
+                                  setValue("breachSLA", ""); 
                                 }
                               }}/>
                           </div>
@@ -149,10 +169,11 @@ export default function P2HighBreach() {
               </Accordion.Panel>
             </Accordion.Item>
           </Accordion>
-        </div>
+        </div> */}
         <BreachedListTable
           priority="2 - High"
           breachFilters={p2BreachFilters}
+          breachedResponse={p2BreachedResponse}
         />
       </Accordion.Panel>
     </Accordion.Item>

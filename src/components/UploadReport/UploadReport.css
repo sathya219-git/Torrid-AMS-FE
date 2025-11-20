@@ -21,7 +21,9 @@
 
 /* Left Upload Section */
 .main-upload-area {
-  /* min-height: 500px; */
+  
+  display: flex;
+  flex-direction: column;
   background-color: white;
   padding: 20px;
   border-radius: 10px;

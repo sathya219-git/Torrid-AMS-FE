@@ -4,7 +4,6 @@ import FilterCollapse from "../../components/FilterCollapse/filterCollapse";
 import FilterResult from "../../components/FilterResult/filterResult";
 import MainHeader from "../../components/MainHeader/mainHeader";
 import UploadReport from "../../components/UploadReport/UploadReport";
-import { useEffect } from "react";
 import { useAtom } from "jotai";
 import { tabValue } from "../../store/filterStore";
 

@@ -4,11 +4,13 @@ export default function IncidentPriorityDetailsCard({
   label,
   totalResolvedTime,
   avgResolvedTime,
+  breachedCount,
   stats,
 }: {
   label: string;
   totalResolvedTime: string;
   avgResolvedTime: string;
+  breachedCount:number|string;
   stats: PriorityStats | undefined;
 }) {
   return (
@@ -59,7 +61,7 @@ export default function IncidentPriorityDetailsCard({
           </div>
           <div style={{ backgroundColor: "#f15f6149", padding: "15px 10px", borderRadius: "10px", display: "flex", alignItems: "center", flexDirection: "column", flexGrow: 1 }}>
             <span className="status-label">Breached</span>
-            <span className="status-count">34</span>
+            <span className="status-count">{breachedCount ?? "—"}</span>
           </div>
         </div>
       </div>

@@ -20,7 +20,9 @@
 }
 
 .metric-value {
-  font-size: 16px;
+  font-family: "Inter", sans-serif;
+
+  font-size: 14px;
   font-weight: 500;
-  color: black;
+  color: #202224;
 }

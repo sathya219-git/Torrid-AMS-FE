@@ -9,8 +9,14 @@ export interface BreachedIncidents {
   assignedTo: string;
   shortDescription: string;
   category: string;
+  state:string;
+  createdDateTime:string;
+  updatedDateTime:string;
+  resolvedDateTime:string;
   actualResolvedTime: string;
   breachSLA: string;
+  
+
 }
 
 export type SortOrder = "ASC" | "DESC" | "";

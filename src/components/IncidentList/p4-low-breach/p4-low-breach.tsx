@@ -1,18 +1,17 @@
 import { useAtom, useAtomValue } from "jotai";
-import { appliedFilter, P4BreachFilters } from "../../../store/filterStore";
-import { Accordion, Radio, Text } from "@mantine/core";
-import BreachedListTable from "../BreachedListTable/BreachedListTable";
 import {
-  ActualResolvedTimeFilters,
-  BreachSLAStatusFilters,
-} from "../breached-list-filter.constants";
+  P4BreachedResponse,
+  P4BreachFilters,
+} from "../../../store/filterStore";
+import { Accordion, Input, Text } from "@mantine/core";
+import BreachedListTable from "../BreachedListTable/BreachedListTable";
 import { BreachFilters } from "../../../store/filter-store.interface";
 import { useCallback } from "react";
 
 export default function P4LowBreach() {
   const [p4BreachFilters, setP4BreachFilters] = useAtom(P4BreachFilters);
-  const mainAppliedFilters = useAtomValue(appliedFilter);
-  
+  const p4BreachedResponse = useAtomValue(P4BreachedResponse);
+
   const setValue = useCallback((key: keyof BreachFilters, value: string) => {
     setP4BreachFilters((prev) => {
       return {
@@ -28,7 +27,34 @@ export default function P4LowBreach() {
         <Text fw={700}>P4 - Low Breach List </Text>
       </Accordion.Control>
       <Accordion.Panel>
-        <div>
+        <Input
+          radius="md"
+          styles={{
+            input: {
+              border: "1px solid #2c2c2c31",
+              borderRadius: "8px",
+              padding: "22px",
+              outline: "none",
+              boxShadow: "none",
+
+              "&:focus": {
+                outline: "none",
+                boxShadow: "none",
+                // borderColor: "inherit", // optional subtle border
+              },
+            },
+          }}
+          placeholder="Search here..."
+          onKeyUp={(e) => {
+            const value = (e.target as HTMLInputElement).value;
+            if (e.key === "Enter") {
+              setValue("Search", value);
+            } else if (!value) {
+              setValue("Search", "");
+            }
+          }}
+        />
+        {/* <div>
           <Accordion
             defaultValue="filter"
             classNames={{
@@ -56,9 +82,9 @@ export default function P4LowBreach() {
                         {mainAppliedFilters.AssignedToName.map((item) => (
                           <div className="incident-checkbox" key={item}>
                             <Radio label={item} value={item} onClick={() => {
-                                // If already selected → unselect
+                               
                                 if (p4BreachFilters.assignedTo === item) {
-                                  setValue("assignedTo", ""); // CLEAR
+                                  setValue("assignedTo", "");
                                 }
                               }}/>
                           </div>
@@ -79,9 +105,9 @@ export default function P4LowBreach() {
                         {mainAppliedFilters.Category.map((item) => (
                           <div className="incident-checkbox" key={item}>
                             <Radio label={item} value={item}  onClick={() => {
-                                // If already selected → unselect
+                                
                                 if (p4BreachFilters.categories === item) {
-                                  setValue("categories", ""); // CLEAR
+                                  setValue("categories", "");
                                 }
                               }}/>
                           </div>
@@ -102,12 +128,12 @@ export default function P4LowBreach() {
                         {ActualResolvedTimeFilters.map((item) => (
                           <div className="incident-checkbox" key={item.value}>
                             <Radio label={item.time} value={item.value} onClick={() => {
-                                // If the clicked option is already selected → unselect it
+                               
                                 if (
                                   p4BreachFilters.actualResolvedTime ===
                                   item.value
                                 ) {
-                                  setValue("actualResolvedTime", ""); // clear selection
+                                  setValue("actualResolvedTime", ""); 
                                 }
                               }}/>
                           </div>
@@ -116,7 +142,7 @@ export default function P4LowBreach() {
                     </div>
                   </div>
 
-                  {/* ✅ Breach SLA */}
+                  
                   <div>
                     <Text fw={500} mb="xs">
                       Breach SLA
@@ -130,12 +156,12 @@ export default function P4LowBreach() {
                         {BreachSLAStatusFilters.map((item) => (
                           <div className="incident-checkbox" key={item.value}>
                             <Radio label={item.status} value={item.value} onClick={() => {
-                                // If the clicked option is already selected → unselect it
+                               
                                 if (
                                   p4BreachFilters.breachSLA ===
                                   item.value
                                 ) {
-                                  setValue("breachSLA", ""); // clear selection
+                                  setValue("breachSLA", ""); 
                                 }
                               }}/>
                           </div>
@@ -147,8 +173,12 @@ export default function P4LowBreach() {
               </Accordion.Panel>
             </Accordion.Item>
           </Accordion>
-        </div>
-        <BreachedListTable priority="4 - Low" breachFilters={p4BreachFilters} />
+        </div> */}
+        <BreachedListTable
+          priority="4 - Low"
+          breachFilters={p4BreachFilters}
+          breachedResponse={p4BreachedResponse}
+        />
       </Accordion.Panel>
     </Accordion.Item>
   );

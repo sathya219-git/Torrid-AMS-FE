@@ -3,7 +3,8 @@ import { Card, Collapse, Text } from "@mantine/core";
 import Filter from "../Filters/filter";
 import { filterState } from "../../store/filterStore";
 import { useAtom, useAtomValue } from "jotai";
-import Filtericon from "../../assets/Shape.png";
+import close_new from "../../assets/close_new.png";
+
 
 export default function FilterCollapse() {
   const [opened, setOpened] = useAtom(filterState);
@@ -23,7 +24,7 @@ export default function FilterCollapse() {
         >
           <Text fw={550} size="xl" className="export-icon">
             Filters
-            <img src={Filtericon} alt="Download" height="17" width="17" />
+            <img src={close_new} alt="Download" height="20" width="20" />
           </Text>
         </Card.Section>
         <Collapse in={opened}>

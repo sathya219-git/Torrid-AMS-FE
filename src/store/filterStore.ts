@@ -19,7 +19,7 @@ import { UploadReportResponse } from "../components/UploadReport/upload-report.i
 
 export const InitiateAPI = atom<Map<string, ApiRequest>>(new Map());
 
-export const filterState = atom(false);
+export const filterState = atom(true);
 
 export const tabValue = atom(true);
 
@@ -29,9 +29,15 @@ export const CountByPriority = atom<IncidentPrioritySummary | undefined>();
 
 export const TeamMemberDetails = atom<MemberDetailsResponse | undefined>();
 
-export const IncidentsResponse = atom<IncidentResponse | undefined>();
+export const P1IncidentsResponse = atom<IncidentResponse | undefined>();
+export const P2IncidentsResponse = atom<IncidentResponse | undefined>();
+export const P3IncidentsResponse = atom<IncidentResponse | undefined>();
+export const P4IncidentsResponse = atom<IncidentResponse | undefined>();
 
-export const BreachedResponse = atom<BreachedIncidentsResponse | undefined>();
+export const P1BreachedResponse = atom<BreachedIncidentsResponse | undefined>();
+export const P2BreachedResponse = atom<BreachedIncidentsResponse | undefined>();
+export const P3BreachedResponse = atom<BreachedIncidentsResponse | undefined>();
+export const P4BreachedResponse = atom<BreachedIncidentsResponse | undefined>();
 
 export const UploadedReportsResponse = atom<UploadReportResponse | undefined>();
 
@@ -45,8 +51,10 @@ export const ResetSuccess = atom(false);
 export const groups = atom<string[]>([]);
 export const selectedGroups = atom<string[]>([]);
 
-export const selectedFromDate = atom<Date | null>(null);
-export const selectedToDate = atom<Date | null>(null);
+export const selectedFromDate = atom<Date | null>(
+  new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000)
+);
+export const selectedToDate = atom<Date | null>(new Date());
 
 export const categories = atom<CategoryItem[]>([]);
 export const selectedCategories = atom<string[]>([]);
@@ -59,11 +67,12 @@ export const selectedTeamMembers = atom<string[]>([]);
 
 export const appliedFilter = atom<FilterState>({
   AssignmentGroup: [],
-  FromDate: null,
-  ToDate: null,
+  FromDate: new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000),
+  ToDate: new Date(),
   Category: [],
   State: [],
   AssignedToName: [],
+  UpdatedOn: 0,
 });
 
 export const resetEnabled = atom((get) => {
@@ -151,6 +160,7 @@ export const P1BreachFilters = atom<BreachFilters>({
   breachSLA: undefined,
   categories: undefined,
   assignedTo: undefined,
+  Search: undefined,
 });
 
 export const P2BreachFilters = atom<BreachFilters>({
@@ -158,6 +168,7 @@ export const P2BreachFilters = atom<BreachFilters>({
   breachSLA: undefined,
   categories: undefined,
   assignedTo: undefined,
+  Search: undefined,
 });
 
 export const P3BreachFilters = atom<BreachFilters>({
@@ -165,6 +176,7 @@ export const P3BreachFilters = atom<BreachFilters>({
   breachSLA: undefined,
   categories: undefined,
   assignedTo: undefined,
+  Search: undefined,
 });
 
 export const P4BreachFilters = atom<BreachFilters>({
@@ -172,7 +184,16 @@ export const P4BreachFilters = atom<BreachFilters>({
   breachSLA: undefined,
   categories: undefined,
   assignedTo: undefined,
+  Search: undefined,
 });
+
+export const P1IncidentSearch = atom("");
+
+export const P2IncidentSearch = atom("");
+
+export const P3IncidentSearch = atom("");
+
+export const P4IncidentSearch = atom("");
 
 export const ActiveIncidentTab = atom<string | null>("1 - Critical");
 export const ActiveCriticalAccordion = atom<string | null>(null);

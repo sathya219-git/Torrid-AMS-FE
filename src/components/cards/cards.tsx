@@ -3,8 +3,8 @@ import { useEffect } from "react";
 import closedicon from "../../assets/closed_icon.png";
 import inprogress from "../../assets/inprogress_icon.png";
 import warning from "../../assets/warning.png";
-import openicon from "../../assets/open_icon.png";
 import totalincidenticon from "../../assets/total_incident_icon.png";
+import folder from "../../assets/folder.png"
 import {
   appliedFilter,
   CountByPriority,
@@ -70,7 +70,7 @@ export default function Cards() {
           />
           <IncidentCountCard
             cssClass="open"
-            iconSrc={openicon}
+            iconSrc={folder}
             label="Open"
             incidentCount={incidentSummary?.openIncidents ?? 0}
           />
@@ -90,7 +90,7 @@ export default function Cards() {
             cssClass="breach"
             iconSrc={warning}
             label="Breach List"
-            incidentCount={incidentSummary?.inProgressIncidents ?? 0}
+            incidentCount={incidentSummary?.breachedCount ?? 0}
           />
         </div>
 
@@ -109,6 +109,7 @@ export default function Cards() {
                     label={value}
                     totalResolvedTime={priorityData?.totalResolvedTime ?? "—"}
                     avgResolvedTime={priorityData?.avgResolvedTime ?? "—"}
+                    breachedCount={priorityData?.breachedCount ?? "—"}
                     stats={stats}
                   />
                 );

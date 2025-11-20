@@ -3,7 +3,6 @@ import "./login.css";
 import {
   Button,
   Card,
-  Checkbox,
   PasswordInput,
   Text,
   TextInput,
@@ -76,7 +75,7 @@ export default function Login() {
                       style={{ cursor: "pointer", fontSize: "14px" }}
                       onClick={forgotPassword}
                     >
-                      Forgot Password?
+                      Forgot / Change Password?
                     </Text>
                   </div>
                 }
@@ -84,7 +83,7 @@ export default function Login() {
                 classNames={{ label: "password-label" }}
                 onChange={(e) => setPassword(e.target.value)}
               />
-              <Checkbox label={<Text c="dimmed">Remember Password</Text>} />
+              {/* <Checkbox label={<Text c="dimmed">Remember Password</Text>} /> */}
               <Button variant="filled" onClick={login} fullWidth>
                 Sign In
               </Button>

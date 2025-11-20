@@ -1,12 +1,10 @@
 import { Button, Modal, Text } from "@mantine/core";
 import "./header.css";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useAtom } from "jotai";
 import { appliedFilter, filterState } from "../../store/filterStore"; // ✅ import both
 import { PiExport } from "react-icons/pi";
 import { CiFilter } from "react-icons/ci";
-import { RiFileExcel2Fill } from "react-icons/ri";
 import { buildFilterQuery } from "../../utils/queryBuilder";
 
 export default function Header() {
@@ -22,42 +20,41 @@ export default function Header() {
 
   useEffect(() => {
     if (!downloadClicked) return;
-    
+
     const downloadExcel = async () => {
-  const query = buildFilterQuery(filters); // ✅ use filters, not appliedFilter
+      const query = buildFilterQuery(filters); // ✅ use filters, not appliedFilter
 
-  setIsDownloading(true);
-  try {
-    const url = `http://localhost:5092/api/Incident/export?${query}`;
-    const response = await fetch(url);
+      setIsDownloading(true);
+      try {
+        const url = `http://localhost:5092/api/Incident/export?${query}`;
+        const response = await fetch(url);
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-    // ✅ Convert response to blob
-    const blob = await response.blob();
-    const fileUrl = window.URL.createObjectURL(blob);
+        // ✅ Convert response to blob
+        const blob = await response.blob();
+        const fileUrl = window.URL.createObjectURL(blob);
 
-    const link = document.createElement("a");
-    link.href = fileUrl;
-    link.setAttribute(
-      "download",
-      `IncidentsExport_${new Date().toLocaleString()}.xlsx`
-    );
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-  } catch (error) {
-    console.error("Error exporting filtered result:", error);
-    alert("Failed to export filtered result. Please try again.");
-  } finally {
-    setIsDownloading(false);
-    setDownloadClicked(false);
-    setOpened(false);
-  }
-};
+        const link = document.createElement("a");
+        link.href = fileUrl;
+        link.setAttribute(
+          "download",
+          `IncidentsExport_${new Date().toLocaleString()}.xlsx`
+        );
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (error) {
+        console.error("Error exporting filtered result:", error);
+        alert("Failed to export filtered result. Please try again.");
+      } finally {
+        setIsDownloading(false);
+        setDownloadClicked(false);
+        setOpened(false);
+      }
+    };
 
     downloadExcel();
   }, [downloadClicked, filters]);
@@ -98,8 +95,8 @@ export default function Header() {
           <div className="page-download">
             <Text fw={500}>Filter</Text>
             <Button
-              onClick={() => setFilterOpened((prev) => !prev)} 
-              bg={filterOpened ? "#4880FF" : "#dee4f0"} 
+              onClick={() => setFilterOpened((prev) => !prev)}
+              bg={filterOpened ? "#4880FF" : "#dee4f0"}
               radius="md"
               size="md"
               p="8px"

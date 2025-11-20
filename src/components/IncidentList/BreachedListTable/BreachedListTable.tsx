@@ -2,29 +2,32 @@ import { Table } from "@mantine/core";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { BsList } from "react-icons/bs";
-import { FaSortAmountDownAlt, FaSortAmountUp } from "react-icons/fa";
 import backward from "../../../assets/backward.png";
 import forward from "../../../assets/forward.png";
 import {
   ActiveBreachAccordion,
   ActiveIncidentTab,
   appliedFilter,
-  BreachedResponse,
   InitiateAPI,
 } from "../../../store/filterStore";
 import "./BreachedListTable.css";
-import { BreachedIncidents, SortOrder } from "./breached-list-table.interface";
+import {
+  BreachedIncidents,
+  BreachedIncidentsResponse,
+  SortOrder,
+} from "./breached-list-table.interface";
 import { BreachFilters } from "../../../store/filter-store.interface";
+import { GoSortAsc, GoSortDesc } from "react-icons/go";
 
 export default function BreachedListTable({
   priority,
   breachFilters,
+  breachedResponse,
 }: {
   priority: string;
   breachFilters: BreachFilters;
+  breachedResponse: BreachedIncidentsResponse | undefined;
 }) {
-  const breachedResponse = useAtomValue(BreachedResponse);
-
   const breachedIncidents = useMemo(() => {
     return breachedResponse?.items ?? [];
   }, [breachedResponse]);
@@ -76,45 +79,14 @@ export default function BreachedListTable({
 
   const initiateAPI = useSetAtom(InitiateAPI);
 
-  useEffect(() => {
-    if (activeIncidentTab !== priority || activeBreachAccordion !== priority) {
-      return;
-    }
-    const query = buildFilterQuery();
-    const url = `http://localhost:5092/api/Incident/breachlistbypriority?Priority=${encodeURIComponent(
-      priority
-    )}&PageNumber=${currentPage}&PageSize=${8}${query}`;
-    initiateAPI((prev) => {
-      const curr = new Map(prev);
-      curr.set(url, {
-        method: "GET",
-        body: null,
-      });
-      return curr;
-    });
-  }, [
-    priority,
-    currentPage,
-    appliedFilters,
-    breachFilters,
-    sortField,
-    sortOrder,
-    activeIncidentTab,
-    activeBreachAccordion,
-  ]);
+  const [lastUpdatedOn, setLastUpdatedOn] = useState(0);
 
-  const buildFilterQuery = useCallback(() => {
+  const apiUrl = useMemo(() => {
     const params = new URLSearchParams();
-    if (breachFilters.categories && breachFilters.categories.trim() !== "") {
-      params.append("Category", breachFilters.categories);
-    }
-    // 2. Else use appliedFilters.Category
-    else if (appliedFilters.Category?.length > 0) {
+    if (appliedFilters.Category?.length > 0) {
       params.append("Category", appliedFilters.Category.join(","));
     }
-    if (breachFilters.assignedTo && breachFilters.assignedTo.trim() !== "") {
-      params.append("AssignedToName", breachFilters.assignedTo);
-    } else if (appliedFilters.AssignedToName?.length > 0) {
+    if (appliedFilters.AssignedToName?.length > 0) {
       params.append("AssignedToName", appliedFilters.AssignedToName.join(","));
     }
     if (appliedFilters.State?.length > 0) {
@@ -131,25 +103,60 @@ export default function BreachedListTable({
       const formatted = new Date(appliedFilters.ToDate).toLocaleString("en-US");
       params.append("ToDate", formatted);
     }
-    if (
-      breachFilters.breachSLA !== undefined &&
-      breachFilters.breachSLA !== ""
-    ) {
-      params.append("BreachSLA", breachFilters.breachSLA);
-    }
-    if (
-      breachFilters.actualResolvedTime !== undefined &&
-      breachFilters.actualResolvedTime !== ""
-    ) {
-      params.append("ActualResolvedTime", breachFilters.actualResolvedTime);
+    // if (
+    //   breachFilters.breachSLA !== undefined &&
+    //   breachFilters.breachSLA !== ""
+    // ) {
+    //   params.append("BreachSLA", breachFilters.breachSLA);
+    // }
+    // if (
+    //   breachFilters.actualResolvedTime !== undefined &&
+    //   breachFilters.actualResolvedTime !== ""
+    // ) {
+    //   params.append("ActualResolvedTime", breachFilters.actualResolvedTime);
+    // }
+    if (breachFilters.Search) {
+      params.append("Search", breachFilters.Search);
     }
     if (sortField !== "") {
       params.append("SortBy", sortField);
       params.append("SortOrder", sortOrder);
     }
     const queryString = params.toString();
-    return queryString ? `&${queryString}` : "";
-  }, [appliedFilters, breachFilters, sortField, sortOrder]);
+    const query = queryString ? `&${queryString}` : "";
+    const url = `http://localhost:5092/api/Incident/breachlistbypriority?Priority=${encodeURIComponent(
+      priority
+    )}&PageNumber=${currentPage}&PageSize=${8}${query}`;
+
+    if (appliedFilters.UpdatedOn > lastUpdatedOn) {
+      setLastUpdatedOn(appliedFilters.UpdatedOn);
+      setCurrentPage(1);
+    }
+
+    return url;
+  }, [
+    priority,
+    breachFilters,
+    appliedFilters,
+    currentPage,
+    sortField,
+    sortOrder,
+    lastUpdatedOn,
+  ]);
+
+  useEffect(() => {
+    if (activeIncidentTab !== priority || activeBreachAccordion !== priority) {
+      return;
+    }
+    initiateAPI((prev) => {
+      const curr = new Map(prev);
+      curr.set(apiUrl, {
+        method: "GET",
+        body: null,
+      });
+      return curr;
+    });
+  }, [apiUrl, activeIncidentTab, activeBreachAccordion]);
 
   const handleSort = useCallback(
     (field: keyof BreachedIncidents) => {
@@ -174,9 +181,9 @@ export default function BreachedListTable({
       if (sortField !== field) return <BsList fontSize="small" />;
 
       return sortOrder === "ASC" ? (
-        <FaSortAmountUp fontSize="small" />
+        <GoSortAsc size={16} />
       ) : (
-        <FaSortAmountDownAlt fontSize="small" />
+        <GoSortDesc size={16} />
       );
     },
     [sortOrder, sortField]
@@ -227,6 +234,43 @@ export default function BreachedListTable({
                   <span>{renderSortIcon("category")}</span>
                 </div>
               </Table.Th>
+              <Table.Th
+                className="bl-header-cell"
+                onClick={() => handleSort("state")}
+              >
+                <div className="bl-table-headers">
+                  <span>State</span>
+                  <span>{renderSortIcon("state")}</span>
+                </div>
+              </Table.Th>
+
+              <Table.Th
+                className="bl-header-cell"
+                onClick={() => handleSort("createdDateTime")}
+              >
+                <div className="bl-table-headers">
+                  <span>Created Date</span>
+                  <span>{renderSortIcon("createdDateTime")}</span>
+                </div>
+              </Table.Th>
+              {/* <Table.Th
+                className="bl-header-cell"
+                onClick={() => handleSort("updatedDateTime")}
+              >
+                <div className="bl-table-headers">
+                  <span>Updated Date</span>
+                  <span>{renderSortIcon("updatedDateTime")}</span>
+                </div>
+              </Table.Th> */}
+              <Table.Th
+                className="bl-header-cell"
+                onClick={() => handleSort("resolvedDateTime")}
+              >
+                <div className="bl-table-headers">
+                  <span>Resolved Date</span>
+                  <span>{renderSortIcon("resolvedDateTime")}</span>
+                </div>
+              </Table.Th>
 
               <Table.Th
                 className="bl-header-cell"
@@ -270,6 +314,10 @@ export default function BreachedListTable({
                   <Table.Td>{item.assignedTo}</Table.Td>
                   <Table.Td>{item.shortDescription}</Table.Td>
                   <Table.Td>{item.category}</Table.Td>
+                  <Table.Td>{item.state}</Table.Td>
+                  <Table.Td>{item.createdDateTime}</Table.Td>
+                  {/* <Table.Td>{item.updatedDateTime}</Table.Td> */}
+                  <Table.Td>{item.resolvedDateTime}</Table.Td>
                   <Table.Td>{item.actualResolvedTime}</Table.Td>
                   <Table.Td>{item.breachSLA}</Table.Td>
                 </Table.Tr>

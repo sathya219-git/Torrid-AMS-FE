@@ -28,7 +28,7 @@ export default function MemberPortfolio() {
   const [pageSize, setPageSize] = useState("5");
 
   const [sortBy, setSortBy] = useState("name");
-  const [sortOrder, setSortOrder] = useState("ascending");
+  const [sortOrder, setSortOrder] = useState("asc");
 
   const totalRecords = useMemo(() => {
     return memberDetailsResponse?.pagination.totalRecords ?? 0;
@@ -38,29 +38,43 @@ export default function MemberPortfolio() {
     return memberDetailsResponse?.pagination.totalPages ?? 0;
   }, [memberDetailsResponse]);
 
-  useEffect(() => {
+  const [lastUpdatedOn, setLastUpdatedOn] = useState(0);
+
+  const apiUrl = useMemo(() => {
     const query = buildFilterQuery(appliedFilters);
     let url = `http://localhost:5092/api/Incident/nameandcountbypriority`;
 
     const params = new URLSearchParams();
     if (query) url += `?${query}`;
 
-    params.append("PageNumber", (pageNumber || 1).toString());
+    params.append(
+      "PageNumber",
+      (appliedFilters.UpdatedOn > lastUpdatedOn ? 1 : pageNumber).toString()
+    );
     if (pageSize) params.append("PageSize", pageSize.toString());
     if (sortBy) params.append("SortBy", sortBy);
     if (sortOrder) params.append("SortOrder", sortOrder);
 
     url += query ? `&${params.toString()}` : `?${params.toString()}`;
 
+    if (appliedFilters.UpdatedOn > lastUpdatedOn) {
+      setLastUpdatedOn(appliedFilters.UpdatedOn);
+      setPageNumber(1);
+    }
+
+    return url;
+  }, [appliedFilters, pageNumber, pageSize, sortBy, sortOrder, lastUpdatedOn]);
+
+  useEffect(() => {
     initiateAPI((prev) => {
       const curr = new Map(prev);
-      curr.set(url, {
+      curr.set(apiUrl, {
         method: "GET",
         body: null,
       });
       return curr;
     });
-  }, [appliedFilters, pageNumber, pageSize, sortBy, sortOrder]);
+  }, [apiUrl]);
 
   const goToFirstPage = useCallback(() => {
     setPageNumber(1);
@@ -81,10 +95,10 @@ export default function MemberPortfolio() {
   const onSort = useCallback(
     (column: string) => {
       if (sortBy === column) {
-        setSortOrder(sortOrder === "ascending" ? "descending" : "ascending");
+        setSortOrder(sortOrder === "asc" ? "desc" : "asc");
       } else {
         setSortBy(column);
-        setSortOrder("ascending");
+        setSortOrder("asc");
       }
     },
     [sortOrder, sortBy]
@@ -109,20 +123,21 @@ export default function MemberPortfolio() {
                   className="metric-item sortable"
                   onClick={() => onSort(col.key)}
                   style={{
+                    fontSize: "14px",
                     cursor: "pointer",
                     display: "flex",
                     alignItems: "center",
                     // justifyContent: "center",
-                    gap: "4px",
+                    gap: "8px",
                     fontWeight: "600",
-                    color: "#333B69",
+                    color: "#202224",
                     flexDirection: "row",
                     minWidth: "130px",
                   }}
                 >
                   {col.label}
                   {sortBy === col.key ? (
-                    sortOrder === "ascending" ? (
+                    sortOrder === "asc" ? (
                       <GoSortAsc size={16} />
                     ) : (
                       <GoSortDesc size={16} />

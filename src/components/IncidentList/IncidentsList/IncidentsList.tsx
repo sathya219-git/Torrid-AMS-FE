@@ -23,7 +23,7 @@ export default function IncidentsList() {
   return (
     <div>
       <div className="inc-list-header">
-        <h1>Critical Incident List</h1>
+        <h1>Incident List</h1>
       </div>
 
       <Tabs value={activeTab} onChange={setActiveTab}>

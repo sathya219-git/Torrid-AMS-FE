@@ -1,18 +1,16 @@
-import { Accordion, Radio, Text } from "@mantine/core";
+import { Accordion, Input, Text } from "@mantine/core";
 import BreachedListTable from "../BreachedListTable/BreachedListTable";
 import { useAtom, useAtomValue } from "jotai";
-import { appliedFilter, P1BreachFilters } from "../../../store/filterStore";
-import { BreachFilters } from "../../../store/filter-store.interface";
 import {
-  ActualResolvedTimeFilters,
-  BreachSLAStatusFilters,
-} from "../breached-list-filter.constants";
+  P1BreachedResponse,
+  P1BreachFilters,
+} from "../../../store/filterStore";
+import { BreachFilters } from "../../../store/filter-store.interface";
 import { useCallback } from "react";
 
 export default function P1CriticalBreach() {
-  const mainAppliedFilters = useAtomValue(appliedFilter);
-
   const [p1BreachFilters, setP1BreachFilters] = useAtom(P1BreachFilters);
+  const p1BreachedResponse = useAtomValue(P1BreachedResponse);
 
   const setValue = useCallback((key: keyof BreachFilters, value: string) => {
     setP1BreachFilters((prev) => {
@@ -29,7 +27,34 @@ export default function P1CriticalBreach() {
         <Text fw={700}>P1 - Critical Breach List </Text>
       </Accordion.Control>
       <Accordion.Panel>
-        <div>
+        <Input
+          radius="md"
+          styles={{
+            input: {
+              border: "1px solid #2c2c2c31",
+              borderRadius: "8px",
+              padding: "22px",
+              outline: "none",
+              boxShadow: "none",
+
+              "&:focus": {
+                outline: "none",
+                boxShadow: "none",
+                // borderColor: "inherit", // optional subtle border
+              },
+            },
+          }}
+          placeholder="Search here..."
+          onKeyUp={(e) => {
+            const value = (e.target as HTMLInputElement).value;
+            if (e.key === "Enter") {
+              setValue("Search", value);
+            } else if (!value) {
+              setValue("Search", "");
+            }
+          }}
+        />
+        {/* <div>
           <Accordion
             defaultValue="filter"
             classNames={{
@@ -63,9 +88,8 @@ export default function P1CriticalBreach() {
                               label={item}
                               value={item}
                               onClick={() => {
-                                // If already selected → unselect
                                 if (p1BreachFilters.assignedTo === item) {
-                                  setValue("assignedTo", ""); // CLEAR
+                                  setValue("assignedTo", ""); 
                                 }
                               }}
                             />
@@ -90,9 +114,8 @@ export default function P1CriticalBreach() {
                               label={item}
                               value={item}
                               onClick={() => {
-                                // If already selected → unselect
                                 if (p1BreachFilters.categories === item) {
-                                  setValue("categories", ""); // CLEAR
+                                  setValue("categories", "");
                                 }
                               }}
                             />
@@ -117,12 +140,11 @@ export default function P1CriticalBreach() {
                               label={item.time}
                               value={item.value}
                               onClick={() => {
-                                // If the clicked option is already selected → unselect it
                                 if (
                                   p1BreachFilters.actualResolvedTime ===
                                   item.value
                                 ) {
-                                  setValue("actualResolvedTime", ""); // clear selection
+                                  setValue("actualResolvedTime", ""); 
                                 }
                               }}
                             />
@@ -132,7 +154,6 @@ export default function P1CriticalBreach() {
                     </div>
                   </div>
 
-                  {/* ✅ Breach SLA */}
                   <div>
                     <Text fw={500} mb="xs">
                       Breach SLA
@@ -146,12 +167,11 @@ export default function P1CriticalBreach() {
                         {BreachSLAStatusFilters.map((item) => (
                           <div className="incident-checkbox" key={item.value}>
                             <Radio label={item.status} value={item.value} onClick={() => {
-                                // If the clicked option is already selected → unselect it
                                 if (
                                   p1BreachFilters.breachSLA ===
                                   item.value
                                 ) {
-                                  setValue("breachSLA", ""); // clear selection
+                                  setValue("breachSLA", ""); 
                                 }
                               }}/>
                           </div>
@@ -163,10 +183,11 @@ export default function P1CriticalBreach() {
               </Accordion.Panel>
             </Accordion.Item>
           </Accordion>
-        </div>
+        </div> */}
         <BreachedListTable
           priority="1 - Critical"
           breachFilters={p1BreachFilters}
+          breachedResponse={p1BreachedResponse}
         />
       </Accordion.Panel>
     </Accordion.Item>
