@@ -190,7 +190,7 @@ export default function App() {
         setUploadedReportsResponse(data);
       } else if (url.includes("api/auth/resetPassword")) {
         notifications.show({
-          title: "✅ Success",
+          title: "Success",
           message: `Password reset successfully!`,
           color: "green",
           radius: "md",
@@ -207,7 +207,7 @@ export default function App() {
         setResetSuccess(true);
       } else if (url.includes("api/auth/login")) {
         notifications.show({
-          title: "✅ Success",
+          title: "Success",
           message: `Logged in successfully!`,
           color: "green",
           radius: "md",
@@ -231,7 +231,7 @@ export default function App() {
         setTab(true);
       } else if (url.includes("api/files/upload")) {
         notifications.show({
-          title: "✅ Upload Successful",
+          title: "Upload Successful",
           message: `File uploaded successfully!`,
           color: "green",
           radius: "md",

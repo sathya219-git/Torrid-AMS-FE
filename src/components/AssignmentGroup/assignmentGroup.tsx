@@ -99,15 +99,24 @@ export default function AssignmentGroup() {
           >
             <Collapse in={opened}>
               <div className="assignment-content">
-                {expandedGroups.map((assignmentGroupName) => (
-                  <div className="group-checkbox" key={assignmentGroupName}>
-                    <Checkbox
-                      label={assignmentGroupName}
-                      onChange={() => onCheckboxChange(assignmentGroupName)}
-                      checked={selectedFilters.includes(assignmentGroupName)}
-                    />
-                  </div>
-                ))}
+                {expandedGroups.map((assignmentGroupName) => {
+                  const label = assignmentGroupName?.trim()
+                    ? assignmentGroupName
+                    : "N/A";
+
+                  return (
+                    <div
+                      className="group-checkbox"
+                      key={assignmentGroupName || "NA"}
+                    >
+                      <Checkbox
+                        label={label}
+                        onChange={() => onCheckboxChange(assignmentGroupName)}
+                        checked={selectedFilters.includes(assignmentGroupName)}
+                      />
+                    </div>
+                  );
+                })}
               </div>
             </Collapse>
           </div>

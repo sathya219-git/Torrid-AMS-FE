@@ -80,6 +80,7 @@ export default function BreachedListTable({
   const initiateAPI = useSetAtom(InitiateAPI);
 
   const [lastUpdatedOn, setLastUpdatedOn] = useState(0);
+  const [prevSearch, setPrevSearch] = useState<string | undefined>(undefined);
 
   const apiUrl = useMemo(() => {
     const params = new URLSearchParams();
@@ -118,20 +119,26 @@ export default function BreachedListTable({
     if (breachFilters.Search) {
       params.append("Search", breachFilters.Search);
     }
+
     if (sortField !== "") {
       params.append("SortBy", sortField);
       params.append("SortOrder", sortOrder);
     }
+
+    if (
+      appliedFilters.UpdatedOn > lastUpdatedOn ||
+      breachFilters.Search !== prevSearch
+    ) {
+      setLastUpdatedOn(appliedFilters.UpdatedOn);
+      setPrevSearch(breachFilters.Search);
+      setCurrentPage(1);
+    }
+
     const queryString = params.toString();
     const query = queryString ? `&${queryString}` : "";
     const url = `http://localhost:5092/api/Incident/breachlistbypriority?Priority=${encodeURIComponent(
       priority
     )}&PageNumber=${currentPage}&PageSize=${8}${query}`;
-
-    if (appliedFilters.UpdatedOn > lastUpdatedOn) {
-      setLastUpdatedOn(appliedFilters.UpdatedOn);
-      setCurrentPage(1);
-    }
 
     return url;
   }, [
@@ -142,6 +149,7 @@ export default function BreachedListTable({
     sortField,
     sortOrder,
     lastUpdatedOn,
+    prevSearch,
   ]);
 
   useEffect(() => {
@@ -299,7 +307,12 @@ export default function BreachedListTable({
               <Table.Tr>
                 <Table.Td
                   colSpan={6}
-                  style={{ textAlign: "center", padding: 20 }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: 20,
+                  }}
                 >
                   No incidents found
                 </Table.Td>
@@ -336,21 +349,44 @@ export default function BreachedListTable({
         <div className="bl-pagination-controls">
           <button
             onClick={resetPageNumber}
-            style={{ borderRadius: "6px 0 0 6px" }}
+            style={{
+              borderRadius: "6px 0px 0px 6px",
+              border: "1px solid rgba(51, 48, 49, 0.067)",
+              padding: "12px",
+            }}
           >
             <img src={forward} alt="" />
             <img src={forward} alt="" />
           </button>
 
-          <button onClick={prevPage}>
+          <button
+            onClick={prevPage}
+            style={{
+              border: "1px solid rgba(51, 48, 49, 0.067)",
+              padding: "12px",
+            }}
+          >
             <img src={forward} alt="" />
           </button>
 
-          <button onClick={nextPage}>
+          <button
+            onClick={nextPage}
+            style={{
+              border: "1px solid rgba(51, 48, 49, 0.067)",
+              padding: "12px",
+            }}
+          >
             <img src={backward} alt="" />
           </button>
 
-          <button onClick={lastPage} style={{ borderRadius: "0 6px 6px 0" }}>
+          <button
+            onClick={lastPage}
+            style={{
+              borderRadius: "0px 6px 6px 0px",
+              border: "1px solid rgba(51, 48, 49, 0.067)",
+              padding: "11px",
+            }}
+          >
             <img src={backward} alt="" />
             <img src={backward} alt="" />
           </button>

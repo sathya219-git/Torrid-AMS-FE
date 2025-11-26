@@ -108,13 +108,27 @@ function CategoryComponent({
   return (
     <div
       className="category-checkbox"
-      key={categoryList[index].categoryName}
+      key={categoryList[index].categoryName || "NA"}
       style={style}
     >
       <Checkbox
-        label={categoryList[index].categoryName}
-        onChange={() => onCheckboxChange(categoryList[index].categoryName)}
-        checked={selectedFilters.includes(categoryList[index].categoryName)}
+        label={
+          categoryList[index].categoryName?.trim()
+            ? categoryList[index].categoryName
+            : "N/A"
+        }
+        onChange={() =>
+          onCheckboxChange(
+            categoryList[index].categoryName?.trim()
+              ? categoryList[index].categoryName
+              : "N/A"
+          )
+        }
+        checked={selectedFilters.includes(
+          categoryList[index].categoryName?.trim()
+            ? categoryList[index].categoryName
+            : "N/A"
+        )}
       />
       <Text c="dimmed">{categoryList[index].incidentCount}</Text>
     </div>

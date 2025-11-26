@@ -84,7 +84,6 @@ td {
 
 .bl-pagination-controls {
   display: flex;
-  gap: 4px;
 }
 
 .bl-pagination-controls button {

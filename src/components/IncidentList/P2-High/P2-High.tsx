@@ -36,7 +36,7 @@ export default function P2High() {
           }}
           placeholder="Search here..."
           onKeyUp={(e) => {
-            const value = (e.target as HTMLInputElement).value;
+          const value = ((e.target as HTMLInputElement).value || '').trim();
             if (e.key === "Enter") {
               setP1IncidentSearch(value);
             } else if (!value) {

@@ -36,7 +36,7 @@ export default function P4Low() {
           }}
           placeholder="Search here..."
           onKeyUp={(e) => {
-            const value = (e.target as HTMLInputElement).value;
+          const value = ((e.target as HTMLInputElement).value || '').trim();
             if (e.key === "Enter") {
               setP4IncidentSearch(value);
             } else if (!value) {

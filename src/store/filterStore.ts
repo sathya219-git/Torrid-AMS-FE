@@ -19,7 +19,7 @@ import { UploadReportResponse } from "../components/UploadReport/upload-report.i
 
 export const InitiateAPI = atom<Map<string, ApiRequest>>(new Map());
 
-export const filterState = atom(false);
+export const filterState = atom(true);
 
 export const tabValue = atom(true);
 

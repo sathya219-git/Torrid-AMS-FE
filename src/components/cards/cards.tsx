@@ -2,7 +2,7 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect } from "react";
 import closedicon from "../../assets/closed_icon.png";
 import inprogress from "../../assets/inprogress_icon.png";
-import error from "../../assets/error.png";
+import dangerous from "../../assets/dangerous.png";
 import totalincidenticon from "../../assets/total_incident_icon.png";
 import folder from "../../assets/folder.png"
 import {
@@ -88,7 +88,7 @@ export default function Cards() {
           />
           <IncidentCountCard
             cssClass="breach"
-            iconSrc={error}
+            iconSrc={dangerous}
             label="Breach List"
             incidentCount={incidentSummary?.breachedCount ?? 0}
           />  

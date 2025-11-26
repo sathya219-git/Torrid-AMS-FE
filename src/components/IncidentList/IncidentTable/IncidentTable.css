@@ -94,10 +94,15 @@ td {
   font-size: 14px;
   font-weight: 500;
 }
+.table-row-compact td {
+  padding: 0 !important;
+  height: 10px;
+  line-height: 10px;
+}
 
 .pagination-controls {
   display: flex;
-  gap: 4px;
+  height: 35px;
 }
 Table
 {

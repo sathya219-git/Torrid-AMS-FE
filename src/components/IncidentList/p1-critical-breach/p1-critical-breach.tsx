@@ -46,7 +46,7 @@ export default function P1CriticalBreach() {
           }}
           placeholder="Search here..."
           onKeyUp={(e) => {
-            const value = (e.target as HTMLInputElement).value;
+          const value = ((e.target as HTMLInputElement).value || '').trim();
             if (e.key === "Enter") {
               setValue("Search", value);
             } else if (!value) {

@@ -81,6 +81,7 @@ export default function IncidentTable({
   const initiateAPI = useSetAtom(InitiateAPI);
 
   const [lastUpdatedOn, setLastUpdatedOn] = useState(0);
+  const [prevSearch, setPrevSearch] = useState("");
 
   const apiUrl = useMemo(() => {
     const params = new URLSearchParams();
@@ -116,8 +117,9 @@ export default function IncidentTable({
     const query = params.size > 0 ? `&${params.toString()}` : "";
     const encodedPriority = encodeURIComponent(priority);
 
-    if (appliedFilters.UpdatedOn > lastUpdatedOn) {
+    if (appliedFilters.UpdatedOn > lastUpdatedOn || Search !== prevSearch) {
       setLastUpdatedOn(appliedFilters.UpdatedOn);
+      setPrevSearch(Search);
       setCurrentPage(1);
     }
 
@@ -130,6 +132,7 @@ export default function IncidentTable({
     currentPage,
     lastUpdatedOn,
     Search,
+    prevSearch,
   ]);
 
   useEffect(() => {
@@ -287,6 +290,9 @@ export default function IncidentTable({
           </Table.Thead>
 
           <Table.Tbody>
+            <Table.Tr className="table-row-compact">
+              <Table.Td colSpan={9}></Table.Td>
+            </Table.Tr>
             {totalElements === 0 ? (
               <Table.Tr>
                 <Table.Td
@@ -345,18 +351,41 @@ export default function IncidentTable({
         <div className="pagination-controls">
           <button
             onClick={resetPageNumber}
-            style={{ borderRadius: "6px 0 0 6px" }}
+            style={{
+              borderRadius: "6px 0px 0px 6px",
+              border: "1px solid rgba(51, 48, 49, 0.067)",
+              padding: "12px",
+            }}
           >
             <img src={forward} alt="" />
             <img src={forward} alt="" />
           </button>
-          <button onClick={prevPage}>
+          <button
+            onClick={prevPage}
+            style={{
+              border: "1px solid rgba(51, 48, 49, 0.067)",
+              padding: "12px",
+            }}
+          >
             <img src={forward} alt="" />
           </button>
-          <button onClick={nextPage}>
+          <button
+            onClick={nextPage}
+            style={{
+              border: "1px solid rgba(51, 48, 49, 0.067)",
+              padding: "12px",
+            }}
+          >
             <img src={backward} alt="" />
           </button>
-          <button onClick={lastPage} style={{ borderRadius: "0 6px 6px 0" }}>
+          <button
+            onClick={lastPage}
+            style={{
+              borderRadius: "0px 6px 6px 0px",
+              border: "1px solid rgba(51, 48, 49, 0.067)",
+              padding: "11px",
+            }}
+          >
             <img src={backward} alt="" />
             <img src={backward} alt="" />
           </button>

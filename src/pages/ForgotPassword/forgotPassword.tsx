@@ -55,12 +55,12 @@ export default function ForgotPassword() {
             </Text>
             <p>This helps reset your password. Stay secure!</p>
 
-            <TextInput
+            {/* <TextInput
               label="Email ID"
               placeholder="user@example.com"
               value={emailID}
               onChange={(e) => setEmailID(e.target.value)}
-            />
+            /> */}
 
             <TextInput
               label="Default Password"
