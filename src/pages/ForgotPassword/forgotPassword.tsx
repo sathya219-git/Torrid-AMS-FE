@@ -8,7 +8,7 @@ import { InitiateAPI, ResetSuccess } from "../../store/filterStore";
 export default function ForgotPassword() {
   const navigate = useNavigate();
 
-  const [emailID,setEmailID] = useState("");
+  const [emailID] = useState("");
   const [defaultPassword, setDefaultPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");

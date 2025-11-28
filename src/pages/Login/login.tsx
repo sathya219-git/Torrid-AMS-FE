@@ -1,12 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import "./login.css";
-import {
-  Button,
-  Card,
-  PasswordInput,
-  Text,
-  TextInput,
-} from "@mantine/core";
+import { Button, Card, PasswordInput, Text, TextInput } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
 import { InitiateAPI, LoginSuccess } from "../../store/filterStore";

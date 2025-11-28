@@ -11,6 +11,7 @@ import Login from "./pages/Login/login";
 import { theme } from "./theme";
 import { useAtom, useSetAtom } from "jotai";
 import {
+  appliedFilter,
   categories,
   CountByPriority,
   groups,
@@ -27,6 +28,8 @@ import {
   P4IncidentsResponse,
   ReloadUploadedReportsGrid,
   ResetSuccess,
+  selectedFromDate,
+  selectedToDate,
   status,
   tabValue,
   TeamMemberDetails,
@@ -38,6 +41,7 @@ import { AssignmentGroupItem } from "./components/AssignmentGroup/assignment-gro
 import { notifications } from "@mantine/notifications";
 import { CategoryItem } from "./components/Category/category.interface";
 import { StatusItem } from "./components/Status/status.interface";
+import { FilterState } from "./store/filter-store.interface";
 
 export default function App() {
   const [activeURLs, setActiveURLs] = useState<Set<string>>(new Set());
@@ -70,6 +74,10 @@ export default function App() {
   const setTab = useSetAtom(tabValue);
   const setLoginSuccess = useSetAtom(LoginSuccess);
   const setResetSuccess = useSetAtom(ResetSuccess);
+
+  const setAppliedFilters = useSetAtom(appliedFilter);
+  const setFromDate = useSetAtom(selectedFromDate);
+  const setToDate = useSetAtom(selectedToDate);
 
   useEffect(() => {
     if (initiateAPI.size === 0) {
@@ -217,11 +225,23 @@ export default function App() {
               border: "1px solid #27ae60",
               boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
             },
-            title: { fontWeight: 600, color: "#145a32" },
+            title: { fontWeight: 600, color: "#145a329f" },
             description: { color: "#196f3d" },
           },
         });
         sessionStorage.setItem("userLoggedIn", "true");
+        const applyFromToDate: FilterState = {
+          AssignmentGroup: [],
+          FromDate: new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000),
+          ToDate: new Date(),
+          Category: [],
+          State: [],
+          AssignedToName: [],
+          UpdatedOn: new Date().getTime(),
+        };
+        setAppliedFilters(applyFromToDate);
+        setFromDate(applyFromToDate.FromDate);
+        setToDate(applyFromToDate.ToDate);
         setLoginSuccess(true);
       } else if (url.includes("api/files/import?uploadHistoryId")) {
         setAssignmentGroups([]);
