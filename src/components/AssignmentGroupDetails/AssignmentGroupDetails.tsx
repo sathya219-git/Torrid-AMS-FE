@@ -1,13 +1,13 @@
 import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useMemo } from "react";
-import { appliedFilter, AssignmentGroups, InitiateAPI } from "../../store/filterStore";
+import { appliedFilter, AssignmentGroups, filterState, InitiateAPI } from "../../store/filterStore";
 import "./AssignmentGroupDetails.css";
 export default function AssignmentGroupDetails() {
   const initiateAPI = useSetAtom(InitiateAPI);
   const appliedFilters = useAtomValue(appliedFilter);
   const torridGroupDetails= useAtomValue(AssignmentGroups);
 
-
+    const expand=useAtomValue(filterState)
   const apiUrl = useMemo(() => {
     const params = new URLSearchParams();
 
