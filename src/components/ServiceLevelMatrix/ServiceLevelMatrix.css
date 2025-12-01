@@ -1,0 +1,154 @@
+/* Custom properties for easy color customization */
+
+/* General Container Styling */
+.service-level-matrix-container {
+  /* max-width: 1000px;
+    margin: 20px auto;
+    padding: 20px; */
+  font-family: "Inter", sans-serif;
+  color: var(--color-text);
+}
+
+/* .table-title {
+        text-align: center;
+        color: var(--color-primary);
+        margin-bottom: 25px;
+        font-size: 1.8em;
+    } */
+
+/* Responsive Table Wrapper */
+.table-responsive-wrapper {
+  overflow-x: auto; /* Allows horizontal scrolling on small screens */
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+/* Base Table Styling */
+.service-level-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px; /* Ensures the table doesn't get too cramped on mobile */
+}
+
+/* Table Header Styling */
+.service-level-table thead {
+  background-color: var(--color-primary);
+  color: #111;
+  font-size: 0.9em;
+  letter-spacing: 0.5px;
+}
+
+.service-level-table th {
+  background-color: #554aab1a;
+  padding: 12px 15px;
+  font-weight: 600;
+  text-align: center;
+  border: 0.5px solid rgba(15, 14, 14, 0.034); /* Lighter border for header */
+}
+
+/* Group Headers (Response Time / Resolution Time) */
+.header-group {
+  background-color: #554aab1a; /* Slightly darker shade of primary */
+  font-size: 1em;
+}
+
+/* Sub-Headers (Regular / On-Call) */
+.header-sub {
+  font-weight: 400;
+  background-color: #7a6ee218; /* Slightly lighter shade of primary */
+}
+
+/* Sticky Columns for better context on scroll (optional) */
+/* .header-sticky {
+    position: sticky;
+    left: 0;
+    z-index: 10;
+} */
+
+/* Table Body and Cell Styling */
+.service-level-table tbody tr {
+  transition: background-color 0.3s ease;
+}
+
+.service-level-table tbody tr:nth-child(even) {
+  background-color: var(--color-bg-light); /* Zebra striping */
+}
+/* 
+.service-level-table tbody tr:hover {
+    background-color: #e0e0e0; 
+} */
+
+.service-level-table td {
+  padding: 10px 15px;
+  text-align: center;
+  border: 1px solid var(--color-border);
+  font-size: 0.95em;
+  vertical-align: middle;
+}
+
+/* --- Severity/Priority Specific Styling (Color-Coding) --- */
+
+/* P1 - Critical */
+.row-level-1 {
+  background-color: var(--color-p1-bg);
+}
+.row-level-1 .cell-severity,
+.row-level-1 .cell-priority {
+  background-color: var(--color-p1-bg);
+  color: var(--color-p1-text);
+}
+
+/* P2 - High */
+.row-level-2 {
+  background-color: var(--color-p2-bg);
+}
+.row-level-2 .cell-severity,
+.row-level-2 .cell-priority {
+  background-color: var(--color-p2-bg);
+  color: var(--color-p2-text);
+}
+
+/* P3 - Medium */
+.row-level-3 {
+  background-color: var(--color-p3-bg);
+}
+.row-level-3 .cell-severity,
+.row-level-3 .cell-priority {
+  background-color: var(--color-p3-bg);
+  color: var(--color-p3-text);
+}
+
+/* P4 - Low */
+.row-level-4 {
+  background-color: var(--color-p4-bg);
+}
+.row-level-4 .cell-severity,
+.row-level-4 .cell-priority {
+  background-color: var(--color-p4-bg);
+  color: var(--color-p4-text);
+}
+
+/* Styling for Severity Cell */
+.cell-severity {
+  text-align: left;
+  min-width: 120px;
+  font-weight: bold;
+  /* Resetting the background color for these specific cells in the colored rows */
+}
+.cell-severity-desc {
+  display: block;
+  font-size: 0.8em;
+  font-weight: normal;
+  opacity: 0.8;
+}
+
+/* Styling for N/A values */
+.service-level-table td:contains("N/A") {
+  color: #999;
+}
+.service-level-metrix h2 {
+  font-size: 20px;
+  color: #333b69;
+  font-weight: 600;
+  font-family: "Inter", sans-serif;
+}

@@ -1,10 +1,10 @@
 import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect } from "react";
 import closedicon from "../../assets/closed_icon.png";
-import inprogress from "../../assets/inprogress_icon.png";
 import dangerous from "../../assets/dangerous.png";
+import folder from "../../assets/folder.png";
+import inprogress from "../../assets/inprogress_icon.png";
 import totalincidenticon from "../../assets/total_incident_icon.png";
-import folder from "../../assets/folder.png"
 import {
   appliedFilter,
   CountByPriority,
@@ -13,10 +13,9 @@ import {
   KPIs,
 } from "../../store/filterStore";
 import { buildFilterQuery } from "../../utils/queryBuilder";
-import { PriorityList } from "./cards.constants";
+import AssignmentGroupDetails from "../AssignmentGroupDetails/AssignmentGroupDetails";
 import "./cards.css";
 import IncidentCountCard from "./incident-count-card/incident-count-card";
-import IncidentPriorityDetailsCard from "./incident-priority-details-card/incident-priority-details-card";
 
 export default function Cards() {
   const filterOpened = useAtomValue(filterState);
@@ -93,30 +92,11 @@ export default function Cards() {
             incidentCount={incidentSummary?.breachedCount ?? 0}
           />  
         </div>
-
-        <div style={{ backgroundColor: "#fff" }}>
-          <div className="incident-priority-header">
-            <h2>Incident Priority</h2>
-          </div>
-          <div className="priority-container" style={{ borderRadius: "12px" }}>
-            <div className="priority-summary">
-              {PriorityList.map(({ key, value }) => {
-                const priorityData = incidentPrioritySummary?.priority[key];
-                const stats = priorityData?.details?.[0];
-                return (
-                  <IncidentPriorityDetailsCard
-                    key={key}
-                    label={value}
-                    totalResolvedTime={priorityData?.totalResolvedTime ?? "—"}
-                    avgResolvedTime={priorityData?.avgResolvedTime ?? "—"}
-                    breachedCount={priorityData?.breachedCount ?? "—"}
-                    stats={stats}
-                  />
-                );
-              })}
-            </div>
-          </div>
+        <div>
+          <AssignmentGroupDetails></AssignmentGroupDetails>
         </div>
+
+        
       </div>
     </div>
   );

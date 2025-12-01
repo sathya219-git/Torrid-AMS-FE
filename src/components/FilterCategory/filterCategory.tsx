@@ -16,7 +16,7 @@ import {
 } from "../../store/filterStore";
 import "./filterCategory.css";
 
-export default function FilterCategory() {
+export default function   FilterCategory() {
   const setSelectedGroups = useSetAtom(selectedGroups);
   const setSelectedFromDate = useSetAtom(selectedFromDate);
   const setSelectedToDate = useSetAtom(selectedToDate);

@@ -90,6 +90,9 @@ export default function BreachedListTable({
     if (appliedFilters.AssignedToName?.length > 0) {
       params.append("AssignedToName", appliedFilters.AssignedToName.join(","));
     }
+    if (appliedFilters.AssignmentGroup?.length > 0) {
+      params.append("AssignmentGroup", appliedFilters.AssignmentGroup.join(","));
+    }
     if (appliedFilters.State?.length > 0) {
       params.append("State", appliedFilters.State.join(","));
     }

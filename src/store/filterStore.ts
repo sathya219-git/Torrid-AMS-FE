@@ -16,6 +16,7 @@ import {
 import { BreachedIncidentsResponse } from "../components/IncidentList/BreachedListTable/breached-list-table.interface";
 import { IncidentResponse } from "../components/IncidentList/IncidentTable/incident-table.interface";
 import { UploadReportResponse } from "../components/UploadReport/upload-report.interface";
+import { AssignmentGroupItem } from "../components/AssignmentGroup/assignment-group.interface";
 
 export const InitiateAPI = atom<Map<string, ApiRequest>>(new Map());
 
@@ -24,6 +25,7 @@ export const filterState = atom(true);
 export const tabValue = atom(true);
 
 export const KPIs = atom<IncidentSummary | undefined>();
+
 
 export const CountByPriority = atom<IncidentPrioritySummary | undefined>();
 
@@ -46,9 +48,10 @@ export const ReloadUploadedReportsGrid = atom(new Date().getTime());
 export const LoginSuccess = atom(false);
 
 export const ResetSuccess = atom(false);
+export const AssignmentGroups = atom<AssignmentGroupItem[]>([]);
 
 // Left side filters
-export const groups = atom<string[]>([]);
+export const groups = atom<AssignmentGroupItem[]>([]);
 export const selectedGroups = atom<string[]>([]);
 
 export const selectedFromDate = atom<Date | null>(

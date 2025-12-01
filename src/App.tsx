@@ -12,6 +12,7 @@ import { theme } from "./theme";
 import { useAtom, useSetAtom } from "jotai";
 import {
   appliedFilter,
+  AssignmentGroups,
   categories,
   CountByPriority,
   groups,
@@ -52,6 +53,8 @@ export default function App() {
   }, [activeURLs]);
 
   const setAssignmentGroups = useSetAtom(groups);
+  const setAssignmentGroupsDetails = useSetAtom(AssignmentGroups);
+
   const setCategories = useSetAtom(categories);
   const setStatusList = useSetAtom(status);
   const setTeamMembers = useSetAtom(teamMembers);
@@ -153,13 +156,12 @@ export default function App() {
 
   const handleResponse = useCallback((url: string, res: Response) => {
     res.json().then((data) => {
-      if (url.includes("api/Incident/assignmentgroups")) {
+      if (url.includes("api/Incident/assignmentgroups?")) {
+        const AssignmentGroups: AssignmentGroupItem[] = Array.isArray(data) ? data : [];
+        setAssignmentGroupsDetails(AssignmentGroups);
+      } else if (url.includes("api/Incident/assignmentgroups")) {
         const groups: AssignmentGroupItem[] = Array.isArray(data) ? data : [];
-        setAssignmentGroups(
-          groups.map((group) => {
-            return group.assignmentGroupName;
-          })
-        );
+        setAssignmentGroups(groups);
       } else if (url.includes("api/Incident/categorycountbygroup")) {
         const categories: CategoryItem[] = Array.isArray(data) ? data : [];
         setCategories(categories);
@@ -247,6 +249,7 @@ export default function App() {
         setAssignmentGroups([]);
         setCategories([]);
         setStatusList([]);
+        setAssignmentGroupsDetails([])
         setMemberDetailsResponse(undefined);
         setTab(true);
       } else if (url.includes("api/files/upload")) {
@@ -276,7 +279,10 @@ export default function App() {
   }, []);
 
   const handleError = useCallback((url: string) => {
-    if (url.includes("api/Incident/assignmentgroups")) {
+
+    if (url.includes("api/Incident/assignmentgroups?")) {
+      setAssignmentGroupsDetails([])
+    } else if (url.includes("api/Incident/assignmentgroups")) {
       setAssignmentGroups([]);
     } else if (url.includes("api/Incident/categorycountbygroup")) {
       setCategories([]);

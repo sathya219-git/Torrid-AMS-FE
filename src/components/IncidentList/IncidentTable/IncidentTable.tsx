@@ -89,7 +89,9 @@ export default function IncidentTable({
     if (appliedFilters.Category?.length > 0) {
       params.append("Category", appliedFilters.Category.join(","));
     }
-
+    if (appliedFilters.AssignmentGroup?.length > 0) {
+      params.append("AssignmentGroup", appliedFilters.AssignmentGroup.join(","));
+    }
     if (Search) {
       params.append("Search", Search);
     }

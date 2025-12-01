@@ -20,6 +20,8 @@ export default function FilteredResult() {
           <Cards />
         </div>
       </Card.Section>
+
+      
     </Card>
   );
 }

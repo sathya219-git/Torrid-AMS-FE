@@ -1,0 +1,46 @@
+.assignement-group-details-heading h2 {
+  font-size: 20px;
+  color: #333b69;
+  font-weight: 600;
+  font-family: "Inter", sans-serif;
+}
+
+.groups-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between; /* pushes first to left & last to right */
+  column-gap: 16px; /* gap between internal items */
+  row-gap: 16px;
+}
+
+.group-details {
+  width: 210px; /* fixed width */
+  height: 100px; /* fixed height */
+  background-color: #f5f6fa;
+  border-radius: 10px;
+  padding: 16px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.group-details h3 {
+  font-family: "Inter", sans-serif;
+
+  font-size: 14px;
+  color: #000000;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.group-details p {
+  font-family: "Inter", sans-serif;
+
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+  color: #333;
+  display: flex;
+  align-items: center;
+}

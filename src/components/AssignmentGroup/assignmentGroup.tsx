@@ -50,7 +50,7 @@ export default function AssignmentGroup() {
   );
 
   const selectAllGroups = useCallback(() => {
-    setSelectedFilters(assignmentGroups);
+    setSelectedFilters(assignmentGroups.map((value) => value.assignmentGroupName ));
   }, [assignmentGroups]);
 
   const deselectAllGroups = useCallback(() => {
@@ -80,7 +80,7 @@ export default function AssignmentGroup() {
             />
           </div>
           <div className="assignment-content">
-            {staticGroups.map((assignmentGroupName) => (
+            {staticGroups.map(({assignmentGroupName}) => (
               <div className="group-checkbox" key={assignmentGroupName}>
                 <Checkbox
                   label={assignmentGroupName}
@@ -99,7 +99,7 @@ export default function AssignmentGroup() {
           >
             <Collapse in={opened}>
               <div className="assignment-content">
-                {expandedGroups.map((assignmentGroupName) => {
+                {expandedGroups.map(({assignmentGroupName}) => {
                   const label = assignmentGroupName?.trim()
                     ? assignmentGroupName
                     : "N/A";
@@ -107,7 +107,7 @@ export default function AssignmentGroup() {
                   return (
                     <div
                       className="group-checkbox"
-                      key={assignmentGroupName || "NA"}
+                      key={assignmentGroupName}
                     >
                       <Checkbox
                         label={label}

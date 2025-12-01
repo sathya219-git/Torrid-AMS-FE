@@ -217,7 +217,7 @@ body {
 .dashboard-container {
   display: flex;
   gap: 20px;
-  padding: 16px;
+  /* padding: 16px; */
   background-color: #fff;
   transition: all 0.3s ease;
 }
@@ -450,7 +450,7 @@ color: #0000;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-top: 10px;
 }
 
 .incident-priority-header h2 {
