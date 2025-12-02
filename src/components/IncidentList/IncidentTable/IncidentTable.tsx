@@ -301,7 +301,7 @@ export default function IncidentTable({
                   colSpan={8}
                   style={{ textAlign: "center", padding: 20 }}
                 >
-                  No incidents found
+                  <p>No incidents found</p>
                 </Table.Td>
               </Table.Tr>
             ) : (

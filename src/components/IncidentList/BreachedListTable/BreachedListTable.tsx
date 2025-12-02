@@ -309,15 +309,10 @@ export default function BreachedListTable({
             {totalElements === 0 ? (
               <Table.Tr>
                 <Table.Td
-                  colSpan={6}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: 20,
-                  }}
+                  colSpan={8}
+                   style={{ textAlign: "center", padding: 20 }}
                 >
-                  No incidents found
+                  <p>No incidents found</p>
                 </Table.Td>
               </Table.Tr>
             ) : (

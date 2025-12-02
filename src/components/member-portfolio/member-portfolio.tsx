@@ -156,7 +156,10 @@ export default function MemberPortfolio() {
               <TeamMemberCard key={index} member={member} />
             ))
           ) : (
+            <div  style={{ textAlign: "center", padding: 10 }}>
             <p>No data available.</p>
+
+            </div>
           )}
         </ScrollAreaAutosize>
       </main>

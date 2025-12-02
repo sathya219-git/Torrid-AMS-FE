@@ -31,7 +31,7 @@
   margin-right: 0; /* LAST in full row of 5 */
 }
 .groups-container > .group-details:last-child:not(:nth-child(5n)) {
-  /* margin-right: auto; keep margin so it won't stick to right */
+  margin-right: auto; 
 }
 .group-details h3 {
   font-family: "Inter", sans-serif;

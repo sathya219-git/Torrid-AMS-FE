@@ -53,7 +53,7 @@ export default function AssignmentGroupDetails() {
     });
   }, [apiUrl]);
   return (
-    <div>
+    <div style={{marginTop:"35px"}}>
       <div className="assignement-group-details-heading">
         <h2>Assignment Torrid Group</h2>
       </div>
