@@ -15,7 +15,16 @@ export interface BreachedIncidents {
   resolvedDateTime:string;
   actualResolvedTime: string;
   breachSLA: string;
-  
+
+  BreachSLA:string;
+  ActualResolvedTime:string;
+  Resolved:string;
+  Created:string;
+  State:string;
+  Category:string;
+  ShortDescription:string;
+  AssignedTo:string;
+  Number:string;
 
 }
 

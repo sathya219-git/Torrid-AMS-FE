@@ -208,60 +208,60 @@ export default function BreachedListTable({
             <Table.Tr className="bl-header-row">
               <Table.Th
                 className="bl-header-cell first-header"
-                onClick={() => handleSort("incidentNumber")}
+                onClick={() => handleSort("Number")}
               >
                 <div className="bl-table-headers">
                   <span>Incident No</span>
-                  <span>{renderSortIcon("incidentNumber")}</span>
+                  <span>{renderSortIcon("Number")}</span>
                 </div>
               </Table.Th>
 
               <Table.Th
                 className="bl-header-cell"
-                onClick={() => handleSort("assignedTo")}
+                onClick={() => handleSort("AssignedTo")}
               >
                 <div className="bl-table-headers">
                   <span>Assigned To</span>
-                  <span>{renderSortIcon("assignedTo")}</span>
+                  <span>{renderSortIcon("AssignedTo")}</span>
                 </div>
               </Table.Th>
 
               <Table.Th
                 className="bl-header-cell"
-                onClick={() => handleSort("shortDescription")}
+                onClick={() => handleSort("ShortDescription")}
               >
                 <div className="bl-table-headers">
                   <span>Description</span>
-                  <span>{renderSortIcon("shortDescription")}</span>
+                  <span>{renderSortIcon("ShortDescription")}</span>
                 </div>
               </Table.Th>
 
               <Table.Th
                 className="bl-header-cell"
-                onClick={() => handleSort("category")}
+                onClick={() => handleSort("Category")}
               >
                 <div className="bl-table-headers">
                   <span>Category</span>
-                  <span>{renderSortIcon("category")}</span>
+                  <span>{renderSortIcon("Category")}</span>
                 </div>
               </Table.Th>
               <Table.Th
                 className="bl-header-cell"
-                onClick={() => handleSort("state")}
+                onClick={() => handleSort("State")}
               >
                 <div className="bl-table-headers">
                   <span>State</span>
-                  <span>{renderSortIcon("state")}</span>
+                  <span>{renderSortIcon("State")}</span>
                 </div>
               </Table.Th>
 
               <Table.Th
                 className="bl-header-cell"
-                onClick={() => handleSort("createdDateTime")}
+                onClick={() => handleSort("Created")}
               >
                 <div className="bl-table-headers">
                   <span>Created Date</span>
-                  <span>{renderSortIcon("createdDateTime")}</span>
+                  <span>{renderSortIcon("Created")}</span>
                 </div>
               </Table.Th>
               {/* <Table.Th
@@ -275,31 +275,31 @@ export default function BreachedListTable({
               </Table.Th> */}
               <Table.Th
                 className="bl-header-cell"
-                onClick={() => handleSort("resolvedDateTime")}
+                onClick={() => handleSort("Resolved")}
               >
                 <div className="bl-table-headers">
                   <span>Resolved Date</span>
-                  <span>{renderSortIcon("resolvedDateTime")}</span>
+                  <span>{renderSortIcon("Resolved")}</span>
                 </div>
               </Table.Th>
 
               <Table.Th
                 className="bl-header-cell"
-                onClick={() => handleSort("actualResolvedTime")}
+                onClick={() => handleSort("ActualResolvedTime")}
               >
                 <div className="bl-table-headers">
                   <span>Actual Resolved Time</span>
-                  <span>{renderSortIcon("actualResolvedTime")}</span>
+                  <span>{renderSortIcon("ActualResolvedTime")}</span>
                 </div>
               </Table.Th>
 
               <Table.Th
                 className="bl-header-cell last-header"
-                onClick={() => handleSort("breachSLA")}
+                onClick={() => handleSort("BreachSLA")}
               >
                 <div className="bl-table-headers">
                   <span>Breach SLA</span>
-                  <span>{renderSortIcon("breachSLA")}</span>
+                  <span>{renderSortIcon("BreachSLA")}</span>
                 </div>
               </Table.Th>
             </Table.Tr>

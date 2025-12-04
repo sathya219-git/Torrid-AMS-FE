@@ -1,13 +1,18 @@
 import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useMemo } from "react";
-import { appliedFilter, AssignmentGroups, filterState, InitiateAPI } from "../../store/filterStore";
+import {
+  appliedFilter,
+  AssignmentGroups,
+  filterState,
+  InitiateAPI,
+} from "../../store/filterStore";
 import "./AssignmentGroupDetails.css";
 export default function AssignmentGroupDetails() {
   const initiateAPI = useSetAtom(InitiateAPI);
   const appliedFilters = useAtomValue(appliedFilter);
-  const torridGroupDetails= useAtomValue(AssignmentGroups);
+  const torridGroupDetails = useAtomValue(AssignmentGroups);
 
-    const expand=useAtomValue(filterState)
+  const expand = useAtomValue(filterState);
   const apiUrl = useMemo(() => {
     const params = new URLSearchParams();
 
@@ -48,23 +53,34 @@ export default function AssignmentGroupDetails() {
       curr.set(apiUrl, {
         method: "GET",
         body: null,
-      });      
+      });
       return curr;
     });
   }, [apiUrl]);
   return (
-    <div style={{marginTop:"35px"}}>
+    <div style={{ marginTop: "35px" }}>
       <div className="assignement-group-details-heading">
         <h2>Assignment Torrid Group</h2>
       </div>
 
       <div className="groups-container">
-        {torridGroupDetails.map((value) => (
-          <div className="group-details" key={value.assignmentGroupName}>
-            <h3>{value.assignmentGroupName}</h3>
-            <p>{value.incidentCount}</p>
-          </div>
-        ))}
+        {
+          // Check if torridGroupDetails is defined AND is an array AND has elements
+          torridGroupDetails &&
+          Array.isArray(torridGroupDetails) &&
+          torridGroupDetails.length > 0 ? (
+            // **TRUE:** If data exists, map and render the group details
+            torridGroupDetails.map((value) => (
+              <div className="group-details" key={value.assignmentGroupName}>
+                <h3>{value.assignmentGroupName}</h3>
+                <p>{value.incidentCount}</p>
+              </div>
+            ))
+          ) : (
+            // **FALSE:** If data is missing or empty, show the message
+            <p>No torrid groups to display.</p>
+          )
+        }
       </div>
     </div>
   );
