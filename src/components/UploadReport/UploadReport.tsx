@@ -280,7 +280,7 @@ const UploadReport = () => {
                       ))
                     ) : (
                       <tr>
-                        <td colSpan={5} className="no-records">
+                        <td colSpan={5} style={{ textAlign: "center", padding: 20 }}>
                           No records found
                         </td>
                       </tr>

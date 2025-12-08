@@ -193,7 +193,7 @@ export default function IncidentTable({
         <Table>
           <Table.Thead>
             <Table.Tr className="bl-header-row">
-              <Table.Th
+              <Table.Th style={{minWidth:"140px",maxWidth:"140px"}}
                 className="bl-header-cell first-header"
                 onClick={() => handleSort("incidentNo")}
               >
@@ -203,7 +203,7 @@ export default function IncidentTable({
                 </div>
               </Table.Th>
 
-              <Table.Th
+              <Table.Th style={{minWidth:"200px",maxWidth:"200px"}}
                 className="bl-header-cell"
                 onClick={() => handleSort("assignedTo")}
               >
@@ -213,7 +213,7 @@ export default function IncidentTable({
                 </div>
               </Table.Th>
 
-              <Table.Th
+              <Table.Th style={{minWidth:"350px",maxWidth:"350px"}}
                 className="bl-header-cell"
                 onClick={() => handleSort("shortDescription")}
               >
@@ -223,7 +223,7 @@ export default function IncidentTable({
                 </div>
               </Table.Th>
 
-              <Table.Th
+              <Table.Th style={{minWidth:"150px",maxWidth:"150px"}}
                 className="bl-header-cell"
                 onClick={() => handleSort("category")}
               >
@@ -233,7 +233,7 @@ export default function IncidentTable({
                 </div>
               </Table.Th>
 
-              <Table.Th
+              <Table.Th style={{minWidth:"120px",maxWidth:"120px"}}
                 className="bl-header-cell"
                 onClick={() => handleSort("state")}
               >
@@ -242,9 +242,9 @@ export default function IncidentTable({
                   <span> {renderSortIcon("state")} </span>
                 </div>
               </Table.Th>
-              <Table.Th
+              <Table.Th style={{minWidth:"180px",maxWidth:"180px"}}
                 className="bl-header-cell"
-                onClick={() => handleSort("resolvedDateTime")}
+                onClick={() => handleSort("createdDateTime")}
               >
                 <div className="bl-table-headers">
                   <span> Created Date</span>
@@ -260,7 +260,7 @@ export default function IncidentTable({
                   <span> {renderSortIcon("updatedDateTime")} </span>
                 </div>
               </Table.Th> */}
-              <Table.Th
+              <Table.Th style={{minWidth:"210px",maxWidth:"210px"}}
                 className="bl-header-cell"
                 onClick={() => handleSort("resolvedDateTime")}
               >
@@ -269,7 +269,7 @@ export default function IncidentTable({
                   <span> {renderSortIcon("resolvedDateTime")} </span>
                 </div>
               </Table.Th>
-              <Table.Th
+              <Table.Th style={{minWidth:"210px",maxWidth:"210px"}}
                 className="bl-header-cell"
                 onClick={() => handleSort("actualResolvedTime")}
               >
@@ -279,7 +279,7 @@ export default function IncidentTable({
                 </div>
               </Table.Th>
 
-              <Table.Th
+              <Table.Th style={{minWidth:"200px",maxWidth:"200px"}}
                 className="bl-header-cell last-header"
                 onClick={() => handleSort("breachSLA")}
               >

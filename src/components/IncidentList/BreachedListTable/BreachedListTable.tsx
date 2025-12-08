@@ -206,7 +206,7 @@ export default function BreachedListTable({
         <Table>
           <Table.Thead>
             <Table.Tr className="bl-header-row">
-              <Table.Th
+              <Table.Th style={{minWidth:"140px",maxWidth:"140px"}}
                 className="bl-header-cell first-header"
                 onClick={() => handleSort("Number")}
               >
@@ -216,7 +216,7 @@ export default function BreachedListTable({
                 </div>
               </Table.Th>
 
-              <Table.Th
+              <Table.Th style={{minWidth:"200px",maxWidth:"200px"}}
                 className="bl-header-cell"
                 onClick={() => handleSort("AssignedTo")}
               >
@@ -226,7 +226,7 @@ export default function BreachedListTable({
                 </div>
               </Table.Th>
 
-              <Table.Th
+              <Table.Th style={{minWidth:"350px",maxWidth:"350px"}}
                 className="bl-header-cell"
                 onClick={() => handleSort("ShortDescription")}
               >
@@ -236,7 +236,7 @@ export default function BreachedListTable({
                 </div>
               </Table.Th>
 
-              <Table.Th
+              <Table.Th style={{minWidth:"150px",maxWidth:"150px"}}
                 className="bl-header-cell"
                 onClick={() => handleSort("Category")}
               >
@@ -245,7 +245,7 @@ export default function BreachedListTable({
                   <span>{renderSortIcon("Category")}</span>
                 </div>
               </Table.Th>
-              <Table.Th
+              <Table.Th style={{minWidth:"120px",maxWidth:"120px"}}
                 className="bl-header-cell"
                 onClick={() => handleSort("State")}
               >
@@ -255,7 +255,7 @@ export default function BreachedListTable({
                 </div>
               </Table.Th>
 
-              <Table.Th
+              <Table.Th style={{minWidth:"180px",maxWidth:"180px"}}
                 className="bl-header-cell"
                 onClick={() => handleSort("Created")}
               >
@@ -273,17 +273,17 @@ export default function BreachedListTable({
                   <span>{renderSortIcon("updatedDateTime")}</span>
                 </div>
               </Table.Th> */}
-              <Table.Th
+              <Table.Th style={{minWidth:"210px",maxWidth:"210px"}}
                 className="bl-header-cell"
                 onClick={() => handleSort("Resolved")}
               >
                 <div className="bl-table-headers">
-                  <span>Resolved Date</span>
+                  <span>Resolved Date & Time</span>
                   <span>{renderSortIcon("Resolved")}</span>
                 </div>
               </Table.Th>
 
-              <Table.Th
+              <Table.Th style={{minWidth:"210px",maxWidth:"210px"}}
                 className="bl-header-cell"
                 onClick={() => handleSort("ActualResolvedTime")}
               >
@@ -293,7 +293,7 @@ export default function BreachedListTable({
                 </div>
               </Table.Th>
 
-              <Table.Th
+              <Table.Th style={{minWidth:"200px",maxWidth:"200px"}}
                 className="bl-header-cell last-header"
                 onClick={() => handleSort("BreachSLA")}
               >
@@ -305,7 +305,7 @@ export default function BreachedListTable({
             </Table.Tr>
           </Table.Thead>
 
-          <Table.Tbody>
+          <Table.Tbody >
             {totalElements === 0 ? (
               <Table.Tr>
                 <Table.Td
@@ -317,13 +317,13 @@ export default function BreachedListTable({
               </Table.Tr>
             ) : (
               breachedIncidents.map((item, index) => (
-                <Table.Tr
+                <Table.Tr 
                   key={item.incidentNumber}
                   className={index === 0 ? "first-row-gap" : ""}
                 >
                   <Table.Td>{item.incidentNumber}</Table.Td>
                   <Table.Td>{item.assignedTo}</Table.Td>
-                  <Table.Td>{item.shortDescription}</Table.Td>
+                  <Table.Td >{item.shortDescription}</Table.Td>
                   <Table.Td>{item.category}</Table.Td>
                   <Table.Td>{item.state}</Table.Td>
                   <Table.Td>{item.createdDateTime}</Table.Td>
