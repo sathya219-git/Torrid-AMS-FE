@@ -110,35 +110,35 @@ export default function App() {
           if (res.ok) {
             handleResponse(key, res);
           } else {
-            if (res.status === 401) {
-              sessionStorage.clear();
-              setLoginSuccess(false);
-              notifications.show({
-                id: "session-expired",
-                position: "top-right",
-                title: "Session expired",
-                message: "Please login again",
-                color: "red",
-                radius: "md",
-                classNames: {
-                  root: "err-ntfn-root",
-                },
-                styles: {
-                  body: {
-                    margin: "10px",
+            res.text().then((val) => {
+              const errMsg = val.slice(1, val.length - 1);
+              if (key.includes("auth/login")) {
+                notifications.show({
+                  position: "top-right",
+                  title: "Login Failed",
+                  message: "Invalid username or password",
+                  color: "red",
+                  radius: "md",
+                  classNames: {
+                    root: "err-ntfn-root",
                   },
-                  title: { fontWeight: 600, color: "#922b21" },
-                  description: { color: "#943126" },
-                },
-              });
-            } else {
-              res.text().then((val) => {
-                const errMsg = val.slice(1, val.length - 1);
-                if (key.includes("auth/login")) {
+                  styles: {
+                    body: {
+                      margin: "10px",
+                    },
+                    title: { fontWeight: 600, color: "#922b21" },
+                    description: { color: "#943126" },
+                  },
+                });
+              } else {
+                if (res.status === 401) {
+                  sessionStorage.clear();
+                  setLoginSuccess(false);
                   notifications.show({
+                    id: "session-expired",
                     position: "top-right",
-                    title: "Login Failed",
-                    message: "Invalid username or password",
+                    title: "Session expired",
+                    message: "Please login again",
                     color: "red",
                     radius: "md",
                     classNames: {
@@ -171,8 +171,8 @@ export default function App() {
                     },
                   });
                 }
-              });
-            }
+              }
+            });
             handleError(key);
           }
         });
