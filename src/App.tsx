@@ -101,51 +101,78 @@ export default function App() {
               ? {
                   "Content-Type": "application/json",
                 }
-              : undefined,
+              : {
+                  Authorization: `Bearer ${sessionStorage.getItem(
+                    "userToken"
+                  )}`,
+                },
         }).then((res) => {
           if (res.ok) {
             handleResponse(key, res);
           } else {
-            res.text().then((val) => {
-              const errMsg = val.slice(1, val.length - 1);
-              if (key.includes("auth/login")) {
-                notifications.show({
-                  position: "top-right",
-                  title: "Login Failed",
-                  message: "Invalid username or password",
-                  color: "red",
-                  radius: "md",
-                  classNames: {
-                    root: "err-ntfn-root",
+            if (res.status === 401) {
+              sessionStorage.clear();
+              setLoginSuccess(false);
+              notifications.show({
+                id: "session-expired",
+                position: "top-right",
+                title: "Session expired",
+                message: "Please login again",
+                color: "red",
+                radius: "md",
+                classNames: {
+                  root: "err-ntfn-root",
+                },
+                styles: {
+                  body: {
+                    margin: "10px",
                   },
-                  styles: {
-                    body: {
-                      margin: "10px",
+                  title: { fontWeight: 600, color: "#922b21" },
+                  description: { color: "#943126" },
+                },
+              });
+            } else {
+              res.text().then((val) => {
+                const errMsg = val.slice(1, val.length - 1);
+                if (key.includes("auth/login")) {
+                  notifications.show({
+                    position: "top-right",
+                    title: "Login Failed",
+                    message: "Invalid username or password",
+                    color: "red",
+                    radius: "md",
+                    classNames: {
+                      root: "err-ntfn-root",
                     },
-                    title: { fontWeight: 600, color: "#922b21" },
-                    description: { color: "#943126" },
-                  },
-                });
-              } else {
-                notifications.show({
-                  position: "top-right",
-                  title: "An error occured",
-                  message: errMsg,
-                  color: "red",
-                  radius: "md",
-                  classNames: {
-                    root: "err-ntfn-root",
-                  },
-                  styles: {
-                    body: {
-                      margin: "10px",
+                    styles: {
+                      body: {
+                        margin: "10px",
+                      },
+                      title: { fontWeight: 600, color: "#922b21" },
+                      description: { color: "#943126" },
                     },
-                    title: { fontWeight: 600, color: "#922b21" },
-                    description: { color: "#943126" },
-                  },
-                });
-              }
-            });
+                  });
+                } else {
+                  notifications.show({
+                    position: "top-right",
+                    title: "An error occured",
+                    message: errMsg,
+                    color: "red",
+                    radius: "md",
+                    classNames: {
+                      root: "err-ntfn-root",
+                    },
+                    styles: {
+                      body: {
+                        margin: "10px",
+                      },
+                      title: { fontWeight: 600, color: "#922b21" },
+                      description: { color: "#943126" },
+                    },
+                  });
+                }
+              });
+            }
             handleError(key);
           }
         });
@@ -157,7 +184,9 @@ export default function App() {
   const handleResponse = useCallback((url: string, res: Response) => {
     res.json().then((data) => {
       if (url.includes("api/Incident/assignmentgroups?")) {
-        const AssignmentGroups: AssignmentGroupItem[] = Array.isArray(data) ? data : [];
+        const AssignmentGroups: AssignmentGroupItem[] = Array.isArray(data)
+          ? data
+          : [];
         setAssignmentGroupsDetails(AssignmentGroups);
       } else if (url.includes("api/Incident/assignmentgroups")) {
         const groups: AssignmentGroupItem[] = Array.isArray(data) ? data : [];
@@ -231,7 +260,7 @@ export default function App() {
             description: { color: "#196f3d" },
           },
         });
-        sessionStorage.setItem("userLoggedIn", "true");
+        sessionStorage.setItem("userToken", data.token);
         const applyFromToDate: FilterState = {
           AssignmentGroup: [],
           FromDate: new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000),
@@ -249,7 +278,7 @@ export default function App() {
         setAssignmentGroups([]);
         setCategories([]);
         setStatusList([]);
-        setAssignmentGroupsDetails([])
+        setAssignmentGroupsDetails([]);
         setMemberDetailsResponse(undefined);
         setTab(true);
       } else if (url.includes("api/files/upload")) {
@@ -279,9 +308,8 @@ export default function App() {
   }, []);
 
   const handleError = useCallback((url: string) => {
-
     if (url.includes("api/Incident/assignmentgroups?")) {
-      setAssignmentGroupsDetails([])
+      setAssignmentGroupsDetails([]);
     } else if (url.includes("api/Incident/assignmentgroups")) {
       setAssignmentGroups([]);
     } else if (url.includes("api/Incident/categorycountbygroup")) {
@@ -349,7 +377,7 @@ export default function App() {
               <Route
                 path="/dashboard"
                 element={
-                  sessionStorage.getItem("userLoggedIn") === "true" ? (
+                  sessionStorage.getItem("userToken") !== null ? (
                     <Dashboard />
                   ) : (
                     <Navigate to="/login" replace={true} />
