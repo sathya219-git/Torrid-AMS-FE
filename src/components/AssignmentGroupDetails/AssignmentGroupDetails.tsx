@@ -12,7 +12,7 @@ export default function AssignmentGroupDetails() {
   const appliedFilters = useAtomValue(appliedFilter);
   const torridGroupDetails = useAtomValue(AssignmentGroups);
 
-  const expand = useAtomValue(filterState);
+  const filterOpened = useAtomValue(filterState);
   const apiUrl = useMemo(() => {
     const params = new URLSearchParams();
 
@@ -78,7 +78,9 @@ export default function AssignmentGroupDetails() {
             ))
           ) : (
             // **FALSE:** If data is missing or empty, show the message
-            <p>No torrid groups to display.</p>
+            <div className={`fil-result ${filterOpened ? "opened" : "closed"}`}>
+              <p> No torrid groups to display.</p>
+            </div>
           )
         }
       </div>
