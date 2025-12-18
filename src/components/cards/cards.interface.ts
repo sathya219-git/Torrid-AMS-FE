@@ -9,10 +9,13 @@ export interface PriorityStats {
 }
 
 export interface PriorityDetails {
-  details: PriorityStats[];
+  stateDetails: Record<string, number>;
+  totalCountForPriority: number;
   avgResolvedTime: string;
-  totalResolvedTime: string;
-  breachedCount:number;
+  totalResolvedTime:string;
+  breachedCount: number;
+  openMoreThan15Days: number;
+  openLessThan15Days: number;
 }
 
 export interface IncidentPrioritySummary {
@@ -21,8 +24,10 @@ export interface IncidentPrioritySummary {
 
 export interface IncidentSummary {
   totalIncidents: number;
-  openIncidents: number;
-  inProgressIncidents: number;
-  closedIncidents: number;
-  breachedCount:number;
+  openCount: number;
+  breachedCount: number;
+  openMore15Days: number;
+  openLess15Days: number;
+  states: Record<string, number>;
 }
+

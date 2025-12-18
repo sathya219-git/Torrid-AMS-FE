@@ -25,7 +25,7 @@ export default function TeamMembers() {
     }
     initiateAPI((prev) => {
       const curr = new Map(prev);
-      curr.set("http://localhost:5092/api/Incident/nameandcountbypriority", {
+      curr.set("http://localhost:5092/api/Incident/nameandcountbypriority?PageSize=0", {
         method: "GET",
         body: null,
       });

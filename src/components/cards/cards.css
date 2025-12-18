@@ -110,7 +110,17 @@
   flex-direction: column;
   align-items: center;
   padding: 15px 10px;
+  
 }
+.status-item-opened {
+  /* flex-grow: 1; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px 10px;
+  
+}
+
 
 .status-label {
   font-weight: 500;
@@ -239,10 +249,15 @@ body {
 
 .first-div.full {
   /* background-color: red; */
+  display: flex;
+    gap: 13px;
+  flex-direction: column;
+
   width: 100%;
 }
 
 .first-div.compact {
+  gap: 13px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -313,22 +328,41 @@ color: #0000;
 }
 
 /* --- Summary Cards Section --- */
-.summary-cards {
+.summary-cards.compact {
   height: 100%;
-  display: flex;
+  display: grid;
+  column-gap: 15px;
+  row-gap: 15px;
+  grid-template-columns: repeat(auto-fill,minmax(280px,1fr));
+  /* display: flex;
   flex-wrap: wrap;
+  justify-content: space-between;
   /* allow wrapping like grid rows */
-  gap: 20px;
+  /* gap: 20px; */
   /* spacing between cards, supported in modern browsers */
-  /* margin-bottom: 15px; */
+  /* margin-bottom: 15px;  */
+}
+.summary-cards.full {
+  height: 100%;
+  display: grid;
+  column-gap: 15px;
+  row-gap: 15px;
+  grid-template-columns: repeat(auto-fill,minmax(230px,1fr));
+  /* display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  /* allow wrapping like grid rows */
+  /* gap: 20px; */
+  /* spacing between cards, supported in modern browsers */
+  /* margin-bottom: 15px;  */
 }
 
 .summary-cards>* {
-  flex: 1 1 200px;
+  /* flex: 1 1 230px; */
   /* grow, shrink, basis */
-  min-width: 200px;
+  /* min-width: 230px; */
   /* minimum card width */
-  max-width: 1fr;
+  /* max-width: 230px; */
   /* no direct equivalent, but flex:1 helps stretch */
   box-sizing: border-box;
   /* include padding/borders in width */
@@ -346,11 +380,39 @@ color: #0000;
 }
 
 .card.incident {
-  background-color: #dae0f7;
+  background-color: #4379ee6c;
 }
 
 .card.open {
-  background-color: #c5e5ebd0;
+  background-color:#2BCB4329;
+}
+
+.card.progress {
+  background-color: #F9F0CC;
+}
+
+.card.closed {
+  background-color:#08D0F429;
+}
+
+.card.breach {
+  background-color: #f15f6149;
+}
+
+.card.on-hold {
+  background-color:#EBD7FD;
+}
+.card.re-open {
+  background-color:#DAE0F7;
+}
+.card.resolved {
+  background-color:#D7EBFD;
+}
+.card.lessthan15 {
+  background-color:#EDEFF6;
+}
+.card.greaterthan15 {
+  background-color:#FFE6D6;
 }
 .icon-property
 {
@@ -358,17 +420,6 @@ color: #0000;
   /* min-width: 22px; */
 }
 
-.card.progress {
-  background-color: #f9f0cc;
-}
-
-.card.closed {
-  background-color: #d7f7fd;
-}
-
-.card.breach {
-  background-color: #f15f6149;
-}
 
 .card-icon {
   width: 69px;

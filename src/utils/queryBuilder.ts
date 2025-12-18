@@ -6,11 +6,13 @@ export const buildFilterQuery = (filters: any): string => {
   if (filters.FromDate) {
     params.append(
       "FromDate",
-      new Date(filters.FromDate).toLocaleString("en-US")
+      `${new Date(filters.FromDate).toLocaleDateString("en-US")}, 00:00:00 AM`
     );
   }
   if (filters.ToDate) {
-    params.append("ToDate", new Date(filters.ToDate).toLocaleString("en-US"));
+    params.append(
+      "ToDate",
+       `${new Date(filters.ToDate).toLocaleDateString("en-US")},11:59:59 PM`);
   }
 
   // Handle arrays (like category, assignmentGroup, etc.)

@@ -32,14 +32,14 @@ export default function AssignmentGroupDetails() {
       params.append("AssignedToName", appliedFilters.AssignedToName.join(","));
     }
     if (appliedFilters.FromDate) {
-      const formatted = new Date(appliedFilters.FromDate).toLocaleString(
+      const formatted = new Date(appliedFilters.FromDate).toLocaleDateString(
         "en-US"
       );
-      params.append("FromDate", formatted);
+      params.append("FromDate", `${formatted},00:00:00 AM`);
     }
     if (appliedFilters.ToDate) {
-      const formatted = new Date(appliedFilters.ToDate).toLocaleString("en-US");
-      params.append("ToDate", formatted);
+      const formatted = new Date(appliedFilters.ToDate).toLocaleDateString("en-US");
+      params.append("ToDate", `${formatted},11:59:59 PM`);
     }
 
     const query = params.size > 0 ? `&${params.toString()}` : "";

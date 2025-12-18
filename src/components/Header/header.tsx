@@ -27,7 +27,13 @@ export default function Header() {
       setIsDownloading(true);
       try {
         const url = `http://localhost:5092/api/Incident/export?${query}`;
-        const response = await fetch(url);
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
+          },
+        });
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -95,29 +101,25 @@ export default function Header() {
           <div className="page-download">
             <Text fw={500}>Filter</Text>
             <Button
-  onClick={() => setFilterOpened((prev) => !prev)}
-  disabled={filterOpened}
-  bg={filterOpened ? "#5C5C5C38" : "#4880FF"}   // ← Grey when disabled
-  radius="md"
-  size="md"
-  p="8px"
-  style={{
-    // borderColor: filterOpened ? "none" : "#4880FF",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: "40px",
-    height: "40px",
-    transition: "all 0.2s ease",
-    cursor: filterOpened ? "not-allowed" : "pointer",
-  }}
->
-  <CiFilter
-    size={22}
-    color={filterOpened ? "#7b7b7bb2" : "#fff"} 
-  />
-</Button>
-
+              onClick={() => setFilterOpened((prev) => !prev)}
+              disabled={filterOpened}
+              bg={filterOpened ? "#5C5C5C38" : "#4880FF"} // ← Grey when disabled
+              radius="md"
+              size="md"
+              p="8px"
+              style={{
+                // borderColor: filterOpened ? "none" : "#4880FF",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "40px",
+                height: "40px",
+                transition: "all 0.2s ease",
+                cursor: filterOpened ? "not-allowed" : "pointer",
+              }}
+            >
+              <CiFilter size={22} color={filterOpened ? "#7b7b7bb2" : "#fff"} />
+            </Button>
           </div>
 
           {/* Uploaded button */}

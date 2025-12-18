@@ -18,8 +18,17 @@ export default function FilterResult() {
     <div className="card-padding">
       <FilterCategory />
       <FilteredResult />
-      <div style={{borderRadius:"8px"}} className={`team-member-card ${filterOpened ? "opened" : "closed"}`}>
-        <div style={{ backgroundColor: "#fff",padding:"22px" ,borderRadius:"8px"}}>
+      <div
+        style={{ borderRadius: "8px" }}
+        className={`team-member-card ${filterOpened ? "opened" : "closed"}`}
+      >
+        <div
+          style={{
+            backgroundColor: "#fff",
+            padding: "22px",
+            borderRadius: "8px",
+          }}
+        >
           <ServiceLevelMatrix></ServiceLevelMatrix>
           <div className="incident-priority-header">
             <h2>Incident Priority</h2>
@@ -28,15 +37,22 @@ export default function FilterResult() {
             <div className="priority-summary">
               {PriorityList.map(({ key, value }) => {
                 const priorityData = incidentPrioritySummary?.priority[key];
-                const stats = priorityData?.details?.[0];
+                const stats = priorityData?.stateDetails ?? {};
+                console.log("stat",stats);
+                
                 return (
                   <IncidentPriorityDetailsCard
                     key={key}
                     label={value}
-                    totalResolvedTime={priorityData?.totalResolvedTime ?? "—"}
+                    totalCountForPriority={
+                      priorityData?.totalCountForPriority ?? 0
+                    }
                     avgResolvedTime={priorityData?.avgResolvedTime ?? "—"}
-                    breachedCount={priorityData?.breachedCount ?? "—"}
-                    stats={stats}
+                    totalResolvedTime={priorityData?.totalResolvedTime ?? "—"}
+                    stateDetails={stats}
+                    breachedCount={priorityData?.breachedCount ?? 0}
+                    openMoreThan15Days={priorityData?.openMoreThan15Days ?? 0}
+                    openLessThan15Days={priorityData?.openLessThan15Days ?? 0}
                   />
                 );
               })}

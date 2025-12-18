@@ -197,14 +197,23 @@ export default function App() {
       } else if (url.includes("api/Incident/statuscountbypriority")) {
         const statusList: StatusItem[] = Array.isArray(data) ? data : [];
         setStatusList(statusList);
+      } else if (
+        url.includes("api/Incident/nameandcountbypriority?PageSize=0")
+      ) {
+        setTeamMembers(data?.memberDetails ?? []);
       } else if (url.includes("api/Incident/nameandcountbypriority?")) {
         setMemberDetailsResponse(data);
-      } else if (url.includes("api/Incident/nameandcountbypriority")) {
-        setTeamMembers(data?.memberDetails ?? []);
       } else if (url.includes("api/Incident/countbypriority")) {
         setIncidentPrioritySummary(data);
       } else if (url.includes("api/Incident/kpis")) {
-        setIncidentSummary(data);
+        const { states, ...rest } = data;
+
+        const flattened = {
+          ...rest,
+          ...states,
+        };
+        console.log("flatten", flattened);
+        setIncidentSummary(flattened);
       } else if (url.includes("api/Incident/breachlistbypriority")) {
         if (url.includes(encodeURIComponent("1 - Critical"))) {
           setP1BreachedResponse(data);
@@ -318,10 +327,10 @@ export default function App() {
       setStatusList([]);
     } else if (url.includes("api/Incident/nameandcountbypriority?")) {
       setMemberDetailsResponse(undefined);
-    } else if (url.includes("api/Incident/nameandcountbypriority")) {
-      setTeamMembers([]);
     } else if (url.includes("api/Incident/countbypriority")) {
       setIncidentPrioritySummary(undefined);
+    } else if (url.includes("api/Incident/nameandcountbypriority?PageSize=0")) {
+      setTeamMembers([]);
     } else if (url.includes("api/Incident/kpis")) {
       setIncidentSummary(undefined);
     } else if (url.includes("api/Incident/breachlistbypriority")) {

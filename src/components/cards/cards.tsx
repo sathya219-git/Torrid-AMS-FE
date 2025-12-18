@@ -22,9 +22,22 @@ export default function Cards() {
   const appliedFilters = useAtomValue(appliedFilter);
 
   const incidentSummary = useAtomValue(KPIs);
+
   const incidentPrioritySummary = useAtomValue(CountByPriority);
 
   const initiateAPI = useSetAtom(InitiateAPI);
+  const colors = [
+    "#4379ee6c",
+    "#2BCB4329",
+    "#f15f6149",
+    "#08D0F429",
+    "#F9F0CC",
+    "#EBD7FD",
+    "#DAE0F7",
+    "#D7EBFD",
+    "#EDEFF6",
+    "#FFE6D6",
+  ];
 
   // Fetch KPI summary
   useEffect(() => {
@@ -60,44 +73,39 @@ export default function Cards() {
   return (
     <div className="dashboard-container opened">
       <div className={`first-div ${filterOpened ? "full" : "compact"}`}>
-        <div className="summary-cards">
-          <IncidentCountCard
-            cssClass="incident"
-            iconSrc={totalincidenticon}
-            label="Total Incidents"
-            incidentCount={incidentSummary?.totalIncidents ?? 0}
-          />
-          <IncidentCountCard
-            cssClass="open"
-            iconSrc={folder}
-            label="Open"
-            incidentCount={incidentSummary?.openIncidents ?? 0}
-          />
-          <IncidentCountCard
-            cssClass="progress"
-            iconSrc={inprogress}
-            label="In Progress"
-            incidentCount={incidentSummary?.inProgressIncidents ?? 0}
-          />
-          <IncidentCountCard
-            cssClass="closed"
-            iconSrc={closedicon}
-            label="Closed"
-            incidentCount={incidentSummary?.closedIncidents ?? 0}
-          />
-          <IncidentCountCard
-            cssClass="breach"
-            iconSrc={dangerous}
-            label="Breach List"
-            incidentCount={incidentSummary?.breachedCount ?? 0}
-          />  
+        <div className={`summary-cards ${filterOpened ? "full" : "compact"}`}>
+          {incidentSummary &&
+            Object.entries(incidentSummary).map(([key, value], idx) => {
+              let label = key.replace(/([A-Z])/g, " $1");
+
+              // custom overrides
+              if (key === "openLess15Days") label = "<= 15 Days";
+              if (key === "openMore15Days") label = "> 15 Days";
+              if (key === "totalIncidents") label = "Total Incidents";
+              if (key === "breachedCount") label = "Breached Incident";
+
+              return (
+                <IncidentCountCard
+                  key={key}
+                  bgColor={colors[idx % colors.length]}
+                  label={label}
+                  incidentCount={value as number}
+                />
+              );
+            })}
         </div>
         <div>
           <AssignmentGroupDetails></AssignmentGroupDetails>
         </div>
-
-        
       </div>
     </div>
   );
+}
+{
+  /* <IncidentCountCard
+  cssClass="open"
+  iconSrc={folder}
+  label="Open"
+  incidentCount={incidentSummary?.openIncidents ?? 0}
+/>; */
 }

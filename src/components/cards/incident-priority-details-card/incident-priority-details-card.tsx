@@ -2,16 +2,22 @@ import { PriorityStats } from "../cards.interface";
 
 export default function IncidentPriorityDetailsCard({
   label,
-  totalResolvedTime,
+  totalCountForPriority,
   avgResolvedTime,
+  totalResolvedTime,
+  stateDetails,
   breachedCount,
-  stats,
+  openMoreThan15Days,
+  openLessThan15Days,
 }: {
   label: string;
-  totalResolvedTime: string;
+  stateDetails: Record<string, number>;
+  totalCountForPriority: number;
   avgResolvedTime: string;
-  breachedCount:number|string;
-  stats: PriorityStats | undefined;
+  totalResolvedTime: string;
+  breachedCount: number;
+  openMoreThan15Days: number;
+  openLessThan15Days: number;
 }) {
   return (
     <div className="priority-item">
@@ -19,7 +25,7 @@ export default function IncidentPriorityDetailsCard({
         <div className="header-section">
           <div className="priority-tag">
             <span className="priority-label">{label}</span>
-            <span className="count">{stats?.totalCount ?? "—"}</span>
+            <span className="count">{totalCountForPriority ?? "—"}</span>
           </div>
           <div className="metric-group">
             <div className="metric-item">
@@ -32,36 +38,80 @@ export default function IncidentPriorityDetailsCard({
             </div>
           </div>
         </div>
-        <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", padding: "15px 0px", gap: "15px" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "wrap",
+            padding: "15px 0px",
+            gap: "15px",
+          }}
+        >
           <div className="status-section">
-            <div className="status-item">
-              <span className="status-label">Open</span>
-              <span className="status-count">{stats?.open ?? "—"}</span>
-            </div>
-            <div className="status-item">
-              <span className="status-label">In Progress</span>
-              <span className="status-count">{stats?.inProgress ?? "—"}</span>
-            </div>
-            <div className="status-item">
-              <span className="status-label">Closed</span>
-              <span className="status-count">{stats?.closed ?? "—"}</span>
-            </div>
-            <div className="status-item">
-              <span className="status-label">Reopen</span>
-              <span className="status-count">{stats?.reopen ?? "—"}</span>
-            </div>
-            <div className="status-item">
-              <span className="status-label">On Hold</span>
-              <span className="status-count">{stats?.onHold ?? "—"}</span>
-            </div>
-            <div className="status-item">
-              <span className="status-label">Resolved</span>
-              <span className="status-count">{stats?.resolved ?? "—"}</span>
-            </div>
+            {Object.entries(stateDetails).map(([label, count]) => (
+              <div key={label} className="status-item">
+                <span className="status-label">{label}</span>
+                <span className="status-count">{count ?? "—"}</span>
+              </div>
+            ))}
           </div>
-          <div style={{ backgroundColor: "#f15f6149", padding: "15px 10px", borderRadius: "10px", display: "flex", alignItems: "center", flexDirection: "column", flexGrow: 1 }}>
+          <div
+            style={{
+              backgroundColor: "#f15f6149",
+              padding: "15px 10px",
+              borderRadius: "10px",
+              display: "flex",
+              alignItems: "center",
+              flexDirection: "column",
+              flexGrow: 1,
+              minWidth:"140px",
+              maxWidth:"140px"
+            }}
+          >
             <span className="status-label">Breached</span>
             <span className="status-count">{breachedCount ?? "—"}</span>
+          </div>
+        </div>
+        <div
+          style={{
+            paddingBottom: "10px",
+            fontFamily: "Inter",
+            fontWeight: "500",
+            fontSize: "15px",
+          }}
+        >
+          <span>open incidents </span>
+        </div>
+        <div style={{ display: "flex", flexDirection: "row", gap: "10px" }}>
+          <div
+            style={{
+              width: "50%",
+              height: "63px",
+              backgroundColor: "#fff",
+              borderRadius: "10px",
+              display: "flex",
+              flexDirection: "column",
+              padding: "10px",
+              gap: "5px",
+            }}
+          >
+            <span className="status-label">Less than 15 days</span>
+            <span className="status-count">{openLessThan15Days ?? "—"}</span>
+          </div>
+          <div
+            style={{
+              width: "50%",
+              height: "63px",
+              backgroundColor: "#fff",
+              borderRadius: "10px",
+              display: "flex",
+              flexDirection: "column",
+              padding: "10px",
+              gap: "5px",
+            }}
+          >
+            <span className="status-label">Greater than 15 days</span>
+            <span className="status-count">{openMoreThan15Days ?? "—"}</span>
           </div>
         </div>
       </div>

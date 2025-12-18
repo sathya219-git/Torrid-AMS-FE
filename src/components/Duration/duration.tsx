@@ -10,6 +10,7 @@ export default function Duration() {
   const [toDate, setSelectedToDate] = useAtom(selectedToDate);
 
   const onFromDateChange = (value: string | null) => {
+    
     setSelectedFromDate(value ? new Date(value) : null);
   };
 
