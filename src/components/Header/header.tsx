@@ -53,7 +53,6 @@ export default function Header() {
         link.click();
         document.body.removeChild(link);
       } catch (error) {
-        console.error("Error exporting filtered result:", error);
         alert("Failed to export filtered result. Please try again.");
       } finally {
         setIsDownloading(false);

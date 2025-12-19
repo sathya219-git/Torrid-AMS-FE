@@ -38,7 +38,7 @@ export default function Cards() {
     "#EDEFF6",
     "#FFE6D6",
     "#e2f9ccff",
-    "#2862b929"
+    "#2862b929",
   ];
 
   // Fetch KPI summary
@@ -85,8 +85,7 @@ export default function Cards() {
               if (key === "openMore15Days") label = "> 15 Days";
               if (key === "totalIncidents") label = "Total Incidents";
               if (key === "breachedCount") label = "Breached Incident";
-                            if (key === "openCount") label = "Open Count";
-
+              if (key === "openCount") label = "Open";
 
               return (
                 <IncidentCountCard

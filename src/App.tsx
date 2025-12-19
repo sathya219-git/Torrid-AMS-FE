@@ -212,7 +212,6 @@ export default function App() {
           ...rest,
           ...states,
         };
-        console.log("flatten", flattened);
         setIncidentSummary(flattened);
       } else if (url.includes("api/Incident/breachlistbypriority")) {
         if (url.includes(encodeURIComponent("1 - Critical"))) {

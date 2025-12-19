@@ -38,7 +38,6 @@ export default function FilterResult() {
               {PriorityList.map(({ key, value }) => {
                 const priorityData = incidentPrioritySummary?.priority[key];
                 const stats = priorityData?.stateDetails ?? {};
-                console.log("stat",stats);
                 
                 return (
                   <IncidentPriorityDetailsCard

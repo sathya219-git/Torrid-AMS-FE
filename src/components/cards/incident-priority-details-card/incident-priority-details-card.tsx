@@ -95,7 +95,7 @@ export default function IncidentPriorityDetailsCard({
               gap: "5px",
             }}
           >
-            <span className="status-label">Less than 15 days</span>
+            <span className="status-label">Less than or equal to 15 days</span>
             <span className="status-count">{openLessThan15Days ?? "—"}</span>
           </div>
           <div
