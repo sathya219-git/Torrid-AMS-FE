@@ -52,6 +52,7 @@ export default function BreachedListTable({
   const endRange = useMemo(() => {
     return Math.min(currentPage * 8, totalElements);
   }, [currentPage, totalElements]);
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const appliedFilters = useAtomValue(appliedFilter);
   const activeIncidentTab = useAtomValue(ActiveIncidentTab);
@@ -139,7 +140,7 @@ export default function BreachedListTable({
 
     const queryString = params.toString();
     const query = queryString ? `&${queryString}` : "";
-    const url = `http://localhost:5092/api/Incident/breachlistbypriority?Priority=${encodeURIComponent(
+    const url = `${API_BASE_URL}/api/Incident/breachlistbypriority?Priority=${encodeURIComponent(
       priority
     )}&PageNumber=${currentPage}&PageSize=${8}${query}`;
 

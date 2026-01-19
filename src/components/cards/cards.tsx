@@ -18,6 +18,8 @@ import "./cards.css";
 import IncidentCountCard from "./incident-count-card/incident-count-card";
 
 export default function Cards() {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const filterOpened = useAtomValue(filterState);
   const appliedFilters = useAtomValue(appliedFilter);
 
@@ -45,8 +47,8 @@ export default function Cards() {
   useEffect(() => {
     const query = buildFilterQuery(appliedFilters);
     const url = query
-      ? `http://localhost:5092/api/Incident/kpis?${query}`
-      : `http://localhost:5092/api/Incident/kpis`;
+      ? `${API_BASE_URL}/api/Incident/kpis?${query}`
+      : `${API_BASE_URL}/api/Incident/kpis`;
 
     initiateAPI((prev) => {
       const curr = new Map(prev);
@@ -61,7 +63,7 @@ export default function Cards() {
   // Fetch incident priority summary
   useEffect(() => {
     const query = buildFilterQuery(appliedFilters);
-    const url = `http://localhost:5092/api/Incident/countbypriority?${query}`;
+    const url = `${API_BASE_URL}/api/Incident/countbypriority?${query}`;
     initiateAPI((prev) => {
       const curr = new Map(prev);
       curr.set(url, {

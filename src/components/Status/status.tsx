@@ -9,6 +9,7 @@ export default function Status() {
   const [selectedFilters, setSelectedFilters] = useAtom(selectedStatus);
 
   const initiateAPI = useSetAtom(InitiateAPI);
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     if (statusList.length > 0) {
@@ -16,7 +17,7 @@ export default function Status() {
     }
     initiateAPI((prev) => {
       const curr = new Map(prev);
-      curr.set("http://localhost:5092/api/Incident/statuscountbypriority", {
+      curr.set(`${API_BASE_URL}/api/Incident/statuscountbypriority`, {
         method: "GET",
         body: null,
       });

@@ -8,6 +8,8 @@ import { CiFilter } from "react-icons/ci";
 import { buildFilterQuery } from "../../utils/queryBuilder";
 
 export default function Header() {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const [opened, setOpened] = useState(false);
   const [downloadClicked, setDownloadClicked] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -26,7 +28,7 @@ export default function Header() {
 
       setIsDownloading(true);
       try {
-        const url = `http://localhost:5092/api/Incident/export?${query}`;
+        const url = `${API_BASE_URL}/api/Incident/export?${query}`;
         const response = await fetch(url, {
           method: "GET",
           headers: {

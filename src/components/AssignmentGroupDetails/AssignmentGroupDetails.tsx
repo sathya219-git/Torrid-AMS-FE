@@ -8,6 +8,8 @@ import {
 } from "../../store/filterStore";
 import "./AssignmentGroupDetails.css";
 export default function AssignmentGroupDetails() {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const initiateAPI = useSetAtom(InitiateAPI);
   const appliedFilters = useAtomValue(appliedFilter);
   const torridGroupDetails = useAtomValue(AssignmentGroups);
@@ -44,7 +46,7 @@ export default function AssignmentGroupDetails() {
 
     const query = params.size > 0 ? `&${params.toString()}` : "";
 
-    return `http://localhost:5092/api/Incident/assignmentgroups?${query}`;
+    return `${API_BASE_URL}/api/Incident/assignmentgroups?${query}`;
   }, [appliedFilters]);
 
   useEffect(() => {

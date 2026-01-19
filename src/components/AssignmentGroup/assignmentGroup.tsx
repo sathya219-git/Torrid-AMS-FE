@@ -5,6 +5,8 @@ import { groups, InitiateAPI, selectedGroups } from "../../store/filterStore";
 import "./assignmentGroup.css";
 
 export default function AssignmentGroup() {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const assignmentGroups = useAtomValue(groups);
   const [selectedFilters, setSelectedFilters] = useAtom(selectedGroups);
 
@@ -18,7 +20,7 @@ export default function AssignmentGroup() {
     }
     initiateAPI((prev) => {
       const curr = new Map(prev);
-      curr.set("http://localhost:5092/api/Incident/assignmentgroups", {
+      curr.set(`${API_BASE_URL}/api/Incident/assignmentgroups`, {
         method: "GET",
         body: null,
       });

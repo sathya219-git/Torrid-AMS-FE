@@ -11,6 +11,8 @@ import "./category.css";
 import { CategoryItem } from "./category.interface";
 
 export default function Category() {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const categoryList = useAtomValue(categories);
   const [selectedFilters, setSelectedFilters] = useAtom(selectedCategories);
 
@@ -22,7 +24,7 @@ export default function Category() {
     }
     initiateAPI((prev) => {
       const curr = new Map(prev);
-      curr.set("http://localhost:5092/api/Incident/categorycountbygroup", {
+      curr.set(`${API_BASE_URL}/api/Incident/categorycountbygroup`, {
         method: "GET",
         body: null,
       });

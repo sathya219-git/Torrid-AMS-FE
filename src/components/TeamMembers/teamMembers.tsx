@@ -12,6 +12,8 @@ import { TeamMember } from "./team-members.interface";
 import "./teamMembers.css";
 
 export default function TeamMembers() {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const teamMemberList = useAtomValue(teamMembers);
   const [selectedFilters, setSelectedFilters] = useAtom(selectedTeamMembers);
 
@@ -25,7 +27,7 @@ export default function TeamMembers() {
     }
     initiateAPI((prev) => {
       const curr = new Map(prev);
-      curr.set("http://localhost:5092/api/Incident/nameandcountbypriority?PageSize=0", {
+      curr.set(`${API_BASE_URL}/api/Incident/nameandcountbypriority?PageSize=0`, {
         method: "GET",
         body: null,
       });

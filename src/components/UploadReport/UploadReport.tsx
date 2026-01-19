@@ -37,6 +37,7 @@ const UploadReport = () => {
   const totalPages = useMemo(() => {
     return uploadedReportsResponse?.totalPages ?? 0;
   }, [uploadedReportsResponse]);
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const [sortBy, setSortBy] = useState<string>("uploadedDate");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
@@ -48,9 +49,10 @@ const UploadReport = () => {
 
   const initiateAPI = useSetAtom(InitiateAPI);
 
+
   // ✅ Fetch API data whenever sort, page, or search changes
   useEffect(() => {
-    const apiUrl = `http://localhost:5092/api/files/history?SearchText=${encodeURIComponent(
+    const apiUrl = `${API_BASE_URL}/api/files/history?SearchText=${encodeURIComponent(
       searchText
     )}&SortBy=${sortBy}&SortDir=${sortOrder}&PageNumber=${pageNumber}&PageSize=${pageSize}`;
     initiateAPI((prev) => {
@@ -113,7 +115,7 @@ const UploadReport = () => {
 
     initiateAPI((prev) => {
       const curr = new Map(prev);
-      curr.set("http://localhost:5092/api/files/upload", {
+      curr.set(`${API_BASE_URL}/api/files/upload`, {
         method: "POST",
         body: formData,
       });
@@ -144,7 +146,7 @@ const UploadReport = () => {
   };
 
   const pushToDashboard = (id: any) => {
-    const apiUrl = `http://localhost:5092/api/files/import?uploadHistoryId=${id}`;
+    const apiUrl = `${API_BASE_URL}/api/files/import?uploadHistoryId=${id}`;
     initiateAPI((prev) => {
       const curr = new Map(prev);
       curr.set(apiUrl, {

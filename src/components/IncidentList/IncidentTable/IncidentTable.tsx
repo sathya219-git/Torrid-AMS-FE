@@ -79,6 +79,7 @@ export default function IncidentTable({
   }, [totalPage]);
 
   const initiateAPI = useSetAtom(InitiateAPI);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const [lastUpdatedOn, setLastUpdatedOn] = useState(0);
   const [prevSearch, setPrevSearch] = useState("");
@@ -125,7 +126,7 @@ export default function IncidentTable({
       setCurrentPage(1);
     }
 
-    return `http://localhost:5092/api/Incident/detailsbypriority?Priority=${encodedPriority}&PageNumber=${currentPage}&PageSize=${8}${query}`;
+    return `${API_BASE_URL}/api/Incident/detailsbypriority?Priority=${encodedPriority}&PageNumber=${currentPage}&PageSize=${8}${query}`;
   }, [
     priority,
     appliedFilters,

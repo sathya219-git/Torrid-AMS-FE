@@ -6,6 +6,8 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { InitiateAPI, ResetSuccess } from "../../store/filterStore";
 
 export default function ForgotPassword() {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const navigate = useNavigate();
 
   const [emailID] = useState("");
@@ -31,7 +33,7 @@ export default function ForgotPassword() {
     };
     initiateAPI((prev) => {
       const curr = new Map(prev);
-      curr.set("http://localhost:5092/api/auth/resetPassword", {
+      curr.set(`${API_BASE_URL}/api/auth/resetPassword`, {
         method: "POST",
         body: JSON.stringify(body),
       });

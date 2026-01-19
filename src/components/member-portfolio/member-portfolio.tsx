@@ -15,6 +15,8 @@ import "./member-portfolio.css";
 import TeamMemberCard from "./team-member-card/team-member-card";
 
 export default function MemberPortfolio() {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   const appliedFilters = useAtomValue(appliedFilter);
   const memberDetailsResponse = useAtomValue(TeamMemberDetails);
 
@@ -42,7 +44,7 @@ export default function MemberPortfolio() {
 
   const apiUrl = useMemo(() => {
     const query = buildFilterQuery(appliedFilters);
-    let url = `http://localhost:5092/api/Incident/nameandcountbypriority`;
+    let url = `${API_BASE_URL}/api/Incident/nameandcountbypriority`;
 
     const params = new URLSearchParams();
     if (query) url += `?${query}`;

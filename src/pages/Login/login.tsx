@@ -7,6 +7,7 @@ import { InitiateAPI, LoginSuccess } from "../../store/filterStore";
 
 export default function Login() {
   const navigate = useNavigate();
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,7 +18,7 @@ export default function Login() {
   const login = () => {
     initiateAPI((prev) => {
       const curr = new Map(prev);
-      curr.set("http://localhost:5092/api/auth/login", {
+      curr.set(`${API_BASE_URL}/api/auth/login`, {
         method: "POST",
         body: JSON.stringify({
           email,
