@@ -13,8 +13,20 @@ export interface Incident {
   state: string;
   resolvedDateTime: string;
   breachSLA: string;
-  createdDateTime:string;
-  updatedDateTime:string;
+  createdDateTime: string;
+  updatedDateTime: string;
 }
+export type IncidentSortKeys =
+  | "Number"
+  | "AssignedTo"
+  | "ShortDescription"
+  | "Category"
+  | "State"
+  | "Created"
+  | "Resolved"
+  | "Updated"
+  | "Priority"
+  | "ActualResolvedTime"
+  |"BreachSLA";
 
 export type SortOrder = "ASC" | "DESC" | "";

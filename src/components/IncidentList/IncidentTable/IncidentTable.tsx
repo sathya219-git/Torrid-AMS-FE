@@ -16,6 +16,7 @@ import {
 import {
   Incident,
   IncidentResponse,
+  IncidentSortKeys,
   SortOrder,
 } from "./incident-table.interface";
 import { GoSortAsc, GoSortDesc } from "react-icons/go";
@@ -43,7 +44,7 @@ export default function IncidentTable({
 
   const [currentPage, setCurrentPage] = useState(1);
 
-  const [sortField, setSortField] = useState<keyof Incident | "">("");
+  const [sortField, setSortField] = useState<IncidentSortKeys | "">("");
   const [sortOrder, setSortOrder] = useState<SortOrder>("");
 
   const appliedFilters = useAtomValue(appliedFilter);
@@ -156,9 +157,9 @@ export default function IncidentTable({
   }, [apiUrl, activeIncidentTab, activeCriticalAccordion]);
 
   const handleSort = useCallback(
-    (field: keyof Incident) => {
+    (field: IncidentSortKeys | "") => {
       let order: SortOrder = "ASC";
-      let sortBy: keyof Incident | "" = field;
+      let sortBy: IncidentSortKeys | "" = field;
 
       if (sortField === field) {
         if (sortOrder === "DESC") {
@@ -176,7 +177,7 @@ export default function IncidentTable({
   );
 
   const renderSortIcon = useCallback(
-    (field: keyof Incident) => {
+    (field: IncidentSortKeys) => {
       if (sortField !== field) return <BsList fontSize="small" />;
 
       return sortOrder === "ASC" ? (
@@ -196,60 +197,60 @@ export default function IncidentTable({
             <Table.Tr className="bl-header-row">
               <Table.Th style={{minWidth:"140px",maxWidth:"140px"}}
                 className="bl-header-cell first-header"
-                onClick={() => handleSort("incidentNo")}
+                onClick={() => handleSort("Number")}
               >
                 <div className="bl-table-headers">
                   <span> Incident No </span>
-                  <span> {renderSortIcon("incidentNo")} </span>
+                  <span> {renderSortIcon("Number")} </span>
                 </div>
               </Table.Th>
 
               <Table.Th style={{minWidth:"200px",maxWidth:"200px"}}
                 className="bl-header-cell"
-                onClick={() => handleSort("assignedTo")}
+                onClick={() => handleSort("AssignedTo")}
               >
                 <div className="bl-table-headers">
                   <span> Assigned To </span>
-                  <span> {renderSortIcon("assignedTo")} </span>
+                  <span> {renderSortIcon("AssignedTo")} </span>
                 </div>
               </Table.Th>
 
               <Table.Th style={{minWidth:"350px",maxWidth:"350px"}}
                 className="bl-header-cell"
-                onClick={() => handleSort("shortDescription")}
+                onClick={() => handleSort("ShortDescription")}
               >
                 <div className="bl-table-headers">
                   <span> Description </span>
-                  <span> {renderSortIcon("shortDescription")} </span>
+                  <span> {renderSortIcon("ShortDescription")} </span>
                 </div>
               </Table.Th>
 
               <Table.Th style={{minWidth:"150px",maxWidth:"150px"}}
                 className="bl-header-cell"
-                onClick={() => handleSort("category")}
+                onClick={() => handleSort("Category")}
               >
                 <div className="bl-table-headers">
                   <span> Category </span>
-                  <span> {renderSortIcon("category")} </span>
+                  <span> {renderSortIcon("Category")} </span>
                 </div>
               </Table.Th>
 
               <Table.Th style={{minWidth:"120px",maxWidth:"120px"}}
                 className="bl-header-cell"
-                onClick={() => handleSort("state")}
+                onClick={() => handleSort("State")}
               >
                 <div className="bl-table-headers">
                   <span> State </span>
-                  <span> {renderSortIcon("state")} </span>
+                  <span> {renderSortIcon("State")} </span>
                 </div>
               </Table.Th>
               <Table.Th style={{minWidth:"180px",maxWidth:"180px"}}
                 className="bl-header-cell"
-                onClick={() => handleSort("createdDateTime")}
+                onClick={() => handleSort("Created")}
               >
                 <div className="bl-table-headers">
                   <span> Created Date</span>
-                  <span> {renderSortIcon("createdDateTime")} </span>
+                  <span> {renderSortIcon("Created")} </span>
                 </div>
               </Table.Th>
               {/* <Table.Th
@@ -263,30 +264,30 @@ export default function IncidentTable({
               </Table.Th> */}
               <Table.Th style={{minWidth:"210px",maxWidth:"210px"}}
                 className="bl-header-cell"
-                onClick={() => handleSort("resolvedDateTime")}
+                onClick={() => handleSort("Resolved")}
               >
                 <div className="bl-table-headers">
                   <span> Resolved Date & Time </span>
-                  <span> {renderSortIcon("resolvedDateTime")} </span>
+                  <span> {renderSortIcon("Resolved")} </span>
                 </div>
               </Table.Th>
               <Table.Th style={{minWidth:"210px",maxWidth:"210px"}}
                 className="bl-header-cell"
-                onClick={() => handleSort("actualResolvedTime")}
+                onClick={() => handleSort("ActualResolvedTime")}
               >
                 <div className="bl-table-headers">
                   <span> Actual Resolved Time </span>
-                  <span> {renderSortIcon("actualResolvedTime")} </span>
+                  <span> {renderSortIcon("ActualResolvedTime")} </span>
                 </div>
               </Table.Th>
 
               <Table.Th style={{minWidth:"200px",maxWidth:"200px"}}
                 className="bl-header-cell last-header"
-                onClick={() => handleSort("breachSLA")}
+                onClick={() => handleSort("BreachSLA")}
               >
                 <div className="bl-table-headers">
                   <span> Breach SLA </span>
-                  <span> {renderSortIcon("breachSLA")} </span>
+                  <span> {renderSortIcon("BreachSLA")} </span>
                 </div>
               </Table.Th>
             </Table.Tr>

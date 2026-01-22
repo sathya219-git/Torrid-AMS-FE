@@ -1,6 +1,6 @@
 import { Card } from "@mantine/core";
 import { useAtomValue, useSetAtom } from "jotai";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { FilterChip, FilterState } from "../../store/filter-store.interface";
 import {
   appliedFilter,
@@ -16,7 +16,7 @@ import {
 } from "../../store/filterStore";
 import "./filterCategory.css";
 
-export default function   FilterCategory() {
+export default function FilterCategory() {
   const setSelectedGroups = useSetAtom(selectedGroups);
   const setSelectedFromDate = useSetAtom(selectedFromDate);
   const setSelectedToDate = useSetAtom(selectedToDate);
@@ -24,9 +24,24 @@ export default function   FilterCategory() {
   const setSelectedStatus = useSetAtom(selectedStatus);
   const setSelectedTeamMembers = useSetAtom(selectedTeamMembers);
   const setAppliedFilters = useSetAtom(appliedFilter);
+
   const appliedFilterChips = useAtomValue(filterChips);
   const hasActiveFilters = useAtomValue(resetEnabled);
   const filterOpened = useAtomValue(filterState);
+
+  // 🔹 View more state
+  const [showAllChips, setShowAllChips] = useState(false);
+  const MAX_VISIBLE_CHIPS = 4;
+
+  // 🔹 Only valid chips
+  const validChips = appliedFilterChips.filter(
+    (chip) => chip.value !== null && chip.value !== ""
+  );
+
+  // 🔹 Chips to render
+  const visibleChips = showAllChips
+    ? validChips
+    : validChips.slice(0, MAX_VISIBLE_CHIPS);
 
   const clearAll = useCallback(() => {
     const clearedState: FilterState = {
@@ -46,6 +61,7 @@ export default function   FilterCategory() {
     setSelectedCategories([]);
     setSelectedStatus([]);
     setSelectedTeamMembers([]);
+    setShowAllChips(false); // ✅ reset view
   }, []);
 
   const handleRemoveFilter = useCallback((chip: FilterChip) => {
@@ -116,11 +132,7 @@ export default function   FilterCategory() {
     []
   );
 
-  // ✅ Show header only if we have non-null filters
-  const hasValidFilters = appliedFilterChips?.some(
-    (item) =>
-      item?.value !== null && item?.value !== "" && item?.value !== undefined
-  );
+  const hasValidFilters = validChips.length > 0;
 
   return (
     <Card
@@ -130,7 +142,6 @@ export default function   FilterCategory() {
       <Card.Section inheritPadding>
         <div className="selected-filter">
           <div className="filtered-results">
-            {/* ✅ Conditional Header */}
             {hasValidFilters && (
               <h1
                 style={{
@@ -145,19 +156,29 @@ export default function   FilterCategory() {
             )}
 
             <div className="filter-tags">
-              {/* ✅ Render only non-null chips */}
-              {appliedFilterChips.map((chip) =>
-                chip.value ? (
-                  <div className="tag" key={chip.value}>
-                    <span>{chip.value}</span>
-                    <button
-                      className="close-btn"
-                      onClick={() => handleRemoveFilter(chip)}
-                    >
-                      &times;
-                    </button>
-                  </div>
-                ) : null
+              {/* 🔹 Render limited chips */}
+              {visibleChips.map((chip) => (
+                <div className="tag" key={`${chip.key}-${chip.value}`}>
+                  <span>{chip.value}</span>
+                  <button
+                    className="close-btn"
+                    onClick={() => handleRemoveFilter(chip)}
+                  >
+                    &times;
+                  </button>
+                </div>
+              ))}
+
+              {/* 🔹 View more / less */}
+              {validChips.length > MAX_VISIBLE_CHIPS && (
+                <span
+                  className="view-more"
+                  onClick={() => setShowAllChips(!showAllChips)}
+                >
+                  {showAllChips
+                    ? "View Less"
+                    : `View More (${validChips.length - MAX_VISIBLE_CHIPS})`}
+                </span>
               )}
 
               {hasActiveFilters && (

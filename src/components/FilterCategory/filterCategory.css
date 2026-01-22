@@ -29,3 +29,13 @@
 .category-result.opened > * {
   opacity: 1;
 }
+.view-more {
+  cursor: pointer;
+  color: #333B69;
+  font-weight: 600;
+  margin-left: 10px;
+}
+
+/* .view-more:hover {
+  text-decoration: underline;
+} */

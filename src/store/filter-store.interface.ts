@@ -33,7 +33,7 @@ export interface BreachFilters {
   breachSLA?: string;
   categories?: string;
   assignedTo?: string;
-   Search?: string;
+  Search?: string;
 }
 export interface BreachSearchFilters {
   Search?: string;
