@@ -80,9 +80,9 @@ export default function AssignmentGroupDetails() {
             ))
           ) : (
             // **FALSE:** If data is missing or empty, show the message
-            <div className={`fil-result ${filterOpened ? "opened" : "closed"}`}>
-              <p> No torrid groups to display.</p>
-            </div>
+            // <div style={{ textAlign: "center", padding: 10 }}>
+              <p style={{fontSize:"16px",fontWeight:"600"}}> No data available.</p>
+            // </div>
           )
         }
       </div>
