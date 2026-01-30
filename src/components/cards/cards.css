@@ -363,6 +363,7 @@ color: #0000;
   /* min-width: 230px; */
   /* minimum card width */
   /* max-width: 230px; */
+
   /* no direct equivalent, but flex:1 helps stretch */
   box-sizing: border-box;
   /* include padding/borders in width */
